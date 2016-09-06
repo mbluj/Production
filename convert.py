@@ -5,7 +5,7 @@ import os
 from ROOT import gSystem, TChain, TSystem, TFile
 from PSet import process
 
-gSystem.CompileMacro('HTauTauTree_v2.C')
+gSystem.CompileMacro('HTauTauTree.C')
 
 from ROOT import HTauTauTree
 

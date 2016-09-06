@@ -9,7 +9,7 @@ from PSet import process
 command = "cmsRun -j FrameworkJobReport.xml -p PSet.py"
 os.system(command)
 
-gSystem.CompileMacro('HTauTauTree_v2.C')
+gSystem.CompileMacro('HTauTauTree.C')
 from ROOT import HTauTauTree
 
 fileNames = []

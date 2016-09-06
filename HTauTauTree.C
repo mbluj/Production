@@ -103,18 +103,18 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_e->at(indexTauLeg));
 			
   
-  bool muonBaselineSelection =  muonP4.Perp()>19 && fabs(muonP4.Eta())<2.1 &&
+  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&
 				dz->at(indexMuonLeg)<0.2 &&
 				dxy->at(indexMuonLeg)<0.045 &&
                                 ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
 
-  bool tauBaselineSelection = muonP4.Perp()>20 && fabs(muonP4.Eta())<2.3 &&
+  bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
                               dz->at(indexMuonLeg)<0.2;
 
   bool passBaselinePair = muonP4.DeltaR(tauP4) > 0.5;
 								     
-  bool passPostSynchMuon = combreliso->at(indexMuonLeg)<0.1;
+  bool passPostSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool passPostSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
@@ -127,7 +127,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && passBaselinePair
-    && passPostSynchTau && passPostSynchMuon
+    //&& passPostSynchTau && passPostSynchMuon
     && diMuonVeto() && thirdLeptonVeto(indexMuonLeg);
 }
 /////////////////////////////////////////////////
