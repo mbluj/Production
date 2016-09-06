@@ -3,6 +3,7 @@
 import os, re
 import commands
 import math
+import urllib
 
 from crab3 import *
 #########################################
@@ -50,12 +51,15 @@ def prepareCrabCfg(dataset,
     config.Data.totalUnits =  -1
     config.Data.lumiMask=""
     if dataset.split("/")[2].find("Run201")!=-1:
-        config.Data.lumiMask=jsonFile
+        command = "wget "+jsonFile
+        os.system(command)
+        config.Data.lumiMask=jsonFile.split("/")[-1]
         config.JobType.psetName = 'analyzerData.py'
     out = open('crabTmp.py','w')
     out.write(config.pythonise_())
     out.close()        
     os.system("crab submit -c crabTmp.py")
+    os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
 eventsPerJob = 200000
@@ -86,7 +90,7 @@ datasets = [
 #             "/SingleMuon/Run2016D-PromptReco-v2/MINIAOD"]
 ###############
 
-jsonFile2016 = "/home/akalinow/scratch/CMS/HiggsCP/Prod/Crab/JSON/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
+jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
 ########################################################
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
@@ -94,7 +98,7 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v11")
+                   publish_data_suffix = "v12")
 ########################################################
 
 
