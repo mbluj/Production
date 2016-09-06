@@ -660,7 +660,7 @@ HTauTauTree::HTauTauTree(TTree *tree) : fChain(0)
    httEvent = new HTTEvent();
    warsawTree = new TTree("HTauTauTree","");
    warsawTree->SetDirectory(warsawFile);
-   TBranch *eventBranch = warsawTree->Branch("HTTEvent",&httEvent);
+   TBranch *eventBranch = warsawTree->Branch("HTTEvent.",&httEvent);
    TBranch *pairBranch = warsawTree->Branch("HTTPairCollection",&httPairCollection);
    TBranch *jetBranch = warsawTree->Branch("HTTJetCollection",&httJetCollection);
    TBranch *leptonBranch = warsawTree->Branch("HTTLeptonCollection",&httLeptonCollection);

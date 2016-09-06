@@ -128,7 +128,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   */
   return muonBaselineSelection && tauBaselineSelection && passBaselinePair
     //&& passPostSynchTau && passPostSynchMuon
-    && diMuonVeto() && thirdLeptonVeto(indexMuonLeg);
+    //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    && true;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
