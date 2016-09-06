@@ -1,5 +1,5 @@
 #define HTauTauTree_cxx
-#include "HTauTauTree_v2.h"
+#include "HTauTauTree.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>

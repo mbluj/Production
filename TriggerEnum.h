@@ -30,8 +30,9 @@ HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ = 32,
 HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ = 33, 
 HLT_TripleMu_12_10_5 = 34, 
 HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ = 35, 
-HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL = 36, 
-HLT_DiMu9_Ele9_CaloIdL_TrackIdL = 37, 
-HLT_Mu8_DiEle12_CaloIdL_TrackIdL = 38, 
-NONE = 39
+HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ = 36, 
+HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL = 37, 
+HLT_DiMu9_Ele9_CaloIdL_TrackIdL = 38, 
+HLT_Mu8_DiEle12_CaloIdL_TrackIdL = 39, 
+NONE = 40
 };
