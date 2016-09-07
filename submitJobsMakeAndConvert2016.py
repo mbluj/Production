@@ -6,6 +6,7 @@ import math
 import urllib
 
 from crab3 import *
+from mergeROOTFiles import *
 #########################################
 #########################################
 def prepareCrabCfg(dataset,
@@ -92,6 +93,7 @@ datasets = [
 
 jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
 ########################################################
+'''
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
                    dataset=dataset,
@@ -99,6 +101,12 @@ for dataset in datasets:
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
                    publish_data_suffix = "v12")
+'''
 ########################################################
-
+########################################################
+## Merge output ROOT files.
+########################################################
+for dataset in datasets:
+        mergeDataset(dataset=dataset, publish_data_suffix = "v12",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_07_09_2016/")
 
