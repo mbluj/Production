@@ -106,11 +106,17 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&
 				dz->at(indexMuonLeg)<0.2 &&
 				dxy->at(indexMuonLeg)<0.045 &&
-                                ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
+                                ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2)) && 
+                                muonP4.Perp() > 23;
+                                			//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
 
   bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
-                              dz->at(indexMuonLeg)<0.2;
+                              dz->at(indexTauLeg)<0.2 && 
+                              tauP4.Perp() > 30 && 
+                              abs(daughters_charge->at(indexTauLeg))==1;			
+                              				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+                              				//charge condition added
 
   bool passBaselinePair = muonP4.DeltaR(tauP4) > 0.5;
 								     

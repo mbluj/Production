@@ -53,7 +53,7 @@ grid-proxy-init
 ./copyFilesFromSE.py
 '''
 ##
-user = "akalinow"
+user = "apyskir"
 #sourceEndpoint = "srm://se.grid.icm.edu.pl:8446/srm/managerv2?SFN=//"
 sourceEndpoint = "srm://se.cis.gov.pl:8446/srm/managerv2?SFN=//"
 destEndpoint = "file:./Data/"
@@ -61,7 +61,7 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v12",
+    "/dpm/cis.gov.pl/home/cms/store/user/apyskir/sync2/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow
