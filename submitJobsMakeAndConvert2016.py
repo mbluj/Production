@@ -38,7 +38,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAW_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h']
+    config.JobType.inputFiles = ['HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h']
     
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -100,8 +100,8 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "sync_no_muonid")
-
+                   publish_data_suffix = "sync")
+                   
 ########################################################
 ########################################################
 ## Merge output ROOT files.
@@ -110,4 +110,5 @@ for dataset in datasets:
 for dataset in datasets:
         mergeDataset(dataset=dataset, publish_data_suffix = "v12",
                                       outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_07_09_2016/")
+
 '''

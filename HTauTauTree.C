@@ -116,10 +116,19 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
                               				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
                               				//charge condition added
 
-  bool passBaselinePair = muonP4.DeltaR(tauP4) > 0.5;
+  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;
 								     
-  bool passPostSynchMuon = combreliso->at(indexMuonLeg)<0.15;
-  bool passPostSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
+  bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
+  bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
+
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::baselinePair,baselinePair);
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchMuon,postSynchMuon);
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchTau,postSynchTau);
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::diMuonVeto,diMuonVeto());
+  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
+  
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
 	   <<" tauBaselineSelection: "<<tauBaselineSelection
@@ -130,8 +139,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
 	   <<std::endl;
   */
-  return muonBaselineSelection && tauBaselineSelection && passBaselinePair
-    //&& passPostSynchTau && passPostSynchMuon
+  return muonBaselineSelection && tauBaselineSelection && baselinePair
+    //&& postSynchTau && postSynchMuon
     //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
     && true;
 }
