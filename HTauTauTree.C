@@ -3,7 +3,10 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TSystem.h>
+#include "ScaleFactor.cc"
 #include "HTTEvent.cxx"
+
 
 #include <iostream>
 #include <fstream>
@@ -115,6 +118,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;
 								     
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
+  bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
 
   httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
@@ -136,7 +140,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    && postSynchTau && postSynchMuon
+    && postSynchTau && loosePostSynchMuon
     && diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
     && true;
 }
@@ -263,7 +267,7 @@ void HTauTauTree::fillEvent(){
       if(genpart_pdg->at(iGenPart)==-15) httEvent->setDecayModePlus(genpart_TauGenDecayMode->at(iGenPart));
     }
   }
-	
+
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;

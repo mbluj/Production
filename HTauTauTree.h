@@ -17,6 +17,7 @@
 #include "vector"
 
 #include "HTTEvent.h"
+#include "ScaleFactor.h"
 #include <iostream>
 
 class HTauTauTree {
@@ -50,6 +51,7 @@ public :
   TFile *warsawFile;
   HTTEvent *httEvent;
   TH1F* hStats;
+  ScaleFactor myScaleFactor;
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 
@@ -667,6 +669,8 @@ HTauTauTree::HTauTauTree(TTree *tree) : fChain(0)
    TBranch *genLeptonBranch = warsawTree->Branch("HTTGenLeptonCollection",&httGenLeptonCollection);
    hStats = new TH1F("hStats","Bookkeeping histogram",11,-0.5,10.5);
    hStats->SetDirectory(warsawFile);
+
+   myScaleFactor.init_ScaleFactor("Muon_IsoMu22_eff.root");
    
    leptonPropertiesList.push_back("PDGIdDaughters");
    leptonPropertiesList.push_back("daughters_charge");

@@ -17,7 +17,7 @@ class HTTEvent{
 
  public:
 
-  enum sampleTypeEnum {DUMMY = -1, DATA = 0, DY = 1, WJets=2, TTbar=3, h=3, H=4, A=5, QCD=6};
+  enum sampleTypeEnum {DUMMY = -1, DATA = 0, DY = 1, DYLowM = 2, WJets=3, TTbar=4, h=5, H=6, A=7};
 
   ///Copy from LLRHiggsTauTau/NtupleProducer/plugins/HTauTauNtuplizer.cc
   static const int ntauIds = 30;
