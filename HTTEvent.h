@@ -3,12 +3,14 @@
 
 #include "TLorentzVector.h"
 #include "TVector3.h"
+#include "TBits.h"
 #include <map>
 #include <vector>
 #include <bitset> 
 
 #include "PropertyEnum.h"
 #include "TriggerEnum.h"
+#include "SelectionBitsEnum.h"
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 class HTTEvent{
@@ -90,6 +92,8 @@ class HTTEvent{
   void setIsRefit(bool aBit){isRefit = aBit;};
 
   void setNTracksInRefit(const int & nTracks) {nTracksInRefit = nTracks;};
+
+  void setSelectionBit(unsigned int iBit, bool value = true) {selectionWord.SetBitNumber(iBit, value);}
   ////////////////////////
 
   ///Reset class data members
@@ -129,6 +133,8 @@ class HTTEvent{
   bool getIsRefit() const {return isRefit;};
 
   int getNTracksInRefit() const {return nTracksInRefit;}
+
+  bool checkSelectionBit(unsigned int iBit) const {return selectionWord.TestBitNumber(iBit);}
 
  private:
 
@@ -178,6 +184,9 @@ class HTTEvent{
 
   ///Number of tracks used in the refit
   int nTracksInRefit;
+
+  ///Bit word coding event selection result
+  TBits selectionWord;
 
 };
 ///////////////////////////////////////////////////

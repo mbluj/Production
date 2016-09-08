@@ -38,7 +38,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAW_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h']
+    config.JobType.inputFiles = ['HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h']
     
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -63,7 +63,7 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 200000
+eventsPerJob = 500000
 
 datasets = [
     #Data
@@ -88,25 +88,25 @@ datasets = [
     ##   
 ]
 ##TEST
-#datasets = ["/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM"]
+#datasets = ["/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM"]
 ###############
 
 jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
 ########################################################
-'''
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
                    dataset=dataset,
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v12")
-'''
+                   publish_data_suffix = "v14")
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
+'''
 for dataset in datasets:
         mergeDataset(dataset=dataset, publish_data_suffix = "v12",
                                       outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_07_09_2016/")
 
+'''
