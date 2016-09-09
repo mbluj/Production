@@ -106,17 +106,20 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_e->at(indexTauLeg));
 			
   
-  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&
-				dz->at(indexMuonLeg)<0.2 &&
-				dxy->at(indexMuonLeg)<0.045 &&
-                                ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
+  bool muonBaselineSelection =  muonP4.Perp()>23 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+			    fabs(dz->at(indexMuonLeg))<0.2 &&
+			    fabs(dxy->at(indexMuonLeg))<0.045 &&
+                            ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
+                                			
 
   bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
-                              dz->at(indexTauLeg)<0.2;
+                              fabs(dz->at(indexTauLeg))<0.2 && 
+                              abs(daughters_charge->at(indexTauLeg))==1;			
+                              				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+                              				//charge condition added
 
-  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;
-								     
+  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;								     
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
@@ -455,6 +458,11 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
+
+    TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
+    float scaleFactor = 1.0;//SF for IsoMu22 not yet ready myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
+    aHTTpair.setMuonTriggerSF(scaleFactor);
+    
     httPairCollection.push_back(aHTTpair);
   }
 }

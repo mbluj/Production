@@ -301,7 +301,8 @@ class HTTPair{
 
   void setLeg2(const HTTParticle &aParticle){leg2 = aParticle;}
 
-
+  void setMuonTriggerSF(float aSF){muonTriggerSF = aSF;}
+  
   ///Data member getters.
   TLorentzVector getP4() const {return p4;}
 
@@ -329,6 +330,8 @@ class HTTPair{
 
   float getMTMuon() const {return abs(leg1.getPDGid())==13 ? getMTLeg1() : getMTLeg2(); }
 
+  float getMuonTriggerSF() const {return muonTriggerSF;}
+
  private:
 
   ///Nominal pair p4 (sum of legs p4)
@@ -348,6 +351,12 @@ class HTTPair{
     
   ///Pair legs
   HTTParticle leg1, leg2;
+
+  ///Lepton selection scale factor
+  float muonTriggerSF;
+  ///Tau selection scale factor
+  
+  
 
 };
 
