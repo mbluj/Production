@@ -124,13 +124,13 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
 
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::baselinePair,baselinePair);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchMuon,postSynchMuon);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchTau,postSynchTau);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::diMuonVeto,diMuonVeto());
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
+  httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
+  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
+  httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
+  httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
+  httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
+  httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
+  httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
   
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection

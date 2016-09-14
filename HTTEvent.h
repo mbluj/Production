@@ -63,7 +63,7 @@ class HTTEvent{
   
   void setEvent(unsigned long int x){eventId = x;}
   
-  void setNPU(unsigned int x){nPU = x;}
+  void setNPU(float x){nPU = x;}
   
   void setNPV(unsigned int x){nPV = x;}
   
@@ -93,7 +93,7 @@ class HTTEvent{
 
   void setNTracksInRefit(const int & nTracks) {nTracksInRefit = nTracks;};
 
-  void setSelectionBit(unsigned int iBit, bool value = true) {selectionWord.SetBitNumber(iBit, value);}
+  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((int)iBit, value);}
   ////////////////////////
 
   ///Reset class data members
@@ -104,7 +104,7 @@ class HTTEvent{
 
   unsigned long int getEventId() const {return eventId;}
     
-  unsigned int getNPU() const {return nPU;}
+  float getNPU() const {return nPU;}
   
   unsigned int getNPV() const {return nPV;}
   
@@ -134,7 +134,7 @@ class HTTEvent{
 
   int getNTracksInRefit() const {return nTracksInRefit;}
 
-  bool checkSelectionBit(unsigned int iBit) const {return selectionWord.TestBitNumber(iBit);}
+  bool checkSelectionBit(SelectionBitsEnum iBit) const {return selectionWord.TestBitNumber((unsigned int)iBit);}
 
  private:
 
@@ -154,8 +154,8 @@ class HTTEvent{
   ///MCatNLO weight
   float aMCatNLOweight;
 
-  ///Number of PU vertices from MC
-  unsigned int nPU;
+  ///Number of true PU vertices from MC
+  float nPU;
 
   //Number of reocnstructed PV
   unsigned int nPV;
