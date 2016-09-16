@@ -17,6 +17,7 @@
 #include "vector"
 
 #include "HTTEvent.h"
+#include "ScaleFactor.h"
 #include <iostream>
 
 class HTauTauTree {
@@ -50,6 +51,7 @@ public :
   TFile *warsawFile;
   HTTEvent *httEvent;
   TH1F* hStats;
+  ScaleFactor myScaleFactor;
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 
@@ -258,6 +260,7 @@ public :
    vector<float>   *daughters_byIsolationMVA3oldDMwLTraw;
    vector<float>   *daughters_byIsolationMVA3newDMwoLTraw;
    vector<float>   *daughters_byIsolationMVA3newDMwLTraw;
+   vector<float>   *daughters_byIsolationMVArun2v1DBoldDMwLTraw;   
    vector<float>   *daughters_chargedIsoPtSum;
    vector<float>   *daughters_neutralIsoPtSum;
    vector<float>   *daughters_puCorrPtSum;
@@ -521,6 +524,7 @@ public :
    TBranch        *b_daughters_byIsolationMVA3oldDMwLTraw;   //!
    TBranch        *b_daughters_byIsolationMVA3newDMwoLTraw;   //!
    TBranch        *b_daughters_byIsolationMVA3newDMwLTraw;   //!
+   TBranch        *b_daughters_byIsolationMVArun2v1DBoldDMwLTraw;   //!
    TBranch        *b_daughters_chargedIsoPtSum;   //!
    TBranch        *b_daughters_neutralIsoPtSum;   //!
    TBranch        *b_daughters_puCorrPtSum;   //!
@@ -667,6 +671,8 @@ HTauTauTree::HTauTauTree(TTree *tree) : fChain(0)
    TBranch *genLeptonBranch = warsawTree->Branch("HTTGenLeptonCollection",&httGenLeptonCollection);
    hStats = new TH1F("hStats","Bookkeeping histogram",11,-0.5,10.5);
    hStats->SetDirectory(warsawFile);
+
+   myScaleFactor.init_ScaleFactor("Muon_IsoMu22_eff.root");
    
    leptonPropertiesList.push_back("PDGIdDaughters");
    leptonPropertiesList.push_back("daughters_charge");
@@ -675,6 +681,7 @@ HTauTauTree::HTauTauTree(TTree *tree) : fChain(0)
    leptonPropertiesList.push_back("daughters_muonID");
    leptonPropertiesList.push_back("daughters_typeOfMuon");
    leptonPropertiesList.push_back("daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits");
+   leptonPropertiesList.push_back("daughters_byIsolationMVArun2v1DBoldDMwLTraw");
    leptonPropertiesList.push_back("againstElectronMVA5category");
    leptonPropertiesList.push_back("dxy");
    leptonPropertiesList.push_back("dz");
@@ -890,6 +897,7 @@ void HTauTauTree::Init(TTree *tree)
    daughters_byIsolationMVA3oldDMwLTraw = 0;
    daughters_byIsolationMVA3newDMwoLTraw = 0;
    daughters_byIsolationMVA3newDMwLTraw = 0;
+   daughters_byIsolationMVArun2v1DBoldDMwLTraw = 0;
    daughters_chargedIsoPtSum = 0;
    daughters_neutralIsoPtSum = 0;
    daughters_puCorrPtSum = 0;
@@ -1146,6 +1154,7 @@ void HTauTauTree::Init(TTree *tree)
    fChain->SetBranchAddress("daughters_byIsolationMVA3oldDMwLTraw", &daughters_byIsolationMVA3oldDMwLTraw, &b_daughters_byIsolationMVA3oldDMwLTraw);
    fChain->SetBranchAddress("daughters_byIsolationMVA3newDMwoLTraw", &daughters_byIsolationMVA3newDMwoLTraw, &b_daughters_byIsolationMVA3newDMwoLTraw);
    fChain->SetBranchAddress("daughters_byIsolationMVA3newDMwLTraw", &daughters_byIsolationMVA3newDMwLTraw, &b_daughters_byIsolationMVA3newDMwLTraw);
+   fChain->SetBranchAddress("daughters_byIsolationMVArun2v1DBoldDMwLTraw", &daughters_byIsolationMVArun2v1DBoldDMwLTraw, &b_daughters_byIsolationMVArun2v1DBoldDMwLTraw);
    fChain->SetBranchAddress("daughters_chargedIsoPtSum", &daughters_chargedIsoPtSum, &b_daughters_chargedIsoPtSum);
    fChain->SetBranchAddress("daughters_neutralIsoPtSum", &daughters_neutralIsoPtSum, &b_daughters_neutralIsoPtSum);
    fChain->SetBranchAddress("daughters_puCorrPtSum", &daughters_puCorrPtSum, &b_daughters_puCorrPtSum);

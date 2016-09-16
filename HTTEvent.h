@@ -17,7 +17,7 @@ class HTTEvent{
 
  public:
 
-  enum sampleTypeEnum {DUMMY = -1, DATA = 0, DY = 1, WJets=2, TTbar=3, h=3, H=4, A=5, QCD=6};
+  enum sampleTypeEnum {DUMMY = -1, DATA = 0, DY = 1, DYLowM = 2, WJets=3, TTbar=4, h=5, H=6, A=7};
 
   ///Copy from LLRHiggsTauTau/NtupleProducer/plugins/HTauTauNtuplizer.cc
   static const int ntauIds = 30;
@@ -63,7 +63,7 @@ class HTTEvent{
   
   void setEvent(unsigned long int x){eventId = x;}
   
-  void setNPU(unsigned int x){nPU = x;}
+  void setNPU(float x){nPU = x;}
   
   void setNPV(unsigned int x){nPV = x;}
   
@@ -93,7 +93,7 @@ class HTTEvent{
 
   void setNTracksInRefit(const int & nTracks) {nTracksInRefit = nTracks;};
 
-  void setSelectionBit(unsigned int iBit, bool value = true) {selectionWord.SetBitNumber(iBit, value);}
+  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((int)iBit, value);}
   ////////////////////////
 
   ///Reset class data members
@@ -104,7 +104,7 @@ class HTTEvent{
 
   unsigned long int getEventId() const {return eventId;}
     
-  unsigned int getNPU() const {return nPU;}
+  float getNPU() const {return nPU;}
   
   unsigned int getNPV() const {return nPV;}
   
@@ -134,7 +134,7 @@ class HTTEvent{
 
   int getNTracksInRefit() const {return nTracksInRefit;}
 
-  bool checkSelectionBit(unsigned int iBit) const {return selectionWord.TestBitNumber(iBit);}
+  bool checkSelectionBit(SelectionBitsEnum iBit) const {return selectionWord.TestBitNumber((unsigned int)iBit);}
 
  private:
 
@@ -154,8 +154,8 @@ class HTTEvent{
   ///MCatNLO weight
   float aMCatNLOweight;
 
-  ///Number of PU vertices from MC
-  unsigned int nPU;
+  ///Number of true PU vertices from MC
+  float nPU;
 
   //Number of reocnstructed PV
   unsigned int nPV;
@@ -301,7 +301,8 @@ class HTTPair{
 
   void setLeg2(const HTTParticle &aParticle){leg2 = aParticle;}
 
-
+  void setMuonTriggerSF(float aSF){muonTriggerSF = aSF;}
+  
   ///Data member getters.
   TLorentzVector getP4() const {return p4;}
 
@@ -329,6 +330,8 @@ class HTTPair{
 
   float getMTMuon() const {return abs(leg1.getPDGid())==13 ? getMTLeg1() : getMTLeg2(); }
 
+  float getMuonTriggerSF() const {return muonTriggerSF;}
+
  private:
 
   ///Nominal pair p4 (sum of legs p4)
@@ -348,6 +351,12 @@ class HTTPair{
     
   ///Pair legs
   HTTParticle leg1, leg2;
+
+  ///Lepton selection scale factor
+  float muonTriggerSF;
+  ///Tau selection scale factor
+  
+  
 
 };
 

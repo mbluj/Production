@@ -3,7 +3,10 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TSystem.h>
+#include "ScaleFactor.cc"
 #include "HTTEvent.cxx"
+
 
 #include <iostream>
 #include <fstream>
@@ -104,30 +107,31 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			
   
   bool muonBaselineSelection =  muonP4.Perp()>23 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
-				fabs(dz->at(indexMuonLeg))<0.2 &&
-				fabs(dxy->at(indexMuonLeg))<0.045 &&
-                                ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
+
+			    fabs(dz->at(indexMuonLeg))<0.2 &&
+			    fabs(dxy->at(indexMuonLeg))<0.045 &&
+                            ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
                                 			
 
-  bool tauBaselineSelection = tauP4.Perp()>30 && fabs(tauP4.Eta())<2.3 &&
+  bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
                               fabs(dz->at(indexTauLeg))<0.2 && 
                               abs(daughters_charge->at(indexTauLeg))==1;			
                               				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
                               				//charge condition added
 
-  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;
-								     
+  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;								     
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
+  bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
 
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::baselinePair,baselinePair);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchMuon,postSynchMuon);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::postSynchTau,postSynchTau);
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::diMuonVeto,diMuonVeto());
-  httEvent->setSelectionBit((unsigned int)SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
+  httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
+  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
+  httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
+  httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
+  httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
+  httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
+  httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
   
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
@@ -158,8 +162,8 @@ bool HTauTauTree::diMuonVeto(){
 			     daughters_e->at(iLepton));
 
        bool passLepton = muonP4.Perp()> 15 && fabs(muonP4.Eta())<2.4 &&
-       dz->at(iLepton)<0.2 &&
-       dxy->at(iLepton)<0.045 && 
+			 fabs(dz->at(iLepton))<0.2 &&
+		         fabs(dxy->at(iLepton))<0.045 && 
        combreliso->at(iLepton)<0.3 &&
        (daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2)));
 
@@ -210,8 +214,8 @@ bool HTauTauTree::muonSelection(unsigned int index){
 		     daughters_e->at(index));
 
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.4 &&
-		       dz->at(index)<0.2 &&
-		       dxy->at(index)<0.045 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
 		      (daughters_muonID->at(index) & (1<<2)) && 	      
 		       combreliso->at(index)<0.3;
 
@@ -227,8 +231,8 @@ bool HTauTauTree::electronSelection(unsigned int index){
 		     daughters_e->at(index));
 
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
-		       dz->at(index)<0.2 &&
-		       dxy->at(index)<0.045 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
 		       daughters_iseleWP90->at(index)>0.5 &&
                        daughters_passConversionVeto->at(index)>0.5 &&
                        daughters_eleMissingHits->at(index)<=1 &&
@@ -267,7 +271,7 @@ void HTauTauTree::fillEvent(){
       if(genpart_pdg->at(iGenPart)==-15) httEvent->setDecayModePlus(genpart_TauGenDecayMode->at(iGenPart));
     }
   }
-	
+
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;
@@ -455,6 +459,11 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
+
+    TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
+    float scaleFactor = 1.0;//SF for IsoMu22 not yet ready myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
+    aHTTpair.setMuonTriggerSF(scaleFactor);
+
     httPairCollection.push_back(aHTTpair);
   }
 }
