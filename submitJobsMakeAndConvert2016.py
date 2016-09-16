@@ -34,7 +34,7 @@ def prepareCrabCfg(dataset,
 
     ##Modify CRAB3 configuration
     config.JobType.psetName = 'analyzerMC.py'
-    if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1
+    if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1:
         config.JobType.psetName = 'analyzerMC_METCORR.py'
 
     config.JobType.disableAutomaticOutputCollection = True
@@ -102,10 +102,10 @@ datasets = [
     ##   
 ]
 ##TEST
-datasets = [ "/SingleMuon/Run2016B-PromptReco-v2/MINIAOD",
-    "/SingleMuon/Run2016C-PromptReco-v2/MINIAOD",
-    "/SingleMuon/Run2016D-PromptReco-v2/MINIAOD",
-    "/SingleMuon/Run2016E-PromptReco-v2/MINIAOD"]
+#datasets = [ "/SingleMuon/Run2016B-PromptReco-v2/MINIAOD",
+#    "/SingleMuon/Run2016C-PromptReco-v2/MINIAOD",
+#    "/SingleMuon/Run2016D-PromptReco-v2/MINIAOD",
+#    "/SingleMuon/Run2016E-PromptReco-v2/MINIAOD"]
 ###############
 
 jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"

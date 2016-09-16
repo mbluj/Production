@@ -143,8 +143,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    //&& postSynchTau && postSynchMuon
-    //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    && postSynchTau && loosePostSynchMuon
+    && diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
     && true;
 }
 /////////////////////////////////////////////////
