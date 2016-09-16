@@ -63,7 +63,7 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v17/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v18/"
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

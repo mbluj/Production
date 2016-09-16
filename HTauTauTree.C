@@ -143,8 +143,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    && postSynchTau && loosePostSynchMuon
-    && diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    //&& postSynchTau && postSynchMuon
+    //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
     && true;
 }
 /////////////////////////////////////////////////
@@ -161,8 +161,8 @@ bool HTauTauTree::diMuonVeto(){
 			     daughters_e->at(iLepton));
 
        bool passLepton = muonP4.Perp()> 15 && fabs(muonP4.Eta())<2.4 &&
-       dz->at(iLepton)<0.2 &&
-       dxy->at(iLepton)<0.045 && 
+			 fabs(dz->at(iLepton))<0.2 &&
+		         fabs(dxy->at(iLepton))<0.045 && 
        combreliso->at(iLepton)<0.3 &&
        (daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2)));
 
@@ -213,8 +213,8 @@ bool HTauTauTree::muonSelection(unsigned int index){
 		     daughters_e->at(index));
 
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.4 &&
-		       dz->at(index)<0.2 &&
-		       dxy->at(index)<0.045 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
 		      (daughters_muonID->at(index) & (1<<2)) && 	      
 		       combreliso->at(index)<0.3;
 
@@ -230,8 +230,8 @@ bool HTauTauTree::electronSelection(unsigned int index){
 		     daughters_e->at(index));
 
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
-		       dz->at(index)<0.2 &&
-		       dxy->at(index)<0.045 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
 		       daughters_iseleWP90->at(index)>0.5 &&
                        daughters_passConversionVeto->at(index)>0.5 &&
                        daughters_eleMissingHits->at(index)<=1 &&
@@ -462,7 +462,7 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
     float scaleFactor = 1.0;//SF for IsoMu22 not yet ready myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
     aHTTpair.setMuonTriggerSF(scaleFactor);
-    
+
     httPairCollection.push_back(aHTTpair);
   }
 }
