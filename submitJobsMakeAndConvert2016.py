@@ -34,8 +34,11 @@ def prepareCrabCfg(dataset,
 
     ##Modify CRAB3 configuration
     config.JobType.psetName = 'analyzerMC.py'
-    if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1:
-        config.JobType.psetName = 'analyzerMC_METCORR.py'
+    #if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1:
+    #    config.JobType.psetName = 'analyzerMC_METCORR.py'
+    if dataset.split("/")[2].find("reHLT")==-1:
+        config.JobType.psetName = 'analyzerMC_HLT.py'
+        
 
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
