@@ -30,7 +30,7 @@ void HTauTauTree::Loop(){
       hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
 
       if(bestPairIndex<9999){
-	fillJets();
+	fillJets(bestPairIndex);
 	fillLeptons();
 	fillGenLeptons();
 	fillPairs(bestPairIndex);
@@ -104,26 +104,34 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_py->at(indexTauLeg),
 			daughters_pz->at(indexTauLeg),
 			daughters_e->at(indexTauLeg));
-			
   
   bool muonBaselineSelection =  muonP4.Perp()>23 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
                             ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
-                                			
 
-  bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
+  bool tauBaselineSelection = tauP4.Perp()>30 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
                               fabs(dz->at(indexTauLeg))<0.2 && 
                               abs(daughters_charge->at(indexTauLeg))==1;			
                               				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
                               				//charge condition added
-
-  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;								     
+  
+  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;							     
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
-
+  /*
+  unsigned int missing[22] = {405113, 332771, 146407, 146463, 385869, 464996, 160671, 85282, 343354, 177335, 268176, 58125, 337254, 178787, 165773, 153364, 466715, 323170, 355732, 99135, 498551, 256884};
+  for(Int_t iTab = 0; iTab<22; iTab++){
+	if(EventNumber==missing[iTab] && baselinePair && ((daughters_muonID->at(indexMuonLeg)>>2)&1)){
+		std::cout<<"EventNumber: "<<EventNumber<<", muonSel: "<<muonBaselineSelection<<", tauSel: "<<tauBaselineSelection<<", pairSel: "<<baselinePair<<"\n";
+		std::cout<<"muonPt: "<<muonP4.Perp()<<", muonEta: "<<muonP4.Eta()<<", muondZ: "<<dz->at(indexMuonLeg)<<", muondXY: "<<dxy->at(indexMuonLeg)<<", muonID: "<<((daughters_muonID->at(indexMuonLeg)>>2)&1)<<"\n";
+		std::cout<<"tauPt: "<<tauP4.Perp()<<", tauEta: "<<tauP4.Eta()<<", taudZ: "<<dz->at(indexTauLeg)<<", tauDecayMode: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<", tau charge: "<<daughters_charge->at(indexTauLeg)<<"\n\n";
+		}
+  	}
+*/
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
@@ -143,8 +151,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    && postSynchTau && loosePostSynchMuon
-    && diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    //&& postSynchTau && loosePostSynchMuon
+    //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
     && true;
 }
 /////////////////////////////////////////////////
@@ -222,6 +230,32 @@ bool HTauTauTree::muonSelection(unsigned int index){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+bool HTauTauTree::jetSelection(unsigned int index, unsigned int bestPairIndex){
+
+  TLorentzVector aP4(jets_px->at(index),
+		     jets_py->at(index),
+		     jets_pz->at(index),
+		     jets_e->at(index));
+		     
+  TLorentzVector muP4(daughters_px->at(indexDau1->at(bestPairIndex)),
+		     daughters_py->at(indexDau1->at(bestPairIndex)),
+		     daughters_pz->at(indexDau1->at(bestPairIndex)),
+		     daughters_e->at(indexDau1->at(bestPairIndex)));
+		     
+  TLorentzVector tauP4(daughters_px->at(indexDau2->at(bestPairIndex)),
+		     daughters_py->at(indexDau2->at(bestPairIndex)),
+		     daughters_pz->at(indexDau2->at(bestPairIndex)),
+		     daughters_e->at(indexDau2->at(bestPairIndex)));
+
+  bool passSelection = aP4.Perp()>20 && fabs(aP4.Eta())<4.7 &&	      
+  		       aP4.DeltaR(muP4) > 0.5 &&	      
+  		       aP4.DeltaR(tauP4) > 0.5 &&
+		       PFjetID->at(index)>=1;
+
+  return passSelection;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
 bool HTauTauTree::electronSelection(unsigned int index){
 
   TLorentzVector aP4(daughters_px->at(index),
@@ -251,6 +285,10 @@ void HTauTauTree::fillEvent(){
   httEvent->setAODPV(TVector3(pv_x,pv_y,pv_z));
   httEvent->setRefittedPV(TVector3(pvRefit_x,pvRefit_y,pvRefit_z));
   httEvent->setIsRefit(isRefitPV);
+  
+  TVector2 metPF;
+  metPF.SetMagPhi(met, metphi);
+  httEvent->setMET(metPF);
 
   if(genpart_pdg){
     httEvent->setNPU(npu);
@@ -284,12 +322,13 @@ void HTauTauTree::fillEvent(){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-void HTauTauTree::fillJets(){
+void HTauTauTree::fillJets(unsigned int bestPairIndex){
 
   httJetCollection.clear();
 
   for(unsigned int iJet=0;iJet<jets_px->size();++iJet){
 
+    if(!jetSelection(iJet, bestPairIndex)) continue;
     HTTParticle aJet;
     
     TLorentzVector p4(jets_px->at(iJet), jets_py->at(iJet),
@@ -301,7 +340,7 @@ void HTauTauTree::fillJets(){
     aJet.setP4(p4);
     aJet.setProperties(aProperties);
     httJetCollection.push_back(aJet);
-  }  
+  }    
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -453,6 +492,7 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setP4SVFitScaleUp(p4SVFitScaleUp);
     aHTTpair.setP4SVFitScaleDown(p4SVFitScaleDown);
     aHTTpair.setMET(met);
+    aHTTpair.setMETMatrix(MET_cov00->at(iPair), MET_cov01->at(iPair), MET_cov10->at(iPair), MET_cov11->at(iPair));
     aHTTpair.setMETSVfit(metSVfit);
     aHTTpair.setMTLeg1(mTLeg1);
     aHTTpair.setMTLeg2(mTLeg2);    
