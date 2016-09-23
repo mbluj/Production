@@ -327,7 +327,7 @@ void HTauTauTree::fillJets(unsigned int bestPairIndex){
 
   for(unsigned int iJet=0;iJet<jets_px->size();++iJet){
 
-    //if(!jetSelection(iJet, bestPairIndex)) continue;
+    if(!jetSelection(iJet, bestPairIndex)) continue;
     HTTParticle aJet;
     
     TLorentzVector p4(jets_px->at(iJet), jets_py->at(iJet),
