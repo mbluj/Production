@@ -106,10 +106,9 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_e->at(indexTauLeg));
   
   bool muonBaselineSelection =  muonP4.Perp()>23 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
-
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
-                            ((daughters_muonID->at(indexMuonLeg) & (1<<2)) == (1<<2));
+			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
 
   bool tauBaselineSelection = tauP4.Perp()>30 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
@@ -122,16 +121,16 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
-  /*
+  /*  
   unsigned int missing[22] = {405113, 332771, 146407, 146463, 385869, 464996, 160671, 85282, 343354, 177335, 268176, 58125, 337254, 178787, 165773, 153364, 466715, 323170, 355732, 99135, 498551, 256884};
   for(Int_t iTab = 0; iTab<22; iTab++){
-	if(EventNumber==missing[iTab] && baselinePair && ((daughters_muonID->at(indexMuonLeg)>>2)&1)){
+	if(EventNumber==missing[iTab] && baselinePair && ((daughters_muonID->at(indexMuonLeg)>>6)&1)){
 		std::cout<<"EventNumber: "<<EventNumber<<", muonSel: "<<muonBaselineSelection<<", tauSel: "<<tauBaselineSelection<<", pairSel: "<<baselinePair<<"\n";
-		std::cout<<"muonPt: "<<muonP4.Perp()<<", muonEta: "<<muonP4.Eta()<<", muondZ: "<<dz->at(indexMuonLeg)<<", muondXY: "<<dxy->at(indexMuonLeg)<<", muonID: "<<((daughters_muonID->at(indexMuonLeg)>>2)&1)<<"\n";
+		std::cout<<"muonPt: "<<muonP4.Perp()<<", muonEta: "<<muonP4.Eta()<<", muondZ: "<<dz->at(indexMuonLeg)<<", muondXY: "<<dxy->at(indexMuonLeg)<<", muonID: "<<((daughters_muonID->at(indexMuonLeg)>>6)&1)<<"\n";
 		std::cout<<"tauPt: "<<tauP4.Perp()<<", tauEta: "<<tauP4.Eta()<<", taudZ: "<<dz->at(indexTauLeg)<<", tauDecayMode: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<", tau charge: "<<daughters_charge->at(indexTauLeg)<<"\n\n";
 		}
   	}
-*/
+  */
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
@@ -328,7 +327,7 @@ void HTauTauTree::fillJets(unsigned int bestPairIndex){
 
   for(unsigned int iJet=0;iJet<jets_px->size();++iJet){
 
-    if(!jetSelection(iJet, bestPairIndex)) continue;
+    //if(!jetSelection(iJet, bestPairIndex)) continue;
     HTTParticle aJet;
     
     TLorentzVector p4(jets_px->at(iJet), jets_py->at(iJet),
@@ -575,9 +574,6 @@ void HTauTauTree::writePropertiesHeader(const std::vector<std::string> & propert
   }
   outputFile<<"NONE"<<" = "<<propertiesList.size()<<std::endl;
   outputFile<<"};"<<std::endl;
-
-  
-
   outputFile.close();
 }
 /////////////////////////////////////////////////

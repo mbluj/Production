@@ -66,18 +66,18 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/66445A95-3151-E611-AA07-0090FAA579F0.root',
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/8EBF2F49-5551-E611-A76B-0CC47A1E046A.root',
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/66445A95-3151-E611-AA07-0090FAA579F0.root',
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/8EBF2F49-5551-E611-A76B-0CC47A1E046A.root',
         'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/C60106AA-3F51-E611-92E1-00259073E42E.root',
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/CC21A5B7-3F51-E611-98B0-0025907B4F16.root',
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/DC070582-4751-E611-B401-002590D0B0B8.root',
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/E29D29F3-3851-E611-88F1-00259073E34E.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/CC21A5B7-3F51-E611-98B0-0025907B4F16.root',
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/DC070582-4751-E611-B401-002590D0B0B8.root',
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/E29D29F3-3851-E611-88F1-00259073E34E.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
 process.maxEvents.input = 1000
-process.source.eventsToProcess = cms.untracked.VEventRange('1:160671')
+process.source.eventsToProcess = cms.untracked.VEventRange('1:343354')
 
 
 # JSON mask for data --> defined in the lumiMask file
