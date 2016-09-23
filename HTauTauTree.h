@@ -27,7 +27,7 @@ public :
   ///Added by AK
   void fillEvent();
   void fillPairs(unsigned int bestPairIndex);
-  void fillJets();
+  void fillJets(unsigned int bestPairIndex);
   void fillLeptons();
   void fillGenLeptons();
   bool diMuonVeto();
@@ -35,6 +35,7 @@ public :
   bool muonSelection(unsigned int index);
   bool electronSelection(unsigned int index);
   bool pairSelection(unsigned int index);  
+  bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
   template<typename T> T getBranchValue(char *branchAddress, unsigned int index);

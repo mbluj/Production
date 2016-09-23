@@ -28,7 +28,7 @@ def submitJob(aFile, dataPath, back):
     os.system(command)
 ########################################################
 ########################################################
-dataPaths = ["/scratch_local/akalinow/CMS/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/"]
+dataPaths = ["/scratch/cms/akalinow/HiggsCP/Data/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/"]
 
 ########################################################
 for path in dataPaths:
