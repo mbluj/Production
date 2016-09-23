@@ -20,12 +20,12 @@ APPLYFSR=False #this is by far the slowest module (not counting SVFit so far)
 #JETCUT="pt>15"
 
 USEPAIRMET=False # input to SVfit: true: MVA pair MET; false: PFmet (HF inclusion set using USE_NOHFMET)
-APPLYMETCORR=False # flag to enable (True) and disable (False) Z-recoil corrections for MVA MET response and resolution
+APPLYMETCORR=True # flag to enable (True) and disable (False) Z-recoil corrections for MVA MET response and resolution
 USE_NOHFMET = False # True to exclude HF and run on silver json
 
 SVFITBYPASS=True # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
 BUILDONLYOS=False #If true don't create the collection of SS candidates (and thus don't run SV fit on them)
-APPLYTESCORRECTION=False # shift the central value of the tau energy scale before computing up/down variations
+APPLYTESCORRECTION=True # shift the central value of the tau energy scale before computing up/down variations
 COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=True
