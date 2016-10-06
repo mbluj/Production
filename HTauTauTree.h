@@ -32,10 +32,13 @@ public :
   void fillGenLeptons();
   bool diMuonVeto();
   bool thirdLeptonVeto(unsigned int signalLeptonIndex);
+  bool extraMuonVeto(unsigned int signalLeptonIndex);
+  bool extraElectronVeto(unsigned int signalLeptonIndex);
   bool muonSelection(unsigned int index);
   bool electronSelection(unsigned int index);
   bool pairSelection(unsigned int index);  
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
+  int getMCMatching(unsigned int index);
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
   template<typename T> T getBranchValue(char *branchAddress, unsigned int index);
