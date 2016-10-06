@@ -132,7 +132,6 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
   httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
   httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
-  ///
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,extraMuonVeto(indexMuonLeg));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,extraElectronVeto(indexMuonLeg));
   
@@ -148,7 +147,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     //&& postSynchTau && loosePostSynchMuon
-    //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    //&& !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg)
     //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
     && true;
 }
