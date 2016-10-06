@@ -444,9 +444,8 @@ void HTauTauTree::fillGenLeptons(){
 /////////////////////////////////////////////////
 TLorentzVector HTauTauTree::getGenComponentP4(unsigned int index, unsigned int iAbsCharge){
 
-  TLorentzVector aNeutralP4, aChargedP4, aHadronicP4, aLeptonP4, aTestP4;
-  
-  
+  TLorentzVector aNeutralP4, aChargedP4, aHadronicP4, aLeptonP4;
+    
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
     
     if((unsigned int)genpart_TauMothInd->at(iGenPart)!=index) continue;
@@ -464,14 +463,7 @@ TLorentzVector HTauTauTree::getGenComponentP4(unsigned int index, unsigned int i
     if(abs(genpart_pdg->at(iGenPart))==66615) aHadronicP4 =TLorentzVector(genpart_px->at(iGenPart),
 									  genpart_py->at(iGenPart),
 									  genpart_pz->at(iGenPart),
-									  genpart_e->at(iGenPart));
-									  
-    if(EventNumber==2102 || EventNumber==2129 || EventNumber ==2147) {aTestP4 =TLorentzVector(genpart_px->at(iGenPart),
-									  genpart_py->at(iGenPart),
-									  genpart_pz->at(iGenPart),
-									  genpart_e->at(iGenPart));
-    		std::cout<<EventNumber<<":\npdg: "<<genpart_pdg->at(iGenPart)<<", Eta: "<<aTestP4.Eta()<<", phi: "<<aTestP4.Phi()<<", pt: "<<aTestP4.Perp()<<"\n";
-    		}
+									  genpart_e->at(iGenPart));									     
   }
 
   TLorentzVector aP4;
@@ -626,25 +618,22 @@ int HTauTauTree::getMCMatching(unsigned int index){
   
   TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
 		      daughters_pz->at(index), daughters_e->at(index));
-		      //std::cout<<p4_1.Vect().Perp()<<": 1\n";
   
   for(unsigned int ind = 0; ind < genpart_px->size(); ind++) {
-  
+
+    if(fabs(genpart_px->at(ind))<1E-3 &&
+       fabs(genpart_py->at(ind))<1E-3) continue;
+    
   	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 		      genpart_pz->at(ind), genpart_e->at(ind));
-		      //std::cout<<p4_tmp.Vect().Perp()<<": tmp\n";
-		      
-	//if(abs(genpart_pdg->at(ind)) == 66615) std::cout<<"tu";
-	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}
-  	
-  	}
+	
+	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}  	
+  }
+  if(dR > 0.2) return 6;
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
 		      
-  if(EventNumber==2102 || EventNumber==2129 || EventNumber ==2147) std::cout<<EventNumber<<" Matched particle:\nphi: "<<p4_2.Phi()<<", eta: "<<p4_2.Eta()<<", pt: "<<p4_2.Perp()<<" flag: "<<(genpart_flags->at(gen_ind) & (1<<0))<<"\n";
-  
-  if(dR > 0.2) return 6;
   if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 1;
   if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 2;
   if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<5)) == (1<<5)) return 3;
