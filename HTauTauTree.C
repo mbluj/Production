@@ -105,12 +105,13 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexTauLeg),
 			daughters_e->at(indexTauLeg));
   
-  bool muonBaselineSelection =  muonP4.Perp()>23 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+			    //muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
 			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
 
-  bool tauBaselineSelection = tauP4.Perp()>30 && fabs(tauP4.Eta())<2.3 &&
+  bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
                               fabs(dz->at(indexTauLeg))<0.2 && 
                               abs(daughters_charge->at(indexTauLeg))==1;			
@@ -121,16 +122,9 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
-  /*  
-  unsigned int missing[22] = {405113, 332771, 146407, 146463, 385869, 464996, 160671, 85282, 343354, 177335, 268176, 58125, 337254, 178787, 165773, 153364, 466715, 323170, 355732, 99135, 498551, 256884};
-  for(Int_t iTab = 0; iTab<22; iTab++){
-	if(EventNumber==missing[iTab] && baselinePair && ((daughters_muonID->at(indexMuonLeg)>>6)&1)){
-		std::cout<<"EventNumber: "<<EventNumber<<", muonSel: "<<muonBaselineSelection<<", tauSel: "<<tauBaselineSelection<<", pairSel: "<<baselinePair<<"\n";
-		std::cout<<"muonPt: "<<muonP4.Perp()<<", muonEta: "<<muonP4.Eta()<<", muondZ: "<<dz->at(indexMuonLeg)<<", muondXY: "<<dxy->at(indexMuonLeg)<<", muonID: "<<((daughters_muonID->at(indexMuonLeg)>>6)&1)<<"\n";
-		std::cout<<"tauPt: "<<tauP4.Perp()<<", tauEta: "<<tauP4.Eta()<<", taudZ: "<<dz->at(indexTauLeg)<<", tauDecayMode: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<", tau charge: "<<daughters_charge->at(indexTauLeg)<<"\n\n";
-		}
-  	}
-  */
+  ///
+  bool triggerSelection = (triggerbit & 1<<0) == (1<<0);
+  
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
@@ -138,6 +132,9 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
   httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
   httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
+  ///
+  httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,extraMuonVeto(indexMuonLeg));
+  httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,extraElectronVeto(indexMuonLeg));
   
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
@@ -152,6 +149,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     //&& postSynchTau && loosePostSynchMuon
     //&& diMuonVeto() && thirdLeptonVeto(indexMuonLeg)
+    //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
     && true;
 }
 /////////////////////////////////////////////////
@@ -176,7 +174,7 @@ bool HTauTauTree::diMuonVeto(){
        if(passLepton) muonIndexes.push_back(iLepton);
   }
 
-  if(muonIndexes.size()<2) return true;
+  if(muonIndexes.size()<2) return false;
   else{
     for(unsigned int iMuon1=0;iMuon1<muonIndexes.size();++iMuon1){
       TLorentzVector muon1P4(daughters_px->at(iMuon1),
@@ -193,11 +191,11 @@ bool HTauTauTree::diMuonVeto(){
 	int muon2Charge = daughters_charge->at(iMuon2);
 	float deltaR = muon1P4.DeltaR(muon2P4);
 	if(muon2Charge*muon1Charge==-1 &&
-	   deltaR>0.15) return false;
+	   deltaR>0.15) return true;
       }
     }
   }
-  return true;
+  return false;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -205,10 +203,30 @@ bool HTauTauTree::thirdLeptonVeto(unsigned int signalLeptonIndex){
 
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
     if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return false;
-    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return false;
+    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
+    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
   }
-  return true;
+  return false;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+bool HTauTauTree::extraMuonVeto(unsigned int signalLeptonIndex){
+
+  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
+    if(iLepton==signalLeptonIndex) continue;
+    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
+  }
+  return false;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+bool HTauTauTree::extraElectronVeto(unsigned int signalLeptonIndex){
+
+  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
+    if(iLepton==signalLeptonIndex) continue;
+    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
+  }
+  return false;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -315,7 +333,7 @@ void HTauTauTree::fillEvent(){
   else if(fileName.find("W")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::WJets;
   else if(fileName.find("TT_")!=std::string::npos) aType =  HTTEvent::TTbar;
   else if(fileName.find("HToTauTau_M")!=std::string::npos) aType =  HTTEvent::H;
-  else if(fileName.find("SUSYGluGluToHToTauTau")!=std::string::npos) aType =  HTTEvent::A;    
+  else if(fileName.find("SUSYGluGluToHToTauTau")!=std::string::npos) aType =  HTTEvent::A;
   httEvent->setSampleType(aType);
 
 }
@@ -369,6 +387,8 @@ void HTauTauTree::fillLeptons(){
     TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));    
     TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));    
     TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));    
+    
+    int mc_match = getMCMatching(iLepton);
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(p4Charged);
@@ -385,6 +405,8 @@ void HTauTauTree::fillLeptons(){
     aLepton.setProperties(aProperties);
     
     aLepton.setP4(p4);
+    
+    aLepton.setMCMatch(mc_match);
     
     aLepton.setProperties(aProperties);
     httLeptonCollection.push_back(aLepton);
@@ -423,7 +445,7 @@ void HTauTauTree::fillGenLeptons(){
 /////////////////////////////////////////////////
 TLorentzVector HTauTauTree::getGenComponentP4(unsigned int index, unsigned int iAbsCharge){
 
-  TLorentzVector aNeutralP4, aChargedP4, aHadronicP4, aLeptonP4;
+  TLorentzVector aNeutralP4, aChargedP4, aHadronicP4, aLeptonP4, aTestP4;
   
   
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
@@ -444,6 +466,13 @@ TLorentzVector HTauTauTree::getGenComponentP4(unsigned int index, unsigned int i
 									  genpart_py->at(iGenPart),
 									  genpart_pz->at(iGenPart),
 									  genpart_e->at(iGenPart));
+									  
+    if(EventNumber==2102 || EventNumber==2129 || EventNumber ==2147) {aTestP4 =TLorentzVector(genpart_px->at(iGenPart),
+									  genpart_py->at(iGenPart),
+									  genpart_pz->at(iGenPart),
+									  genpart_e->at(iGenPart));
+    		std::cout<<EventNumber<<":\npdg: "<<genpart_pdg->at(iGenPart)<<", Eta: "<<aTestP4.Eta()<<", phi: "<<aTestP4.Phi()<<", pt: "<<aTestP4.Perp()<<"\n";
+    		}
   }
 
   TLorentzVector aP4;
@@ -588,6 +617,42 @@ std::vector<float> HTauTauTree::getProperties(const std::vector<std::string> & p
   }
   
   return aProperties;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+int HTauTauTree::getMCMatching(unsigned int index){
+
+  float dR = 100;
+  unsigned int gen_ind = 0;
+  
+  TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
+		      daughters_pz->at(index), daughters_e->at(index));
+		      //std::cout<<p4_1.Vect().Perp()<<": 1\n";
+  
+  for(unsigned int ind = 0; ind < genpart_px->size(); ind++) {
+  
+  	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
+		      genpart_pz->at(ind), genpart_e->at(ind));
+		      //std::cout<<p4_tmp.Vect().Perp()<<": tmp\n";
+		      
+	//if(abs(genpart_pdg->at(ind)) == 66615) std::cout<<"tu";
+	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}
+  	
+  	}
+
+  TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
+		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
+		      
+  if(EventNumber==2102 || EventNumber==2129 || EventNumber ==2147) std::cout<<EventNumber<<" Matched particle:\nphi: "<<p4_2.Phi()<<", eta: "<<p4_2.Eta()<<", pt: "<<p4_2.Perp()<<" flag: "<<(genpart_flags->at(gen_ind) & (1<<0))<<"\n";
+  
+  if(dR > 0.2) return 6;
+  if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 1;
+  if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 2;
+  if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<5)) == (1<<5)) return 3;
+  if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<5)) == (1<<5)) return 4;
+  if(abs(genpart_pdg->at(gen_ind)) == 66615 && p4_2.Perp() > 15 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 5;
+  return 6;
+  
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
