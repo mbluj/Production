@@ -65,7 +65,7 @@ def prepareCrabCfg(dataset,
         eventsPerJob = 60000
     #DY and W 3,4 Jets
     if dataset.split("/")[2].find("3Jets")!=-1 or dataset.split("/")[2].find("4Jets")!=-1:
-        eventsPerJob = 2000
+        eventsPerJob = 1000
     
     config.Data.totalUnits =  -1
     config.Data.lumiMask=""
