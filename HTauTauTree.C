@@ -138,13 +138,17 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,extraElectronVeto(indexMuonLeg));
   
   /*
-  std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
+  if(EventNumber == 343354) std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
 	   <<" tauBaselineSelection: "<<tauBaselineSelection
-	   <<" passBaselinePair: "<<passBaselinePair
-	   <<" passPostSynchMuon: "<<passPostSynchMuon
-	   <<" passPostSynchTau: "<<passPostSynchTau
+	   <<" passBaselinePair: "<<baselinePair/*
+	   <<" passPostSynchMuon: "<<postSynchMuon
+	   <<" passPostSynchTau: "<<postSynchTau
 	   <<" diMuonVeto(): "<<diMuonVeto()
 	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
+	   <<std::endl
+	   <<"pt_1: "<<muonP4.Perp()<<", eta_1: "<<muonP4.Eta()<<", phi_1: "<<muonP4.Phi()<<", d0_1: "<<dxy->at(indexMuonLeg)<<", dZ_1: "<<dz->at(indexMuonLeg)<<", id_1: "<<((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6))<<std::endl
+	   <<"pt_2: "<<tauP4.Perp()<<", eta_2: "<<tauP4.Eta()<<", phi_2: "<<tauP4.Phi()<<", dZ_2: "<<dz->at(indexTauLeg)<<", id_2: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<std::endl
+	   <<"deltaR: "<<muonP4.DeltaR(tauP4)
 	   <<std::endl;
   */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
@@ -614,7 +618,7 @@ int HTauTauTree::getMCMatching(unsigned int index){
 
   float dR = 100;
   unsigned int gen_ind = 0;
-  
+  if(index>=daughters_px->size()) return -999;
   TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
 		      daughters_pz->at(index), daughters_e->at(index));
   
@@ -626,16 +630,13 @@ int HTauTauTree::getMCMatching(unsigned int index){
   	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 		      genpart_pz->at(ind), genpart_e->at(ind));
 	
-	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;} 
-	
-	if(EventNumber == 2102 && ((index == indexDau1->at(bestPairIndex_) && abs(PDGIdDaughters->at(indexDau1->at(bestPairIndex_))) == 15) || (index == indexDau2->at(bestPairIndex_) && abs(PDGIdDaughters->at(indexDau2->at(bestPairIndex_))) == 15))) std::cout<<"PDG: "<<genpart_pdg->at(gen_ind)<<" Flaga,bit 5 i 1: "<<((genpart_flags->at(gen_ind)&(1<<5))==(1<<5))<<(genpart_flags->at(gen_ind)&(1<<0))<<" dR: "<<p4_1.DeltaR(p4_tmp)<<" pt: "<<p4_tmp.Perp()<<" phi: "<<p4_tmp.Phi()<<" eta: "<<p4_tmp.Eta()<<std::endl;	
+	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;} 	
   }
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
 		      
   if(dR > 0.2) return 6;
-
   int genFlags = genpart_flags->at(gen_ind);
   int absPdgId = abs(genpart_pdg->at(gen_ind));
   if(absPdgId==66615){
