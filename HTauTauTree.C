@@ -633,14 +633,21 @@ int HTauTauTree::getMCMatching(unsigned int index){
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
-  
-  if(dR > 0.2) return 6;
 		      
-  if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 1;
-  if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 2;
-  if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<5)) == (1<<5)) return 3;
-  if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<5)) == (1<<5)) return 4;
-  if(abs(genpart_pdg->at(gen_ind)) == 66615 && p4_2.Perp() > 15 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 5;
+  if(dR > 0.2) return 6;
+
+  int genFlags = genpart_flags->at(gen_ind);
+  int absPdgId = abs(genpart_pdg->at(gen_ind));
+  if(absPdgId==66615){
+    int motherTau_ind = genpart_TauMothInd->at(gen_ind);
+    genFlags = genpart_flags->at(motherTau_ind);
+  }
+		      
+  if(absPdgId == 11 && p4_2.Perp() > 8 && (genFlags & (1<<0)) == (1<<0)) return 1;
+  if(absPdgId == 13 && p4_2.Perp() > 8 && (genFlags & (1<<0)) == (1<<0)) return 2;
+  if(absPdgId == 11 && p4_2.Perp() > 8 && (genFlags & (1<<5)) == (1<<5)) return 3;
+  if(absPdgId == 13 && p4_2.Perp() > 8 && (genFlags & (1<<5)) == (1<<5)) return 4;
+  if(absPdgId == 66615 && p4_2.Perp() > 15 && (genFlags & (1<<0)) == (1<<0)) return 5;
   return 6;
   
 }
