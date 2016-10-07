@@ -56,6 +56,8 @@ public :
   HTTEvent *httEvent;
   TH1F* hStats;
   ScaleFactor myScaleFactor;
+  
+  unsigned int bestPairIndex_;
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 
@@ -697,6 +699,7 @@ HTauTauTree::HTauTauTree(TTree *tree) : fChain(0)
    leptonPropertiesList.push_back("daughters_FilterFired");
    leptonPropertiesList.push_back("daughters_L3FilterFired");
    leptonPropertiesList.push_back("daughters_L3FilterFiredLast");
+   leptonPropertiesList.push_back("mc_match");
    
    leptonPropertiesList.push_back("jets_rawPt");
    leptonPropertiesList.push_back("jets_area");

@@ -28,6 +28,8 @@ void HTauTauTree::Loop(){
       
       hStats->Fill(0);//Number of events analyzed
       hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
+      
+      bestPairIndex_ = bestPairIndex;
 
       if(bestPairIndex<9999){
 	fillJets(bestPairIndex);
@@ -386,8 +388,6 @@ void HTauTauTree::fillLeptons(){
     TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));    
     TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));    
     TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));    
-    
-    int mc_match = getMCMatching(iLepton);
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(p4Charged);
@@ -404,8 +404,6 @@ void HTauTauTree::fillLeptons(){
     aLepton.setProperties(aProperties);
     
     aLepton.setP4(p4);
-    
-    aLepton.setMCMatch(mc_match);
     
     aLepton.setProperties(aProperties);
     httLeptonCollection.push_back(aLepton);
@@ -541,6 +539,7 @@ template<class T> T HTauTauTree::getBranchValue(char *branchAddress, unsigned in
 /////////////////////////////////////////////////
 float HTauTauTree::getProperty(std::string name, unsigned int index){
 
+  if(name=="mc_match") return getMCMatching(index);
   TBranch *branch = fChain->GetBranch(name.c_str());
   if(!branch){
     std::cout<<"Branch: "<<name<<" not found in the TTree."<<std::endl;
@@ -627,12 +626,15 @@ int HTauTauTree::getMCMatching(unsigned int index){
   	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 		      genpart_pz->at(ind), genpart_e->at(ind));
 	
-	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}  	
+	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;} 
+	
+	if(EventNumber == 2102 && ((index == indexDau1->at(bestPairIndex_) && abs(PDGIdDaughters->at(indexDau1->at(bestPairIndex_))) == 15) || (index == indexDau2->at(bestPairIndex_) && abs(PDGIdDaughters->at(indexDau2->at(bestPairIndex_))) == 15))) std::cout<<"PDG: "<<genpart_pdg->at(gen_ind)<<" Flaga,bit 5 i 1: "<<((genpart_flags->at(gen_ind)&(1<<5))==(1<<5))<<(genpart_flags->at(gen_ind)&(1<<0))<<" dR: "<<p4_1.DeltaR(p4_tmp)<<" pt: "<<p4_tmp.Perp()<<" phi: "<<p4_tmp.Phi()<<" eta: "<<p4_tmp.Eta()<<std::endl;	
   }
-  if(dR > 0.2) return 6;
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
+  
+  if(dR > 0.2) return 6;
 		      
   if(abs(genpart_pdg->at(gen_ind)) == 11 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 1;
   if(abs(genpart_pdg->at(gen_ind)) == 13 && p4_2.Perp() > 8 && (genpart_flags->at(gen_ind) & (1<<0)) == (1<<0)) return 2;
