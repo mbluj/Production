@@ -31,9 +31,9 @@ public :
   void fillLeptons();
   void fillGenLeptons();
   bool diMuonVeto();
-  bool thirdLeptonVeto(unsigned int signalLeptonIndex);
-  bool extraMuonVeto(unsigned int signalLeptonIndex);
-  bool extraElectronVeto(unsigned int signalLeptonIndex);
+  bool thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg);
+  bool extraMuonVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex);
+  bool extraElectronVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex);
   bool muonSelection(unsigned int index);
   bool electronSelection(unsigned int index);
   bool pairSelection(unsigned int index);  

@@ -133,14 +133,13 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
   httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
-  httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
-  httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,extraMuonVeto(indexMuonLeg));
-  httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,extraElectronVeto(indexMuonLeg));
+  httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13));
+  httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11));
   
   /*
   if(EventNumber == 343354) std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
 	   <<" tauBaselineSelection: "<<tauBaselineSelection
-	   <<" passBaselinePair: "<<baselinePair/*
+	   <<" passBaselinePair: "<<baselinePair
 	   <<" passPostSynchMuon: "<<postSynchMuon
 	   <<" passPostSynchTau: "<<postSynchTau
 	   <<" diMuonVeto(): "<<diMuonVeto()
@@ -163,8 +162,8 @@ bool HTauTauTree::diMuonVeto(){
  
   std::vector<int> muonIndexes;
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
 
+    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
        TLorentzVector muonP4(daughters_px->at(iLepton),
 			     daughters_py->at(iLepton),
 			     daughters_pz->at(iLepton),
@@ -174,12 +173,13 @@ bool HTauTauTree::diMuonVeto(){
 			 fabs(dz->at(iLepton))<0.2 &&
 		         fabs(dxy->at(iLepton))<0.045 && 
        combreliso->at(iLepton)<0.3 &&
-       (daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2)));
+       ((daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2))) == ((1<<0) + (1<<1) + (1<<2)));
 
        if(passLepton) muonIndexes.push_back(iLepton);
   }
 
   if(muonIndexes.size()<2) return false;
+  
   else{
     for(unsigned int iMuon1=0;iMuon1<muonIndexes.size();++iMuon1){
       TLorentzVector muon1P4(daughters_px->at(iMuon1),
@@ -204,32 +204,27 @@ bool HTauTauTree::diMuonVeto(){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-bool HTauTauTree::thirdLeptonVeto(unsigned int signalLeptonIndex){
+bool HTauTauTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg){
 
+      TLorentzVector muonP4(daughters_px->at(signalMuonIndex),
+			     daughters_py->at(signalMuonIndex),
+			     daughters_pz->at(signalMuonIndex),
+			     daughters_e->at(signalMuonIndex));
+      TLorentzVector tauP4(daughters_px->at(signalTauIndex),
+			     daughters_py->at(signalTauIndex),
+			     daughters_pz->at(signalTauIndex),
+			     daughters_e->at(signalTauIndex));
+			     
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
-    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
-  }
-  return false;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::extraMuonVeto(unsigned int signalLeptonIndex){
-
-  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
-  }
-  return false;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::extraElectronVeto(unsigned int signalLeptonIndex){
-
-  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
+    if(iLepton==signalMuonIndex || iLepton==signalTauIndex) continue;
+    TLorentzVector leptonP4(daughters_px->at(iLepton),
+			     daughters_py->at(iLepton),
+			     daughters_pz->at(iLepton),
+			     daughters_e->at(iLepton));
+    double dr = std::min(tauP4.DeltaR(leptonP4),muonP4.DeltaR(leptonP4));
+    //if(dr<0.30) continue;
+    if(leptonPdg == 13 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton)) return true;
+    if(leptonPdg == 11 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton)) return true;
   }
   return false;
 }
@@ -245,9 +240,28 @@ bool HTauTauTree::muonSelection(unsigned int index){
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.4 &&
 		       fabs(dz->at(index))<0.2 &&
 		       fabs(dxy->at(index))<0.045 &&
-		      (daughters_muonID->at(index) & (1<<2)) && 	      
+		       ((daughters_muonID->at(index) & (1<<6)) == (1<<6)) && 	      
 		       combreliso->at(index)<0.3;
 
+  return passSelection;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+bool HTauTauTree::electronSelection(unsigned int index){
+
+  TLorentzVector aP4(daughters_px->at(index),
+		     daughters_py->at(index),
+		     daughters_pz->at(index),
+		     daughters_e->at(index));
+
+  bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
+		       daughters_iseleWP90->at(index)>0.5 &&
+                       daughters_passConversionVeto->at(index)>0.5 &&
+                       daughters_eleMissingHits->at(index)<=1 &&
+                       combreliso->at(index)<0.3;
+		
   return passSelection;
 }
 /////////////////////////////////////////////////
@@ -274,25 +288,6 @@ bool HTauTauTree::jetSelection(unsigned int index, unsigned int bestPairIndex){
   		       aP4.DeltaR(tauP4) > 0.5 &&
 		       PFjetID->at(index)>=1;
 
-  return passSelection;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::electronSelection(unsigned int index){
-
-  TLorentzVector aP4(daughters_px->at(index),
-		     daughters_py->at(index),
-		     daughters_pz->at(index),
-		     daughters_e->at(index));
-
-  bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
-		       fabs(dz->at(index))<0.2 &&
-		       fabs(dxy->at(index))<0.045 &&
-		       daughters_iseleWP90->at(index)>0.5 &&
-                       daughters_passConversionVeto->at(index)>0.5 &&
-                       daughters_eleMissingHits->at(index)<=1 &&
-                       combreliso->at(index)<0.3;
-		
   return passSelection;
 }
 /////////////////////////////////////////////////
