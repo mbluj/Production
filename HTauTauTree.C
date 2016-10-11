@@ -105,8 +105,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexTauLeg),
 			daughters_e->at(indexTauLeg));
   
-  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
-			    //muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
+  bool muonBaselineSelection =  //muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+			    muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
 			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
@@ -138,17 +138,17 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   /*
   std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
 	   <<" tauBaselineSelection: "<<tauBaselineSelection
-	   <<" passBaselinePair: "<<passBaselinePair
-	   <<" passPostSynchMuon: "<<passPostSynchMuon
-	   <<" passPostSynchTau: "<<passPostSynchTau
-	   <<" diMuonVeto(): "<<diMuonVeto()
-	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
+	   <<" passBaselinePair: "<<baselinePair
+	   <<" passPostSynchMuon: "<<loosePostSynchMuon
+	   <<" passPostSynchTau: "<<postSynchTau
+	   <<" diMuonVeto(): "<<!diMuonVeto()
+	   <<" thirdLeptonVeto(indexMuonLeg): "<<!thirdLeptonVeto(indexMuonLeg)
 	   <<std::endl;
-  */
+*/
+  
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     //&& postSynchTau && loosePostSynchMuon
     //&& !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg)
-    //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
     && true;
 }
 /////////////////////////////////////////////////
@@ -328,7 +328,7 @@ void HTauTauTree::fillEvent(){
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;
-  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::DY;
+  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLL")!=std::string::npos) aType =  HTTEvent::DY;
   else if(fileName.find("W")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::WJets;
   else if(fileName.find("TT_")!=std::string::npos) aType =  HTTEvent::TTbar;
   else if(fileName.find("HToTauTau_M")!=std::string::npos) aType =  HTTEvent::H;
@@ -517,7 +517,7 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
-
+    
     TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
     float scaleFactor = 1.0;//SF for IsoMu22 not yet ready myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
     aHTTpair.setMuonTriggerSF(scaleFactor);

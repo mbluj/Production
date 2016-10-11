@@ -34,7 +34,6 @@ def prepareCrabCfg(dataset,
         shortName+= "_"+dataset[dataset.find("channel")+7:dataset.find("channel")+15]
         
     shortName = shortName.rstrip("-")
-
     shortName+="_"+publish_data_suffix
 
     ##Modify CRAB3 configuration
@@ -137,7 +136,7 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-#datasets = ["/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v3/MINIAODSIM"]
+datasets = ["/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/MINIAODSIM"]
 ###############
 
 #jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
@@ -149,15 +148,15 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v28")    
+                   publish_data_suffix = "v35")    
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
 '''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v27",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_30_09_2016/")
+        mergeDataset(dataset=dataset, publish_data_suffix = "v28",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_07_10_2016/")
 '''
 #for a in v1/*v28*; do crab resubmit -d $a; done
 
