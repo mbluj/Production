@@ -148,7 +148,7 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v35")    
+                   publish_data_suffix = "v36")    
 ########################################################
 ########################################################
 ## Merge output ROOT files.
