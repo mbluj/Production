@@ -223,7 +223,7 @@ bool HTauTauTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int sig
 			     daughters_e->at(iLepton));
     double dr = std::min(tauP4.DeltaR(leptonP4),muonP4.DeltaR(leptonP4));
     //if(dr<0.30) continue;
-    if(leptonPdg == 13 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton)) return true;
+    if(leptonPdg == 13 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) && muonSelection(signalMuonIndex)) return true;
     if(leptonPdg == 11 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton)) return true;
   }
   return false;
@@ -417,12 +417,15 @@ void HTauTauTree::fillGenLeptons(){
   if(!fChain->FindBranch("genpart_pdg")) return;
   
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
+  ///////////////////
+    TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
+		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
+  if(EventNumber == 315053) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", mothTauStatusFlag: "<<genpart_flags->at(genpart_TauMothInd->at(iGenPart))<<std::endl;
+  ///////////////////
     if(abs(genpart_pdg->at(iGenPart))!=15) continue;
     
     HTTParticle aLepton;
     
-    TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
-		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
 
     TVector3 pca(genpart_pca_x->at(iGenPart), genpart_pca_y->at(iGenPart), genpart_pca_z->at(iGenPart));
 
