@@ -417,12 +417,15 @@ void HTauTauTree::fillGenLeptons(){
   if(!fChain->FindBranch("genpart_pdg")) return;
   
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
+  ///////////////////
+    TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
+		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
+  if(EventNumber == 315053) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", status: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0)))<<std::endl;//", mothTauStatusFlag: "<<genpart_flags->at(genpart_TauMothInd->at(iGenPart))<<std::endl;
+  ///////////////////
     if(abs(genpart_pdg->at(iGenPart))!=15) continue;
     
     HTTParticle aLepton;
     
-    TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
-		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
 
     TVector3 pca(genpart_pca_x->at(iGenPart), genpart_pca_y->at(iGenPart), genpart_pca_z->at(iGenPart));
 
@@ -630,6 +633,8 @@ int HTauTauTree::getMCMatching(unsigned int index){
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
+		      
+  if(EventNumber == 315053) std::cout<<"Particle to match: "<<PDGIdDaughters->at(index)<<", matched particle index: "<<gen_ind<<", phi: "<<p4_2.Phi()<<", eta: "<<p4_2.Eta()<<std::endl;    
 		      
   if(dR > 0.2) return 6;
   int genFlags = genpart_flags->at(gen_ind);
