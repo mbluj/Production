@@ -28,6 +28,8 @@ void HTauTauTree::Loop(){
       
       hStats->Fill(0);//Number of events analyzed
       hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
+      
+      bestPairIndex_ = bestPairIndex;
 
       if(bestPairIndex<9999){
 	fillJets(bestPairIndex);
@@ -105,8 +107,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexTauLeg),
 			daughters_e->at(indexTauLeg));
   
-  bool muonBaselineSelection =  //muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
-			    muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
+  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+			    //muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
 			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
@@ -131,24 +133,27 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
   httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
-  httEvent->setSelectionBit(SelectionBitsEnum::thirdLeptonVeto,thirdLeptonVeto(indexMuonLeg));
-  httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,extraMuonVeto(indexMuonLeg));
-  httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,extraElectronVeto(indexMuonLeg));
+  httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13));
+  httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11));
   
   /*
-  std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
+  if(EventNumber == 343354) std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
 	   <<" tauBaselineSelection: "<<tauBaselineSelection
 	   <<" passBaselinePair: "<<baselinePair
-	   <<" passPostSynchMuon: "<<loosePostSynchMuon
+	   <<" passPostSynchMuon: "<<postSynchMuon
 	   <<" passPostSynchTau: "<<postSynchTau
-	   <<" diMuonVeto(): "<<!diMuonVeto()
-	   <<" thirdLeptonVeto(indexMuonLeg): "<<!thirdLeptonVeto(indexMuonLeg)
+	   <<" diMuonVeto(): "<<diMuonVeto()
+	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
+	   <<std::endl
+	   <<"pt_1: "<<muonP4.Perp()<<", eta_1: "<<muonP4.Eta()<<", phi_1: "<<muonP4.Phi()<<", d0_1: "<<dxy->at(indexMuonLeg)<<", dZ_1: "<<dz->at(indexMuonLeg)<<", id_1: "<<((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6))<<std::endl
+	   <<"pt_2: "<<tauP4.Perp()<<", eta_2: "<<tauP4.Eta()<<", phi_2: "<<tauP4.Phi()<<", dZ_2: "<<dz->at(indexTauLeg)<<", id_2: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<std::endl
+	   <<"deltaR: "<<muonP4.DeltaR(tauP4)
 	   <<std::endl;
-*/
-  
+  */
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    && postSynchTau && loosePostSynchMuon
-    && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg)
+    //&& postSynchTau && loosePostSynchMuon
+    //&& !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg)
+    //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
     && true;
 }
 /////////////////////////////////////////////////
@@ -157,8 +162,8 @@ bool HTauTauTree::diMuonVeto(){
  
   std::vector<int> muonIndexes;
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
 
+    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
        TLorentzVector muonP4(daughters_px->at(iLepton),
 			     daughters_py->at(iLepton),
 			     daughters_pz->at(iLepton),
@@ -168,12 +173,13 @@ bool HTauTauTree::diMuonVeto(){
 			 fabs(dz->at(iLepton))<0.2 &&
 		         fabs(dxy->at(iLepton))<0.045 && 
        combreliso->at(iLepton)<0.3 &&
-       (daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2)));
+       ((daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2))) == ((1<<0) + (1<<1) + (1<<2)));
 
        if(passLepton) muonIndexes.push_back(iLepton);
   }
 
   if(muonIndexes.size()<2) return false;
+  
   else{
     for(unsigned int iMuon1=0;iMuon1<muonIndexes.size();++iMuon1){
       TLorentzVector muon1P4(daughters_px->at(iMuon1),
@@ -198,32 +204,27 @@ bool HTauTauTree::diMuonVeto(){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-bool HTauTauTree::thirdLeptonVeto(unsigned int signalLeptonIndex){
+bool HTauTauTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg){
 
+      TLorentzVector muonP4(daughters_px->at(signalMuonIndex),
+			     daughters_py->at(signalMuonIndex),
+			     daughters_pz->at(signalMuonIndex),
+			     daughters_e->at(signalMuonIndex));
+      TLorentzVector tauP4(daughters_px->at(signalTauIndex),
+			     daughters_py->at(signalTauIndex),
+			     daughters_pz->at(signalTauIndex),
+			     daughters_e->at(signalTauIndex));
+			     
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
-    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
-  }
-  return false;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::extraMuonVeto(unsigned int signalLeptonIndex){
-
-  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==13 && muonSelection(iLepton)) return true;
-  }
-  return false;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::extraElectronVeto(unsigned int signalLeptonIndex){
-
-  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    if(iLepton==signalLeptonIndex) continue;
-    if(abs(PDGIdDaughters->at(iLepton))==11 && electronSelection(iLepton)) return true;
+    if(iLepton==signalMuonIndex || iLepton==signalTauIndex) continue;
+    TLorentzVector leptonP4(daughters_px->at(iLepton),
+			     daughters_py->at(iLepton),
+			     daughters_pz->at(iLepton),
+			     daughters_e->at(iLepton));
+    double dr = std::min(tauP4.DeltaR(leptonP4),muonP4.DeltaR(leptonP4));
+    //if(dr<0.30) continue;
+    if(leptonPdg == 13 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) && muonSelection(signalMuonIndex)) return true;
+    if(leptonPdg == 11 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton)) return true;
   }
   return false;
 }
@@ -239,9 +240,28 @@ bool HTauTauTree::muonSelection(unsigned int index){
   bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.4 &&
 		       fabs(dz->at(index))<0.2 &&
 		       fabs(dxy->at(index))<0.045 &&
-		      (daughters_muonID->at(index) & (1<<2)) && 	      
+		       ((daughters_muonID->at(index) & (1<<6)) == (1<<6)) && 	      
 		       combreliso->at(index)<0.3;
 
+  return passSelection;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+bool HTauTauTree::electronSelection(unsigned int index){
+
+  TLorentzVector aP4(daughters_px->at(index),
+		     daughters_py->at(index),
+		     daughters_pz->at(index),
+		     daughters_e->at(index));
+
+  bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
+		       fabs(dz->at(index))<0.2 &&
+		       fabs(dxy->at(index))<0.045 &&
+		       daughters_iseleWP90->at(index)>0.5 &&
+                       daughters_passConversionVeto->at(index)>0.5 &&
+                       daughters_eleMissingHits->at(index)<=1 &&
+                       combreliso->at(index)<0.3;
+		
   return passSelection;
 }
 /////////////////////////////////////////////////
@@ -268,25 +288,6 @@ bool HTauTauTree::jetSelection(unsigned int index, unsigned int bestPairIndex){
   		       aP4.DeltaR(tauP4) > 0.5 &&
 		       PFjetID->at(index)>=1;
 
-  return passSelection;
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-bool HTauTauTree::electronSelection(unsigned int index){
-
-  TLorentzVector aP4(daughters_px->at(index),
-		     daughters_py->at(index),
-		     daughters_pz->at(index),
-		     daughters_e->at(index));
-
-  bool passSelection = aP4.Perp()>10 && fabs(aP4.Eta())<2.5 &&
-		       fabs(dz->at(index))<0.2 &&
-		       fabs(dxy->at(index))<0.045 &&
-		       daughters_iseleWP90->at(index)>0.5 &&
-                       daughters_passConversionVeto->at(index)>0.5 &&
-                       daughters_eleMissingHits->at(index)<=1 &&
-                       combreliso->at(index)<0.3;
-		
   return passSelection;
 }
 /////////////////////////////////////////////////
@@ -328,7 +329,7 @@ void HTauTauTree::fillEvent(){
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;
-  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLL")!=std::string::npos) aType =  HTTEvent::DY;
+  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::DY;
   else if(fileName.find("W")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::WJets;
   else if(fileName.find("TT_")!=std::string::npos) aType =  HTTEvent::TTbar;
   else if(fileName.find("HToTauTau_M")!=std::string::npos) aType =  HTTEvent::H;
@@ -386,8 +387,6 @@ void HTauTauTree::fillLeptons(){
     TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));    
     TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));    
     TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));    
-    
-    int mc_match = getMCMatching(iLepton);
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(p4Charged);
@@ -404,8 +403,6 @@ void HTauTauTree::fillLeptons(){
     aLepton.setProperties(aProperties);
     
     aLepton.setP4(p4);
-    
-    aLepton.setMCMatch(mc_match);
     
     aLepton.setProperties(aProperties);
     httLeptonCollection.push_back(aLepton);
@@ -517,7 +514,7 @@ void HTauTauTree::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
-    
+
     TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
     float scaleFactor = 1.0;//SF for IsoMu22 not yet ready myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
     aHTTpair.setMuonTriggerSF(scaleFactor);
@@ -541,6 +538,7 @@ template<class T> T HTauTauTree::getBranchValue(char *branchAddress, unsigned in
 /////////////////////////////////////////////////
 float HTauTauTree::getProperty(std::string name, unsigned int index){
 
+  if(name=="mc_match") return getMCMatching(index);
   TBranch *branch = fChain->GetBranch(name.c_str());
   if(!branch){
     std::cout<<"Branch: "<<name<<" not found in the TTree."<<std::endl;
@@ -615,7 +613,7 @@ int HTauTauTree::getMCMatching(unsigned int index){
 
   float dR = 100;
   unsigned int gen_ind = 0;
-  
+  if(index>=daughters_px->size()) return -999;
   TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
 		      daughters_pz->at(index), daughters_e->at(index));
   
@@ -627,13 +625,13 @@ int HTauTauTree::getMCMatching(unsigned int index){
   	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 		      genpart_pz->at(ind), genpart_e->at(ind));
 	
-	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}  	
+	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;} 	
   }
-  if(dR > 0.2) return 6;
 
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
-
+		      
+  if(dR > 0.2) return 6;
   int genFlags = genpart_flags->at(gen_ind);
   int absPdgId = abs(genpart_pdg->at(gen_ind));
   if(absPdgId==66615){
