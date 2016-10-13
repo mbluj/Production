@@ -107,8 +107,8 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexTauLeg),
 			daughters_e->at(indexTauLeg));
   
-  bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
-			    //muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
+  bool muonBaselineSelection =  //muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+			    muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
 			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
@@ -415,18 +415,12 @@ void HTauTauTree::fillGenLeptons(){
   httGenLeptonCollection.clear();
   
   if(!fChain->FindBranch("genpart_pdg")) return;
-  bool isTauHad = false;
   
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
-  ///////////////////
-  if(abs(genpart_pdg->at(iGenPart))==66615) isTauHad = true;
+    if(abs(genpart_pdg->at(iGenPart))!=15) continue;
+    
     TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
 		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
-		      
-  //if(EventNumber == 118752 || EventNumber == 145494 || EventNumber == 76 || EventNumber == 359053 || EventNumber == 339156 || EventNumber == 387693 || EventNumber == 54100 || EventNumber == 97575 || EventNumber == 302583 || EventNumber == 499076 || EventNumber == 27820 || EventNumber == 223379 || EventNumber == 326758 || EventNumber == 314856 ||EventNumber == 229370) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", IsPrompt: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0))<<", IsDirectPromptTauDecayProduct: "<<((genpart_flags->at(iGenPart) & (1<<5)) == (1<<5))<<std::endl; //", mothTauStatusFlag: "<<genpart_flags->at(genpart_TauMothInd->at(iGenPart))<<std::endl;
-  if(EventNumber == 314856 || EventNumber == 170615) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", pt: "<<p4.Perp()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", IsPrompt: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0))<<", IsDirectPromptTauDecayProduct: "<<((genpart_flags->at(iGenPart) & (1<<5)) == (1<<5))<<std::endl;
-  ///////////////////
-    if(abs(genpart_pdg->at(iGenPart))!=15) continue;
     
     HTTParticle aLepton;
     
@@ -639,10 +633,7 @@ int HTauTauTree::getMCMatching(unsigned int index){
   
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
-		      
-  //if((EventNumber == 118752 || EventNumber == 145494 || EventNumber == 76 || EventNumber == 359053 || EventNumber == 339156 || EventNumber == 387693 || EventNumber == 54100 || EventNumber == 97575 || EventNumber == 302583 || EventNumber == 499076 || EventNumber == 27820 || EventNumber == 223379 || EventNumber == 326758 || EventNumber == 314856 ||EventNumber == 229370) && (abs(PDGIdDaughters->at(index))==15) && (indexDau1->at(bestPairIndex_)==(int)index || indexDau2->at(bestPairIndex_)==(int)index)) std::cout<<EventNumber<<" Particle to match: "<<PDGIdDaughters->at(index)<<", phi: "<<p4_1.Phi()<<", eta: "<<p4_1.Eta()<<", matched particle index: "<<gen_ind<<", matched particle pdg: "<<genpart_pdg->at(gen_ind)<<std::endl;    
-  if((EventNumber == 314856 || EventNumber == 170615) && (abs(PDGIdDaughters->at(index))==15) && (indexDau1->at(bestPairIndex_)==(int)index || indexDau2->at(bestPairIndex_)==(int)index)) std::cout<<EventNumber<<" Particle to match: "<<PDGIdDaughters->at(index)<<", phi: "<<p4_1.Phi()<<", eta: "<<p4_1.Eta()<<", matched particle index: "<<gen_ind<<", matched particle pdg: "<<genpart_pdg->at(gen_ind)<<", dR: "<<dR<<std::endl;
-  		      
+		      		      
   if(dR > 0.2) return 6;
   int genFlags = genpart_flags->at(gen_ind);
   int absPdgId = abs(genpart_pdg->at(gen_ind));
