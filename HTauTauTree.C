@@ -415,12 +415,16 @@ void HTauTauTree::fillGenLeptons(){
   httGenLeptonCollection.clear();
   
   if(!fChain->FindBranch("genpart_pdg")) return;
+  bool isTauHad = false;
   
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
   ///////////////////
+  if(abs(genpart_pdg->at(iGenPart))==66615) isTauHad = true;
     TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
 		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
-  if(EventNumber == 315053) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", status: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0)))<<std::endl;//", mothTauStatusFlag: "<<genpart_flags->at(genpart_TauMothInd->at(iGenPart))<<std::endl;
+		      
+  //if(EventNumber == 118752 || EventNumber == 145494 || EventNumber == 76 || EventNumber == 359053 || EventNumber == 339156 || EventNumber == 387693 || EventNumber == 54100 || EventNumber == 97575 || EventNumber == 302583 || EventNumber == 499076 || EventNumber == 27820 || EventNumber == 223379 || EventNumber == 326758 || EventNumber == 314856 ||EventNumber == 229370) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", IsPrompt: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0))<<", IsDirectPromptTauDecayProduct: "<<((genpart_flags->at(iGenPart) & (1<<5)) == (1<<5))<<std::endl; //", mothTauStatusFlag: "<<genpart_flags->at(genpart_TauMothInd->at(iGenPart))<<std::endl;
+  if(EventNumber == 314856 || EventNumber == 170615) std::cout<<iGenPart<<", PDG: "<<genpart_pdg->at(iGenPart)<<", phi: "<<p4.Phi()<<", eta: "<<p4.Eta()<<", pt: "<<p4.Perp()<<", mothTauIndex: "<<genpart_TauMothInd->at(iGenPart)<<", IsPrompt: "<<((genpart_flags->at(iGenPart) & (1<<0)) == (1<<0))<<", IsDirectPromptTauDecayProduct: "<<((genpart_flags->at(iGenPart) & (1<<5)) == (1<<5))<<std::endl;
   ///////////////////
     if(abs(genpart_pdg->at(iGenPart))!=15) continue;
     
@@ -438,7 +442,8 @@ void HTauTauTree::fillGenLeptons(){
     aLepton.setProperties(aProperties);
 
     httGenLeptonCollection.push_back(aLepton); 
-  } 
+  }
+  //std::cout<<EventNumber<<std::endl; 
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -614,28 +619,30 @@ std::vector<float> HTauTauTree::getProperties(const std::vector<std::string> & p
 /////////////////////////////////////////////////
 int HTauTauTree::getMCMatching(unsigned int index){
 
+  if(!fChain->FindBranch("genpart_pdg")) return -999;
   float dR = 100;
-  unsigned int gen_ind = 0;
+  unsigned int gen_ind = -1;
   if(index>=daughters_px->size()) return -999;
+  
   TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
 		      daughters_pz->at(index), daughters_e->at(index));
   
   for(unsigned int ind = 0; ind < genpart_px->size(); ind++) {
 
-    if(fabs(genpart_px->at(ind))<1E-3 &&
-       fabs(genpart_py->at(ind))<1E-3) continue;
-    
-  	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
-		      genpart_pz->at(ind), genpart_e->at(ind));
-	
-	if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;} 	
+    if(!isGoodToMatch(ind)) continue;
+    TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
+		          genpart_pz->at(ind), genpart_e->at(ind));
+    if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}	
   }
-
+  
+  if((int)gen_ind == -1) return 6;
+  
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
 		      
-  if(EventNumber == 315053) std::cout<<"Particle to match: "<<PDGIdDaughters->at(index)<<", matched particle index: "<<gen_ind<<", phi: "<<p4_2.Phi()<<", eta: "<<p4_2.Eta()<<std::endl;    
-		      
+  //if((EventNumber == 118752 || EventNumber == 145494 || EventNumber == 76 || EventNumber == 359053 || EventNumber == 339156 || EventNumber == 387693 || EventNumber == 54100 || EventNumber == 97575 || EventNumber == 302583 || EventNumber == 499076 || EventNumber == 27820 || EventNumber == 223379 || EventNumber == 326758 || EventNumber == 314856 ||EventNumber == 229370) && (abs(PDGIdDaughters->at(index))==15) && (indexDau1->at(bestPairIndex_)==(int)index || indexDau2->at(bestPairIndex_)==(int)index)) std::cout<<EventNumber<<" Particle to match: "<<PDGIdDaughters->at(index)<<", phi: "<<p4_1.Phi()<<", eta: "<<p4_1.Eta()<<", matched particle index: "<<gen_ind<<", matched particle pdg: "<<genpart_pdg->at(gen_ind)<<std::endl;    
+  if((EventNumber == 314856 || EventNumber == 170615) && (abs(PDGIdDaughters->at(index))==15) && (indexDau1->at(bestPairIndex_)==(int)index || indexDau2->at(bestPairIndex_)==(int)index)) std::cout<<EventNumber<<" Particle to match: "<<PDGIdDaughters->at(index)<<", phi: "<<p4_1.Phi()<<", eta: "<<p4_1.Eta()<<", matched particle index: "<<gen_ind<<", matched particle pdg: "<<genpart_pdg->at(gen_ind)<<", dR: "<<dR<<std::endl;
+  		      
   if(dR > 0.2) return 6;
   int genFlags = genpart_flags->at(gen_ind);
   int absPdgId = abs(genpart_pdg->at(gen_ind));
@@ -654,4 +661,31 @@ int HTauTauTree::getMCMatching(unsigned int index){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-
+bool HTauTauTree::isGoodToMatch(unsigned int ind){
+	
+	if(!(abs(genpart_pdg->at(ind))==11 || abs(genpart_pdg->at(ind))==13 || abs(genpart_pdg->at(ind))==66615)) return 0;
+	if(fabs(genpart_px->at(ind))<1E-3 && fabs(genpart_py->at(ind))<1E-3) return 0;
+	
+	int genFlagsTmp = genpart_flags->at(ind);
+	int absPdgIdTmp = abs(genpart_pdg->at(ind));
+	
+	if(absPdgIdTmp==66615){
+	  int motherTau_indTmp = genpart_TauMothInd->at(ind);
+	  genFlagsTmp = genpart_flags->at(motherTau_indTmp);
+	}
+	
+	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
+				genpart_pz->at(ind), genpart_e->at(ind));
+				
+	bool isCat1 = absPdgIdTmp == 11 && p4_tmp.Perp() > 8 && (genFlagsTmp & (1<<0)) == (1<<0);
+	bool isCat2 = absPdgIdTmp == 13 && p4_tmp.Perp() > 8 && (genFlagsTmp & (1<<0)) == (1<<0);
+	bool isCat3 = absPdgIdTmp == 11 && p4_tmp.Perp() > 8 && (genFlagsTmp & (1<<5)) == (1<<5);
+	bool isCat4 = absPdgIdTmp == 13 && p4_tmp.Perp() > 8 && (genFlagsTmp & (1<<5)) == (1<<5);
+	bool isCat5 = absPdgIdTmp == 66615 && p4_tmp.Perp() > 15 && (genFlagsTmp & (1<<0)) == (1<<0);
+	
+	if(!(isCat1 || isCat2 || isCat3 || isCat4 || isCat5)) return 0;
+	
+	return 1;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////

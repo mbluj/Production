@@ -39,6 +39,7 @@ public :
   bool pairSelection(unsigned int index);  
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
+  bool isGoodToMatch(unsigned int ind);
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
   template<typename T> T getBranchValue(char *branchAddress, unsigned int index);
