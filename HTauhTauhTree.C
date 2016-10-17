@@ -64,9 +64,54 @@ Int_t HTauhTauhTree::Cut(Long64_t entry){
   }
 
   ///Pair are already sorted during the ntuple creation
-  if(pairIndexes.size()) return pairIndexes[0];
-  
-  return 9999;
+  double iso_1=9999, iso_2=9999, pt2_1=0, pt2_2=0;
+  Int_t bestIndex = 9999;
+  if(pairIndexes.size()) {
+    //return pairIndexes[0];//MB
+    for(unsigned int i=0;i<pairIndexes.size();++i){
+      unsigned int iPair = pairIndexes[i];
+      unsigned int leg1Index = indexDau1->at(iPair);
+      unsigned int leg2Index = indexDau2->at(iPair);
+      double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
+			daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
+      double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
+			daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
+      //MB: More isolated for MVAIso means higher value so inverted here for standard to keep standard convention in comparison
+      double iso_1_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index);
+      double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index);
+      
+      if(iso_1_i>iso_1) continue; 
+      if(i!=0)std::cout<<"1:"<<i<<std::endl;
+      if(pt2_1_i<pt2_1) continue;
+      if(i!=0)std::cout<<"2:"<<i<<std::endl;
+      if(iso_2_i>iso_2) continue; 
+      if(i!=0)std::cout<<"3:"<<i<<std::endl;
+      if(pt2_2_i<pt2_2) continue;
+      if(i!=0)std::cout<<"4:"<<i<<std::endl;
+      bestIndex = iPair;
+      iso_1 = iso_1_i;
+      iso_2 = iso_2_i;
+      pt2_1 = pt2_1_i;
+      pt2_2 = pt2_2_i;
+    }
+  }
+  if(pairIndexes.size() && bestIndex!=(Int_t)pairIndexes[0]){
+    unsigned int iPair = pairIndexes[0];
+    unsigned int leg1Index = indexDau1->at(iPair);
+    unsigned int leg2Index = indexDau2->at(iPair);
+    double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
+		      daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
+    double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
+		      daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
+    std::cout<<"Pair sorting: "<<std::endl
+	     <<"best index = "<<bestIndex<<std::endl
+	     <<"\tiso1[best]="<<-iso_1<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index)<<std::endl
+	     <<"\tpt1[best]="<<sqrt(pt2_1)<<", pt1[0]="<<pt2_1_i<<std::endl
+	     <<"\tiso2[best]="<<-iso_2<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index)<<std::endl
+	     <<"\tpt2[best]="<<sqrt(pt2_2)<<", pt1[0]="<<pt2_2_i<<std::endl;
+  }
+
+  return bestIndex;
 };
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -222,7 +267,7 @@ bool HTauhTauhTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int s
        (abs(PDGIdDaughters->at(signalTauIndex))!=leptonPdg || muonSelection(signalTauIndex)) ) return true;
     if(leptonPdg == 11 && abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton) &&
        (abs(PDGIdDaughters->at(signalMuonIndex))!=leptonPdg || electronSelection(signalMuonIndex)) &&
-       (abs(PDGIdDaughters->at(signalTauIndex))!=leptonPdg || electronSelection(signalMuonIndex)) ) return true;
+       (abs(PDGIdDaughters->at(signalTauIndex))!=leptonPdg || electronSelection(signalTauIndex)) ) return true;
   }
   return false;
 }
