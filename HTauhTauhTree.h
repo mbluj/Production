@@ -16,29 +16,8 @@
 // Header of the base class
 #include "HTauTauTreeBase.h"
 
-<<<<<<< HEAD
-/////////////////////////////////////////////////
-  ///Added by AK
-  void fillEvent();
-  void fillPairs(unsigned int bestPairIndex);
-  void fillJets(unsigned int bestPairIndex);
-  void fillLeptons();
-  void fillGenLeptons();
-  bool diMuonVeto();
-  bool thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg, double dRmin=-1);
-  bool extraMuonVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex, double dRmin=-1);
-  bool extraElectronVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex, double dRmin=-1);
-  bool muonSelection(unsigned int index);
-  bool electronSelection(unsigned int index);
-  bool pairSelection(unsigned int index);  
-  bool jetSelection(unsigned int index, unsigned int bestPairIndex);
-  int getMCMatching(unsigned int index);
-  bool isGoodToMatch(unsigned int ind);
-  TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
-=======
+
 class HTauhTauhTree : public HTauTauTreeBase {
- public :
->>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
 
   /////////////////////////////////////////////////
   /// TT final state specific

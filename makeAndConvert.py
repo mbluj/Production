@@ -28,13 +28,9 @@ aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 print "TTree entries: ",aTree.GetEntries()
 HTauTauTree(aTree).Loop()
-<<<<<<< HEAD
 
 print "Making the tau*tau tree"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 HTauhTauhTree(aTree).Loop()
 
-
-=======
->>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
