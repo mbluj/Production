@@ -9,6 +9,9 @@ from PSet import process
 command = "cmsRun -j FrameworkJobReport.xml -p PSet.py"
 os.system(command)
 
+gSystem.CompileMacro('HTTEvent.cxx')
+gSystem.CompileMacro('ScaleFactor.cc')
+gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
 from ROOT import HTauhTauhTree
 
@@ -36,5 +39,6 @@ for aFile in fileNames:
 #command = "hadd -f WAW_HTauTauAnalysis.root WAW_HTauTauAnalysis_*.root"
 #os.system(command)
 
-print "Done!", "Processed ",len(process.source.fileNames), "files"
+#print "Done!", "Processed ",len(process.source.fileNames), "files"
+print "Done!", "Processed ",len(fileNames), "files"
 
