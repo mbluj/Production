@@ -4,69 +4,13 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TSystem.h>
-#include "ScaleFactor.cc"
-#include "HTTEvent.cxx"
-
+//#include "ScaleFactor.cc"
+//#include "HTTEvent.cxx"
+//#include "HTauTauTreeBase.C"
 
 #include <iostream>
 #include <fstream>
 
-void HTauTauTree::Loop(){
-
-   if (fChain == 0) return;
-
-   Long64_t nentries = fChain->GetEntries();
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-      unsigned int bestPairIndex = Cut(ientry);
-     
-      fillEvent();
-      
-      hStats->Fill(0);//Number of events analyzed
-      hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
-      
-      bestPairIndex_ = bestPairIndex;
-
-      if(bestPairIndex<9999){
-	fillJets(bestPairIndex);
-	fillLeptons();
-	fillGenLeptons();
-	fillPairs(bestPairIndex);
-
-	warsawTree->Fill();
-	hStats->Fill(2);//Number of events saved to ntuple
-	hStats->Fill(3,httEvent->getMCWeight());//Sum of weights saved to ntuple
-      }
-   }
-
-   writePropertiesHeader(leptonPropertiesList);
-
-   TFile *currentFile = fChain->GetCurrentFile();   
-   TH1F* hLLRCounters = (TH1F*)currentFile->Get("HTauTauTree/Counters");
-   if(!hLLRCounters) std::cout<<"Counters histogram not found!"<<std::endl;
-   else writeTriggersHeader(hLLRCounters);
-
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-Int_t HTauTauTree::Cut(Long64_t entry){
-
-  if(!mothers_px->size()) return 9999;
-
-  vector<unsigned int> pairIndexes;
-  for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
-    if(pairSelection(iPair)) pairIndexes.push_back(iPair);
-  }
-
-  ///Pair are already sorted during the ntuple creation
-  if(pairIndexes.size()) return pairIndexes[0];
-  
-  return 9999;
-};
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauTauTree::pairSelection(unsigned int iPair){
@@ -81,15 +25,15 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   int pdgIdLeg1 = PDGIdDaughters->at(indexDau1->at(iPair));
   int pdgIdLeg2 = PDGIdDaughters->at(indexDau2->at(iPair));
   unsigned int indexMuonLeg = -1;
-  if(abs(pdgIdLeg1)==13) indexMuonLeg = indexDau1->at(iPair);
-  else if(abs(pdgIdLeg2)==13) indexMuonLeg = indexDau2->at(iPair);
+  if(std::abs(pdgIdLeg1)==13) indexMuonLeg = indexDau1->at(iPair);
+  else if(std::abs(pdgIdLeg2)==13) indexMuonLeg = indexDau2->at(iPair);
   else return 0;
-
+  
   unsigned int indexTauLeg = -1;
-  if(abs(pdgIdLeg1)==15) indexTauLeg = indexDau1->at(iPair);
-  else if(abs(pdgIdLeg2)==15) indexTauLeg = indexDau2->at(iPair);
+  if(std::abs(pdgIdLeg1)==15) indexTauLeg = indexDau1->at(iPair);
+  else if(std::abs(pdgIdLeg2)==15) indexTauLeg = indexDau2->at(iPair);
   else return 0;
-
+  
   int tauIDmask = 0;
   for(unsigned int iBit=0;iBit<ntauIds;iBit++){
     if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT") tauIDmask |= (1<<iBit);
@@ -100,23 +44,29 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_py->at(indexMuonLeg),
 			daughters_pz->at(indexMuonLeg),
 			daughters_e->at(indexMuonLeg));
-
-
-  TLorentzVector tauP4(daughters_px->at(indexTauLeg),
-			daughters_py->at(indexTauLeg),
-			daughters_pz->at(indexTauLeg),
-			daughters_e->at(indexTauLeg));
   
+<<<<<<< HEAD
   bool muonBaselineSelection =  muonP4.Perp()>20 && fabs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
 			    //muonP4.Perp()>23 && fabs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
 			    fabs(dz->at(indexMuonLeg))<0.2 &&
 			    fabs(dxy->at(indexMuonLeg))<0.045 &&
+=======
+  TLorentzVector tauP4(daughters_px->at(indexTauLeg),
+		       daughters_py->at(indexTauLeg),
+		       daughters_pz->at(indexTauLeg),
+		       daughters_e->at(indexTauLeg));
+  
+  bool muonBaselineSelection =  //muonP4.Pt()>20 && std::abs(muonP4.Eta())<2.1 &&		//another condition for pt added because of https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
+                            muonP4.Pt()>23 && std::abs(muonP4.Eta())<2.4 &&		//this is for the SM baseline selection for the VBF sample
+			    std::abs(dz->at(indexMuonLeg))<0.2 &&
+			    std::abs(dxy->at(indexMuonLeg))<0.045 &&
+>>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
 			    ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));//Use Short Term Instructions for ICHEP 2016
 
-  bool tauBaselineSelection = tauP4.Perp()>20 && fabs(tauP4.Eta())<2.3 &&
+  bool tauBaselineSelection = tauP4.Pt()>20 && std::abs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
-                              fabs(dz->at(indexTauLeg))<0.2 && 
-                              abs(daughters_charge->at(indexTauLeg))==1;			
+                              std::abs(dz->at(indexTauLeg))<0.2 && 
+                              std::abs(daughters_charge->at(indexTauLeg))==1;			
                               				//another condition for pt added, because of: https://github.com/CMS-HTT/2016-sync/blob/master/KIT/SUSYGluGluToHToTauTauM160_mt_RunIISpring16MiniAODv2_13TeV_MINIAOD.txt
                               				//charge condition added
   
@@ -136,7 +86,24 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11));
   
+<<<<<<< HEAD
   
+=======
+  /*
+  if(EventNumber == 343354) std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
+	   <<" tauBaselineSelection: "<<tauBaselineSelection
+	   <<" passBaselinePair: "<<baselinePair
+	   <<" passPostSynchMuon: "<<postSynchMuon
+	   <<" passPostSynchTau: "<<postSynchTau
+	   <<" diMuonVeto(): "<<diMuonVeto()
+	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
+	   <<std::endl
+	   <<"pt_1: "<<muonP4.Pt()<<", eta_1: "<<muonP4.Eta()<<", phi_1: "<<muonP4.Phi()<<", d0_1: "<<dxy->at(indexMuonLeg)<<", dZ_1: "<<dz->at(indexMuonLeg)<<", id_1: "<<((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6))<<std::endl
+	   <<"pt_2: "<<tauP4.Pt()<<", eta_2: "<<tauP4.Eta()<<", phi_2: "<<tauP4.Phi()<<", dZ_2: "<<dz->at(indexTauLeg)<<", id_2: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<std::endl
+	   <<"deltaR: "<<muonP4.DeltaR(tauP4)
+	   <<std::endl;
+  */
+>>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     && postSynchTau && loosePostSynchMuon
     && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13)
@@ -149,15 +116,15 @@ bool HTauTauTree::diMuonVeto(){
   std::vector<int> muonIndexes;
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
 
-    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
+    if(std::abs(PDGIdDaughters->at(iLepton))!=13) continue;
        TLorentzVector muonP4(daughters_px->at(iLepton),
 			     daughters_py->at(iLepton),
 			     daughters_pz->at(iLepton),
 			     daughters_e->at(iLepton));
 
-       bool passLepton = muonP4.Perp()> 15 && fabs(muonP4.Eta())<2.4 &&
-			 fabs(dz->at(iLepton))<0.2 &&
-		         fabs(dxy->at(iLepton))<0.045 && 
+       bool passLepton = muonP4.Pt()> 15 && std::abs(muonP4.Eta())<2.4 &&
+			 std::abs(dz->at(iLepton))<0.2 &&
+		         std::abs(dxy->at(iLepton))<0.045 && 
        combreliso->at(iLepton)<0.3 &&
        ((daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2))) == ((1<<0) + (1<<1) + (1<<2)));
 
@@ -190,6 +157,7 @@ bool HTauTauTree::diMuonVeto(){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+<<<<<<< HEAD
 bool HTauTauTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg){
 
       TLorentzVector muonP4(daughters_px->at(signalMuonIndex),
@@ -638,3 +606,5 @@ int HTauTauTree::getMCMatching(unsigned int index){
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+=======
+>>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes

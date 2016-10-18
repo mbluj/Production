@@ -12,10 +12,10 @@ os.system(command)
 gSystem.CompileMacro('HTTEvent.cxx')
 gSystem.CompileMacro('ScaleFactor.cc')
 gSystem.CompileMacro('HTauTauTreeBase.C')
-gSystem.CompileMacro('HTauhTauhTree_v2.C')
-gSystem.CompileMacro('HTauTauTree_v2.C')
-from ROOT import HTauhTauhTree_v2
-from ROOT import HTauTauTree_v2
+gSystem.CompileMacro('HTauhTauhTree.C')
+gSystem.CompileMacro('HTauTauTree.C')
+from ROOT import HTauhTauhTree
+from ROOT import HTauTauTree
 
 fileNames = [
 '/store/user/akalinow/HTauTauAnalysis_TAUCUT_fix.root'
@@ -33,13 +33,14 @@ for aFile in fileNames:
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
     print "Process TT..."
-    HTauhTauhTree_v2(aTree).Loop()
+    HTauhTauhTree(aTree).Loop()
     print "done"
+    # file and tree have to be opened again as they are closed by Dtor of analyzer
     bROOTFile = TFile.Open(aFile)
     bTree = bROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",bTree.GetEntries()
     print "Process MT..."
-    HTauTauTree_v2(bTree).Loop()
+    HTauTauTree(bTree).Loop()
     print "done"
 
 #print "TTree entries: ",aTree.GetEntries()
@@ -51,4 +52,3 @@ for aFile in fileNames:
 
 #print "Done!", "Processed ",len(process.source.fileNames), "files"
 print "Done!", "Processed ",len(fileNames), "files"
-

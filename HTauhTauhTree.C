@@ -6,113 +6,15 @@
 #include <TSystem.h>
 //#include "ScaleFactor.cc"
 //#include "HTTEvent.cxx"
+<<<<<<< HEAD
 
+=======
+//#include "HTauTauTreeBase.C"
+>>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
 
 #include <iostream>
 #include <fstream>
 
-void HTauhTauhTree::Loop(){
-
-   if (fChain == 0) return;
-
-   Long64_t nentries = fChain->GetEntries();
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-      unsigned int bestPairIndex = Cut(ientry);
-     
-      fillEvent();
-      
-      hStats->Fill(0);//Number of events analyzed
-      hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
-      
-      bestPairIndex_ = bestPairIndex;
-
-      if(bestPairIndex<9999){
-	fillJets(bestPairIndex);
-	fillLeptons();
-	fillGenLeptons();
-	fillPairs(bestPairIndex);
-
-	warsawTree->Fill();
-	hStats->Fill(2);//Number of events saved to ntuple
-	hStats->Fill(3,httEvent->getMCWeight());//Sum of weights saved to ntuple
-      }
-   }
-
-   writePropertiesHeader(leptonPropertiesList);
-
-   TFile *currentFile = fChain->GetCurrentFile();   
-   TH1F* hLLRCounters = (TH1F*)currentFile->Get("HTauTauTree/Counters");
-   if(!hLLRCounters) std::cout<<"Counters histogram not found!"<<std::endl;
-   else writeTriggersHeader(hLLRCounters);
-
-}
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-Int_t HTauhTauhTree::Cut(Long64_t entry){
-
-  if(!mothers_px->size()) return 9999;
-
-  vector<unsigned int> pairIndexes;
-  for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
-    if(pairSelection(iPair)) pairIndexes.push_back(iPair);
-    //MB can break loop after 1st pair found as anyway the first is always taken (see below)
-  }
-
-  ///Pair are already sorted during the ntuple creation
-  double iso_1=9999, iso_2=9999, pt2_1=0, pt2_2=0;
-  Int_t bestIndex = 9999;
-  if(pairIndexes.size()) {
-    //return pairIndexes[0];//MB
-    for(unsigned int i=0;i<pairIndexes.size();++i){
-      unsigned int iPair = pairIndexes[i];
-      unsigned int leg1Index = indexDau1->at(iPair);
-      unsigned int leg2Index = indexDau2->at(iPair);
-      double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
-			daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
-      double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
-			daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
-      //MB: More isolated for MVAIso means higher value so inverted here for standard to keep standard convention in comparison
-      double iso_1_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index);
-      double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index);
-      
-      if(iso_1_i>iso_1) continue; 
-      if(i!=0)std::cout<<"1:"<<i<<std::endl;
-      if(pt2_1_i<pt2_1) continue;
-      if(i!=0)std::cout<<"2:"<<i<<std::endl;
-      if(iso_2_i>iso_2) continue; 
-      if(i!=0)std::cout<<"3:"<<i<<std::endl;
-      if(pt2_2_i<pt2_2) continue;
-      if(i!=0)std::cout<<"4:"<<i<<std::endl;
-      bestIndex = iPair;
-      iso_1 = iso_1_i;
-      iso_2 = iso_2_i;
-      pt2_1 = pt2_1_i;
-      pt2_2 = pt2_2_i;
-    }
-  }
-  if(pairIndexes.size() && bestIndex!=(Int_t)pairIndexes[0]){
-    unsigned int iPair = pairIndexes[0];
-    unsigned int leg1Index = indexDau1->at(iPair);
-    unsigned int leg2Index = indexDau2->at(iPair);
-    double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
-		      daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
-    double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
-		      daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
-    std::cout<<"Pair sorting: "<<std::endl
-	     <<"best index = "<<bestIndex<<std::endl
-	     <<"\tiso1[best]="<<-iso_1<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index)<<std::endl
-	     <<"\tpt1[best]="<<sqrt(pt2_1)<<", pt1[0]="<<pt2_1_i<<std::endl
-	     <<"\tiso2[best]="<<-iso_2<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index)<<std::endl
-	     <<"\tpt2[best]="<<sqrt(pt2_2)<<", pt1[0]="<<pt2_2_i<<std::endl;
-  }
-
-  return bestIndex;
-};
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauhTauhTree::pairSelection(unsigned int iPair){
@@ -126,7 +28,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 
   int pdgIdLeg1 = PDGIdDaughters->at(indexDau1->at(iPair));
   int pdgIdLeg2 = PDGIdDaughters->at(indexDau2->at(iPair));
-  if( abs(pdgIdLeg1)!=15 || abs(pdgIdLeg2)!=15 ) return 0;
+  if( std::abs(pdgIdLeg1)!=15 || std::abs(pdgIdLeg2)!=15 ) return 0;
   unsigned int indexLeg1 = indexDau1->at(iPair);
   unsigned int indexLeg2 = indexDau2->at(iPair);
 
@@ -157,14 +59,14 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexLeg2),
 			daughters_e->at(indexLeg2));
 
-  bool tauBaselineSelection1 = tau1P4.Pt()>40 && fabs(tau1P4.Eta())<2.1 &&
+  bool tauBaselineSelection1 = tau1P4.Pt()>40 && std::abs(tau1P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg1)>0.5 &&
-                               fabs(dz->at(indexLeg1))<0.2 && 
-                               abs(daughters_charge->at(indexLeg1))==1;			
-  bool tauBaselineSelection2 = tau2P4.Pt()>40 && fabs(tau2P4.Eta())<2.1 &&
+                               std::abs(dz->at(indexLeg1))<0.2 && 
+                               std::abs(daughters_charge->at(indexLeg1))==1;			
+  bool tauBaselineSelection2 = tau2P4.Pt()>40 && std::abs(tau2P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg2)>0.5 &&
-                               fabs(dz->at(indexLeg2))<0.2 && 
-                               abs(daughters_charge->at(indexLeg2))==1;			
+                               std::abs(dz->at(indexLeg2))<0.2 && 
+                               std::abs(daughters_charge->at(indexLeg2))==1;			
   
   bool baselinePair = tau1P4.DeltaR(tau2P4) > 0.5;							     
   bool postSynchTau1 = (tauID->at(indexLeg1) & tauIDmask) == tauIDmask;
@@ -197,6 +99,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+<<<<<<< HEAD
 bool HTauhTauhTree::diMuonVeto(){
 
   std::vector<int> muonIndexes;
@@ -745,3 +648,5 @@ bool HTauhTauhTree::isGoodToMatch(unsigned int ind){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+=======
+>>>>>>> 0c40d85... Changes to accomodate split into a base and derived specialized converter classes
