@@ -4,8 +4,8 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TSystem.h>
-#include "ScaleFactor.cc"
-#include "HTTEvent.cxx"
+//#include "ScaleFactor.cc"
+//#include "HTTEvent.cxx"
 
 
 #include <iostream>
@@ -145,16 +145,57 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
-    //&& postSynchTau1 && postSynchTau2
-    //&& !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg) //FIXME
-    //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
+    && postSynchTau1 && postSynchTau2
+    && !diMuonVeto() && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
+    && !thirdLeptonVeto(indexLeg1,indexLeg2,11)
     && true;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-/*bool HTauhTauhTree::diMuonVeto(){
-  return false;
-  }*/
+bool HTauhTauhTree::diMuonVeto(){
+
+  std::vector<int> muonIndexes;
+  for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
+
+    if(abs(PDGIdDaughters->at(iLepton))!=13) continue;
+       TLorentzVector muonP4(daughters_px->at(iLepton),
+			     daughters_py->at(iLepton),
+			     daughters_pz->at(iLepton),
+			     daughters_e->at(iLepton));
+
+       bool passLepton = muonP4.Perp()> 15 && fabs(muonP4.Eta())<2.4 &&
+			 fabs(dz->at(iLepton))<0.2 &&
+		         fabs(dxy->at(iLepton))<0.045 && 
+       combreliso->at(iLepton)<0.3 &&
+       ((daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2))) == ((1<<0) + (1<<1) + (1<<2)));
+
+       if(passLepton) muonIndexes.push_back(iLepton);
+  }
+
+  if(muonIndexes.size()<2) return false;
+  
+  else{
+    for(unsigned int iMuon1=0;iMuon1<muonIndexes.size();++iMuon1){
+      TLorentzVector muon1P4(daughters_px->at(iMuon1),
+			     daughters_py->at(iMuon1),
+			     daughters_pz->at(iMuon1),
+			     daughters_e->at(iMuon1));
+      int muon1Charge = daughters_charge->at(iMuon1);
+      
+      for(unsigned int iMuon2=0;iMuon2<muonIndexes.size();++iMuon2){
+	TLorentzVector muon2P4(daughters_px->at(iMuon2),
+			       daughters_py->at(iMuon2),
+			       daughters_pz->at(iMuon2),
+			       daughters_e->at(iMuon2));
+	int muon2Charge = daughters_charge->at(iMuon2);
+	float deltaR = muon1P4.DeltaR(muon2P4);
+	if(muon2Charge*muon1Charge==-1 &&
+	   deltaR>0.15) return true;
+      }
+    }
+  }
+  return false; 
+}
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauhTauhTree::thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg, double dRmin){

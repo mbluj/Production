@@ -30,7 +30,7 @@ public :
   void fillJets(unsigned int bestPairIndex);
   void fillLeptons();
   void fillGenLeptons();
-  //bool diMuonVeto();//MB
+  bool diMuonVeto();
   bool thirdLeptonVeto(unsigned int signalMuonIndex, unsigned int signalTauIndex, int leptonPdg, double dRmin=-1);
   bool extraMuonVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex, double dRmin=-1);
   bool extraElectronVeto(unsigned int signalLeptonIndex, unsigned int signalTauIndex, double dRmin=-1);

@@ -24,6 +24,9 @@ def prepareCrabCfg(dataset,
     shortName = shortName.replace("-","_")
     shortName = shortName.split("_")[0]+shortName.split("_")[1]+shortName.split("_")[2]
 
+    if dataset.find("PromptReco-v")!=-1:
+        shortName+= "_v"+dataset[dataset.find("PromptReco-v")+12:dataset.find("PromptReco-v")+13]
+
     if dataset.find("ext")!=-1:
         shortName+= "_"+dataset[dataset.find("ext"):dataset.find("ext")+4]
 
@@ -42,12 +45,11 @@ def prepareCrabCfg(dataset,
     #    config.JobType.psetName = 'analyzerMC_METCORR.py'
     if dataset.split("/")[2].find("reHLT")==-1:
         config.JobType.psetName = 'analyzerMC_HLT.py'
-        
 
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAW_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc', 'Muon_IsoMu22_eff.root']
+    config.JobType.inputFiles = ['HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc', 'Muon_IsoMu22_eff.root']
     
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -90,6 +92,8 @@ datasets = [
     "/SingleMuon/Run2016E-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2016F-PromptReco-v1/MINIAOD",
     "/SingleMuon/Run2016G-PromptReco-v1/MINIAOD",
+    "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
+    "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
     #Signal SM
     "/GluGluHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/VBFHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",    
@@ -136,11 +140,11 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-datasets = ["/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/MINIAODSIM"]
+datasets = ["/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
+            "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD"]
 ###############
 
-#jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt"
-jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
+jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-282037_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
 ########################################################
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
@@ -148,15 +152,15 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v36")    
+                   publish_data_suffix = "v40")    
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
 '''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v28",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_07_10_2016/")
+        mergeDataset(dataset=dataset, publish_data_suffix = "v39",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_14_10_2016/")
 '''
 #for a in v1/*v28*; do crab resubmit -d $a; done
 

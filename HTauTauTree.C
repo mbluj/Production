@@ -136,24 +136,10 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11));
   
-  /*
-  if(EventNumber == 343354) std::cout<<" muonBaselineSelection: "<<muonBaselineSelection
-	   <<" tauBaselineSelection: "<<tauBaselineSelection
-	   <<" passBaselinePair: "<<baselinePair
-	   <<" passPostSynchMuon: "<<postSynchMuon
-	   <<" passPostSynchTau: "<<postSynchTau
-	   <<" diMuonVeto(): "<<diMuonVeto()
-	   <<" thirdLeptonVeto(indexMuonLeg): "<<thirdLeptonVeto(indexMuonLeg)
-	   <<std::endl
-	   <<"pt_1: "<<muonP4.Perp()<<", eta_1: "<<muonP4.Eta()<<", phi_1: "<<muonP4.Phi()<<", d0_1: "<<dxy->at(indexMuonLeg)<<", dZ_1: "<<dz->at(indexMuonLeg)<<", id_1: "<<((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6))<<std::endl
-	   <<"pt_2: "<<tauP4.Perp()<<", eta_2: "<<tauP4.Eta()<<", phi_2: "<<tauP4.Phi()<<", dZ_2: "<<dz->at(indexTauLeg)<<", id_2: "<<daughters_decayModeFindingOldDMs->at(indexTauLeg)<<std::endl
-	   <<"deltaR: "<<muonP4.DeltaR(tauP4)
-	   <<std::endl;
-  */
+  
   return muonBaselineSelection && tauBaselineSelection && baselinePair
-    //&& postSynchTau && loosePostSynchMuon
-    //&& !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg)
-    //&& triggerSelection		//this is for the SM baseline selection for the VBF sample
+    && postSynchTau && loosePostSynchMuon
+    && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13)
     && true;
 }
 /////////////////////////////////////////////////
@@ -329,7 +315,7 @@ void HTauTauTree::fillEvent(){
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;
-  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::DY;
+  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLL")!=std::string::npos) aType =  HTTEvent::DY;
   else if(fileName.find("W")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::WJets;
   else if(fileName.find("TT_")!=std::string::npos) aType =  HTTEvent::TTbar;
   else if(fileName.find("HToTauTau_M")!=std::string::npos) aType =  HTTEvent::H;
@@ -610,6 +596,8 @@ std::vector<float> HTauTauTree::getProperties(const std::vector<std::string> & p
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 int HTauTauTree::getMCMatching(unsigned int index){
+
+  if(!fChain->FindBranch("genpart_pdg")) return -999;
 
   float dR = 100;
   unsigned int gen_ind = 0;
