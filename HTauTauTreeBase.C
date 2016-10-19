@@ -620,7 +620,7 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   hStats = new TH1F("hStats","Bookkeeping histogram",11,-0.5,10.5);
   hStats->SetDirectory(warsawFile);
   
-  myScaleFactor.init_ScaleFactor("Muon_IsoMu22_OR_TkIsoMu22_eff_fineBinning.root");
+  //myScaleFactor.init_ScaleFactor("Muon_IsoMu22_OR_TkIsoMu22_eff_fineBinning.root");
    
   leptonPropertiesList.push_back("PDGIdDaughters");
   leptonPropertiesList.push_back("daughters_charge");
@@ -1058,9 +1058,9 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
 
     //MB the following is finall state specific and should be FIXED
-    TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
-    float scaleFactor = myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
-    aHTTpair.setMuonTriggerSF(scaleFactor);
+    //TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
+    //float scaleFactor = myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
+    //aHTTpair.setMuonTriggerSF(scaleFactor);
 
     httPairCollection.push_back(aHTTpair);
   }
