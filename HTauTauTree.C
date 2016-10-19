@@ -4,9 +4,6 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TSystem.h>
-//#include "ScaleFactor.cc"
-//#include "HTTEvent.cxx"
-//#include "HTauTauTreeBase.C"
 
 #include <iostream>
 #include <fstream>
