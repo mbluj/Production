@@ -11,7 +11,7 @@ def submitJob(aFile, dataPath, back):
     #Update the CMSSW configuration
     process.source.fileNames =  cms.untracked.vstring()
     process.source.fileNames.append('file:'+ dataPath + aFile)    
-    process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50))
+    process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
     ##Prepare working directory
     workdir = dataPath.split("Data/")[1] + aFile.split(".root")[0]    
     command = "mkdir -p "+workdir
