@@ -80,12 +80,13 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 	   <<" passBaselinePair: "<<passBaselinePair
 	   <<" passPostSynchTau1: "<<passPostSynchTau1
 	   <<" passPostSynchTau2: "<<passPostSynchTau2
-	   <<" thirdLeptonVeto(leg1,leg2): "<<thirdLeptonVeto(indexLeg1,indexLeg2)
+	   <<" extraMuonVeto(leg1,leg2): "<<thirdLeptonVeto(indexLeg1,indexLeg2,13)
+	   <<" extraElectronVeto(leg1,leg2): "<<thirdLeptonVeto(indexLeg1,indexLeg2,11)
 	   <<std::endl;
   */
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
     //&& postSynchTau1 && postSynchTau2
-    //&& !diMuonVeto() && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
+    //&& !thirdLeptonVeto(indexLeg1,indexLeg2,13)
     //&& !thirdLeptonVeto(indexLeg1,indexLeg2,11)
     && true;
 }

@@ -4,9 +4,6 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TSystem.h>
-//#include "ScaleFactor.cc"
-//#include "HTTEvent.cxx"
-
 
 #include <iostream>
 #include <fstream>
@@ -26,7 +23,7 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, std::string prefix) : fChain(0)
    }
    Init(tree);
 
-    /////////////////////////////////////////////////
+   /////////////////////////////////////////////////
    ///Added by AK
    initWawTree(tree, prefix);
    ////////////////////////////////////////////////////////////

@@ -18,10 +18,11 @@
 
 
 class HTauhTauhTree : public HTauTauTreeBase {
+ public :
 
   /////////////////////////////////////////////////
   /// TT final state specific
-  bool pairSelection(unsigned int index);  
+  bool pairSelection(unsigned int index);
   /////////////////////////////////////////////////
   
   HTauhTauhTree(TTree *tree=0, std::string prefix="WAWTT");
