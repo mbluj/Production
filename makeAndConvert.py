@@ -14,8 +14,10 @@ gSystem.CompileMacro('ScaleFactor.cc')
 gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauTauTree.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
+gSystem.CompileMacro('HMuMuTree.C')
 from ROOT import HTauTauTree
 from ROOT import HTauhTauhTree
+from ROOT import HMuMuTree
 
 fileNames = []
 aFile = "file://./HTauTauAnalysis.root"
@@ -31,3 +33,7 @@ print "Making the tau*tau tree"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 HTauhTauhTree(aTree).Loop()
+print "Making the mu*mu tree"
+aROOTFile = TFile.Open(aFile)
+aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
+HMuMuTree(aTree).Loop()
