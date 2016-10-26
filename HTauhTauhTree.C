@@ -93,16 +93,9 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-Int_t HTauhTauhTree::Cut(Long64_t entry){
+unsigned int HTauhTauhTree::bestPair(std::vector<unsigned int> &pairIndexes){
 
-  Int_t bestIndex = 9999;
-  if(!mothers_px->size()) return bestIndex;
-
-  vector<unsigned int> pairIndexes;
-  for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
-    if(pairSelection(iPair)) pairIndexes.push_back(iPair);
-  }
-
+  unsigned int bestIndex = 9999;
   ///Pair are already sorted during the ntuple creation?
   double iso_1=std::numeric_limits<double>::infinity(), iso_2=std::numeric_limits<double>::infinity(), pt2_1=-1, pt2_2=-1;
   if(pairIndexes.size()) {
