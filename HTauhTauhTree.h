@@ -23,7 +23,7 @@ class HTauhTauhTree : public HTauTauTreeBase {
   /////////////////////////////////////////////////
   /// TT final state specific
   bool pairSelection(unsigned int index);
-  Int_t Cut(Long64_t entry);
+  unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   /////////////////////////////////////////////////
   
   HTauhTauhTree(TTree *tree=0, std::string prefix="WAWTT");

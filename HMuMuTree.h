@@ -22,6 +22,7 @@ class HMuMuTree : public HTauTauTreeBase {
   /////////////////////////////////////////////////
   /// MM final state specific
   bool pairSelection(unsigned int index);
+  unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   /////////////////////////////////////////////////
   
   HMuMuTree(TTree *tree=0, std::string prefix="WAWMM");

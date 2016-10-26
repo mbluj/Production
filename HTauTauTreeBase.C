@@ -1,3 +1,4 @@
+
 #define HTauTauTreeBase_cxx
 #include "HTauTauTreeBase.h"
 #include <TH2.h>
@@ -703,16 +704,21 @@ Int_t HTauTauTreeBase::Cut(Long64_t entry){
 
   if(!mothers_px->size()) return 9999;
 
-  vector<unsigned int> pairIndexes;
+  std::vector<unsigned int> pairIndexes;
   for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
     if(pairSelection(iPair)) pairIndexes.push_back(iPair);
   }
+  
+  return bestPair(pairIndexes);
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+unsigned int HTauTauTreeBase::bestPair(std::vector<unsigned int> &pairIndexes){
 
   ///Pair are already sorted during the ntuple creation
   if(pairIndexes.size()) return pairIndexes[0];
-  
-  return 9999;
-};
+  else return 9999;
+}
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauTauTreeBase::pairSelection(unsigned int iPair){
@@ -1066,7 +1072,7 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
 /////////////////////////////////////////////////
 template<class T> T HTauTauTreeBase::getBranchValue(char *branchAddress, unsigned int index){
 
-  vector<T> *aVector = *(vector<T> **)(branchAddress);
+  std::vector<T> *aVector = *(std::vector<T> **)(branchAddress);
 
   if(aVector->size()<=index){
     //std::cout<<"Index - size mismatch "<<std::endl;
