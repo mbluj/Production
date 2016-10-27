@@ -118,9 +118,9 @@ unsigned int HTauhTauhTree::bestPair(std::vector<unsigned int> &pairIndexes){
       double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index);
       
       if(iso_1_i>iso_1) continue; 
-      if(pt2_1_i<pt2_1) continue;
+      if(iso_1_i==iso_1 && pt2_1_i<pt2_1) continue;
       if(iso_2_i>iso_2) continue; 
-      if(pt2_2_i<pt2_2) continue;
+      if(iso_2_i==iso_2 && pt2_2_i<pt2_2) continue;
       bestIndex = iPair;
       iso_1 = iso_1_i;
       iso_2 = iso_2_i;
