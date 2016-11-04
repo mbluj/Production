@@ -79,7 +79,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchTau2 = (tauID->at(indexLeg2) & tauIDmask) == tauIDmask;
   ///
   bool postSynchLooseTau1 = (tauID->at(indexLeg1) & tauIDmaskLoose) == tauIDmaskLoose;
-  bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaksLoose;
+  bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaskLoose;
   bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
   bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
   ///
