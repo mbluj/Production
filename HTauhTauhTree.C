@@ -78,10 +78,10 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchTau1 = (tauID->at(indexLeg1) & tauIDmask) == tauIDmask;
   bool postSynchTau2 = (tauID->at(indexLeg2) & tauIDmask) == tauIDmask;
   ///
-  bool postSynchLooseTau1 = (tauID->at(indexLeg1) & tauIDmaskLoose) == tauIDLoose;
-  bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDLoose;
-  bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDMedium;
-  bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDMedium;
+  bool postSynchLooseTau1 = (tauID->at(indexLeg1) & tauIDmaskLoose) == tauIDmaskLoose;
+  bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaksLoose;
+  bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
+  bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
   ///
   bool triggerSelection = (triggerbit & 1<<0) == (1<<0);//MB FIXME
   
