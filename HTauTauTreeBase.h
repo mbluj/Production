@@ -37,7 +37,8 @@ public :
   virtual bool extraElectronVeto(unsigned int signalLeg1Index, unsigned int signalLeg2Index, double dRmin=-1);
   bool muonSelection(unsigned int index);
   bool electronSelection(unsigned int index);
-  virtual bool pairSelection(unsigned int index);  
+  virtual bool pairSelection(unsigned int index);
+  virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
   bool isGoodToMatch(unsigned int ind);

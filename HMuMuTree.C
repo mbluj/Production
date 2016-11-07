@@ -78,3 +78,59 @@ bool HMuMuTree::pairSelection(unsigned int iPair){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+unsigned int HMuMuTree::bestPair(std::vector<unsigned int> &pairIndexes){
+
+  unsigned int bestIndex = 9999;
+  ///Pair are already sorted during the ntuple creation?
+  double iso_1=std::numeric_limits<double>::infinity(), iso_2=std::numeric_limits<double>::infinity(), pt2_1=-1, pt2_2=-1;
+  if(pairIndexes.size()) {
+    //return pairIndexes[0];//MB
+    for(unsigned int ii=0;ii<2*pairIndexes.size();++ii){
+      unsigned int i=(ii<pairIndexes.size()?ii:ii-pairIndexes.size());
+      unsigned int iPair = pairIndexes[i];
+      unsigned int leg1Index = indexDau1->at(iPair);
+      unsigned int leg2Index = indexDau2->at(iPair);
+      if(ii>=pairIndexes.size()){//invert legs
+	leg1Index = indexDau2->at(iPair);
+	leg2Index = indexDau1->at(iPair);
+      }
+      double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
+			daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
+      double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
+			daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
+      double iso_1_i = combreliso->at(leg1Index);
+      double iso_2_i = combreliso->at(leg2Index);
+      
+      if(iso_1_i>iso_1) continue; 
+      if(iso_1_i==iso_1 && pt2_1_i<pt2_1) continue;
+      if(iso_2_i>iso_2) continue; 
+      if(iso_2_i==iso_2 && pt2_2_i<pt2_2) continue;
+      bestIndex = iPair;
+      iso_1 = iso_1_i;
+      iso_2 = iso_2_i;
+      pt2_1 = pt2_1_i;
+      pt2_2 = pt2_2_i;
+    }
+  }
+  /*
+  if(pairIndexes.size() && bestIndex!=(Int_t)pairIndexes[0]){
+    unsigned int iPair = pairIndexes[0];
+    unsigned int leg1Index = indexDau1->at(iPair);
+    unsigned int leg2Index = indexDau2->at(iPair);
+    double pt2_1_i = (daughters_px->at(leg1Index)*daughters_px->at(leg1Index)+
+		      daughters_py->at(leg1Index)*daughters_py->at(leg1Index));
+    double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
+		      daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
+    std::cout<<"Pair sorting: "<<std::endl
+	     <<"best index = "<<bestIndex<<", index[0] = "<<pairIndexes[0]<<std::endl
+	     <<"\tiso1[best]="<<-iso_1<<", iso1[0]="<<combreliso->at(leg1Index)<<std::endl
+	     <<"\tpt1[best]="<<sqrt(pt2_1)<<", pt1[0]="<<sqrt(pt2_1_i)<<std::endl
+	     <<"\tiso2[best]="<<-iso_2<<", iso1[0]="<<combreliso->at(leg2Index)<<std::endl
+	     <<"\tpt2[best]="<<sqrt(pt2_2)<<", pt1[0]="<<sqrt(pt2_2_i)<<std::endl;
+  }
+  */
+
+  return bestIndex;
+};
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
