@@ -49,7 +49,7 @@ def prepareCrabCfg(dataset,
 
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
-    config.JobType.outputFiles = ['WAW_HTauTauAnalysis.root']
+    config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
     config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc']
     
     config.Site.storageSite = storage_element
@@ -97,6 +97,16 @@ datasets = [
     "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD",
+    "/Tau/Run2016B-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016B-23Sep2016-v3/MINIAOD",
+    "/Tau/Run2016C-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016D-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016E-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016F-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016G-23Sep2016-v1/MINIAOD",    
+    "/Tau/Run2016H-PromptReco-v1/MINIAOD",
+    "/Tau/Run2016H-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016H-PromptReco-v3/MINIAOD",
     #Signal SM
     "/GluGluHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/VBFHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",    
@@ -143,20 +153,20 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-datasets = ["/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
-            "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD"]
+#datasets = [ "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
+#             "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
+#             "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD"
+#            ]
 ###############
-jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-282037_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
+jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
 ########################################################
-'''
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
                    dataset=dataset,
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v41")    
-'''
+                   publish_data_suffix = "v50")    
 ########################################################
 ########################################################
 ## Merge output ROOT files.
