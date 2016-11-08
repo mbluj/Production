@@ -73,7 +73,8 @@ bool HMuMuTree::pairSelection(unsigned int iPair){
   
   return muonBaselineSelection1 && muonBaselineSelection2 && baselinePair
     && ( (loosePostSynchMuon1 && postSynchMuon2) || (loosePostSynchMuon2 && postSynchMuon1) )
-    //&& !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13)
+    && !thirdLeptonVeto(indexLeg1, indexLeg2, 13)
+    && !thirdLeptonVeto(indexLeg1, indexLeg2, 11)
     && true;
 }
 /////////////////////////////////////////////////

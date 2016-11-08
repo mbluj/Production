@@ -15,6 +15,7 @@ gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauTauTree.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
 gSystem.CompileMacro('HMuMuTree.C')
+from ROOT import HTauTauTreeBase
 from ROOT import HTauTauTree
 from ROOT import HTauhTauhTree
 from ROOT import HMuMuTree

@@ -75,7 +75,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     && postSynchTau && loosePostSynchMuon
-    && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13)
+    && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13) && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11)
     && true;
 }
 /////////////////////////////////////////////////
