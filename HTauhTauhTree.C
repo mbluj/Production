@@ -104,7 +104,8 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
-    && postSynchTau1 && postSynchTau2
+    //&& postSynchTau1 && postSynchTau2
+    && ( (postSynchLooseTau1 && postSynchMediumTau2) || (postSynchLooseTau2 && postSynchMediumTau1) )
     && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
     && !thirdLeptonVeto(indexLeg1,indexLeg2,11)
     && true;
