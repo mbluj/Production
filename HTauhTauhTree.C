@@ -25,11 +25,24 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   unsigned int indexLeg1 = indexDau1->at(iPair);
   unsigned int indexLeg2 = indexDau2->at(iPair);
 
-  int tauIDmask = 0;
+  int tauIDmask = 0, tauIDmaskMedium = 0 , tauIDmaskLoose = 0;
   for(unsigned int iBit=0;iBit<ntauIds;iBit++){
-    if(tauIDStrings[iBit]=="byVTightIsolationMVArun2v1DBoldDMwLT") tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="againstMuonLoose3") tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="againstElectronVLooseMVA6") tauIDmask |= (1<<iBit);
+    if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT") 
+      tauIDmask |= (1<<iBit);
+    if(tauIDStrings[iBit]=="byMediumIsolationMVArun2v1DBoldDMwLT") 
+      tauIDmaskMedium |= (1<<iBit);
+    if(tauIDStrings[iBit]=="byLooseIsolationMVArun2v1DBoldDMwLT") 
+      tauIDmaskLoose |= (1<<iBit);
+    if(tauIDStrings[iBit]=="againstMuonLoose3") {
+      tauIDmask |= (1<<iBit);
+      tauIDmaskMedium |= (1<<iBit);
+      tauIDmaskLoose |= (1<<iBit);
+    }
+    if(tauIDStrings[iBit]=="againstElectronVLooseMVA6") {
+      tauIDmask |= (1<<iBit);
+      tauIDmaskMedium |= (1<<iBit);
+      tauIDmaskLoose |= (1<<iBit);
+    }
   }
   //MB sort taus within the pair
   double pt2_1 = (daughters_px->at(indexLeg1)*daughters_px->at(indexLeg1)+
@@ -65,6 +78,11 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchTau1 = (tauID->at(indexLeg1) & tauIDmask) == tauIDmask;
   bool postSynchTau2 = (tauID->at(indexLeg2) & tauIDmask) == tauIDmask;
   ///
+  bool postSynchLooseTau1 = (tauID->at(indexLeg1) & tauIDmaskLoose) == tauIDmaskLoose;
+  bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaskLoose;
+  bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
+  bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
+  ///
   bool triggerSelection = (triggerbit & 1<<0) == (1<<0);//MB FIXME
   
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,tauBaselineSelection1);
@@ -86,7 +104,8 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 	   <<std::endl;
   */
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
-    && postSynchTau1 && postSynchTau2
+    //&& postSynchTau1 && postSynchTau2
+    && ( (postSynchLooseTau1 && postSynchMediumTau2) || (postSynchLooseTau2 && postSynchMediumTau1) )
     && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
     && !thirdLeptonVeto(indexLeg1,indexLeg2,11)
     && true;
