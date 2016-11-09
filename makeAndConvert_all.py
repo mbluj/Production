@@ -5,12 +5,17 @@ import os
 from ROOT import gSystem, TChain, TSystem, TFile
 from PSet import process
 
+doSvFit = True
+if doSvFit :
+    print "Run with SVFit computation"
+
 #Produce framework report required by CRAB
 command = "cmsRun -j FrameworkJobReport.xml -p PSet.py"
 os.system(command)
 
 gSystem.CompileMacro('HTTEvent.cxx')
 gSystem.CompileMacro('ScaleFactor.cc')
+gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
 gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
 gSystem.CompileMacro('HTauTauTree.C')
@@ -34,22 +39,22 @@ for aFile in fileNames:
     aROOTFile = TFile.Open(aFile)
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
-    print "Process TT..."
-    HTauhTauhTree(aTree).Loop()
+    print "Process MT..."
+    HTauTauTree(aTree,doSvFit).Loop()
     print "done"
     # file and tree have to be opened again as they are closed by Dtor of analyzer
     aROOTFile = TFile.Open(aFile)
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
-    print "Process MT..."
-    HTauTauTree(aTree).Loop()
+    print "Process TT..."
+    HTauhTauhTree(aTree,doSvFit).Loop()
     print "done"
     # file and tree have to be opened again as they are closed by Dtor of analyzer
     aROOTFile = TFile.Open(aFile)
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
     print "Process MM..."
-    HTauTauTree(aTree).Loop()
+    HMuMuTree(aTree).Loop()
     print "done"
 
 #print "TTree entries: ",aTree.GetEntries()

@@ -25,7 +25,7 @@ class HTauTauTree : public HTauTauTreeBase {
   bool pairSelection(unsigned int index);
   /////////////////////////////////////////////////
   
-  HTauTauTree(TTree *tree=0, std::string prefix="WAWMT");
+  HTauTauTree(TTree *tree=0, bool doSvFit=false, std::string prefix="WAWMT");
   virtual ~HTauTauTree();
   
 };
@@ -33,7 +33,7 @@ class HTauTauTree : public HTauTauTreeBase {
 #endif
 
 #ifdef HTauTauTree_cxx
-HTauTauTree::HTauTauTree(TTree *tree, std::string prefix) : HTauTauTreeBase(tree, prefix) 
+HTauTauTree::HTauTauTree(TTree *tree, bool doSvFit, std::string prefix) : HTauTauTreeBase(tree, doSvFit, prefix) 
 {}
 
 HTauTauTree::~HTauTauTree()
