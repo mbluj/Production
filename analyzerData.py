@@ -67,11 +67,9 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2015D-PromptReco-v4/MINIAOD/A4C322BD-E6A8-E511-A14D-0025905A48EC.root'
-        #'file:BC524779-18A9-E511-AD4D-0CC47A4C8E46.root'
-        #'file:88FE9BFB-2DA9-E511-8D41-C4346BC7AAE0.root'
-        'file:6A843A53-9EA8-E511-96A9-00266CFCC988.root'
-        #'root://cms-xrd-global.cern.ch///store/data/Run2015D/SingleMuon/MINIAOD/16Dec2015-v1/10001/BC524779-18A9-E511-AD4D-0CC47A4C8E46.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-PromptReco-v1/MINIAOD/0667AC34-2464-E611-84CE-02163E011979.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD/72446D9C-D89C-E611-9060-002590A3C984.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
     )
 )
 
