@@ -28,6 +28,9 @@ def prepareCrabCfg(dataset,
     if dataset.find("PromptReco-v")!=-1:
         shortName+= "_v"+dataset[dataset.find("PromptReco-v")+12:dataset.find("PromptReco-v")+13]
 
+    if dataset.find("23Sep2016-v")!=-1:
+        shortName+= "_v"+dataset[dataset.find("23Sep2016-v")+11:dataset.find("23Sep2016-v")+12]
+
     if dataset.find("ext")!=-1:
         shortName+= "_"+dataset[dataset.find("ext"):dataset.find("ext")+4]
 
