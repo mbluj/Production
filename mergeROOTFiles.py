@@ -24,6 +24,9 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
     shortName = shortName.replace("-","_")
     shortName = shortName.split("_")[0]+shortName.split("_")[1]+shortName.split("_")[2]
 
+    if dataset.find("PromptReco-v")!=-1:
+        shortName+= "_v"+dataset[dataset.find("PromptReco-v")+12:dataset.find("PromptReco-v")+13]
+        
     if dataset.find("ext")!=-1:
         shortName+= "_"+dataset[dataset.find("ext"):dataset.find("ext")+4]
 
