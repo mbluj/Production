@@ -9,7 +9,10 @@
 #include <iostream>
 #include <fstream>
 
-HTauTauTreeBase::HTauTauTreeBase(TTree *tree, std::string prefix) : fChain(0) 
+#include <TMatrixD.h>
+#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
+
+HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -28,7 +31,19 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, std::string prefix) : fChain(0)
    ///Added by AK
    initWawTree(tree, prefix);
    ////////////////////////////////////////////////////////////
-   
+
+   ////////////////////////////////////////////////////////////
+   ///Initialization for SvFit
+   doSvFit_ = doSvFit;
+   if(doSvFit_){
+     std::cout<<"[HTauTauTreeBase::HTauTauTreeBase] Run with SvFit"<<std::endl;
+     TString cmsswBase = getenv("CMSSW_BASE");
+     TString svInputFileName = cmsswBase+"/src/TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root";
+     std::cout<<"\t svFitInputResolutions: "<<svInputFileName<<std::endl;
+     inputFile_visPtResolution_ = new TFile(svInputFileName);
+   }
+   ////////////////////////////////////////////////////////////
+
 }
 
 HTauTauTreeBase::~HTauTauTreeBase()
@@ -41,6 +56,8 @@ HTauTauTreeBase::~HTauTauTreeBase()
      warsawFile->Write();
      delete warsawFile;
    }
+   /////////////////////////
+   if(inputFile_visPtResolution_) delete inputFile_visPtResolution_;
    /////////////////////////
 }
 
@@ -664,6 +681,8 @@ void HTauTauTreeBase::Loop(){
 
    Long64_t nentries = fChain->GetEntries();
    Long64_t nbytes = 0, nb = 0;
+   //int nPairs = 0;//MB debug
+   //int maxPairs = 100;//MB debug
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
@@ -679,15 +698,19 @@ void HTauTauTreeBase::Loop(){
       bestPairIndex_ = bestPairIndex;
 
       if(bestPairIndex<9999){
+	//nPairs++;//MB debug
 	fillJets(bestPairIndex);
 	fillLeptons();
 	fillGenLeptons();
 	fillPairs(bestPairIndex);
+	computeSvFit();
 
 	warsawTree->Fill();
 	hStats->Fill(2);//Number of events saved to ntuple
 	hStats->Fill(3,httEvent->getMCWeight());//Sum of weights saved to ntuple
+	//if(nPairs%(maxPairs/10)==0) std::cout<<nPairs<<" found"<<std::endl;//MB debug
       }
+      //if(nPairs==maxPairs) break;//MB debug
    }
 
    writePropertiesHeader(leptonPropertiesList);
@@ -921,11 +944,15 @@ void HTauTauTreeBase::fillLeptons(){
     TLorentzVector p4Neutral(daughters_neutral_px->at(iLepton), daughters_neutral_py->at(iLepton),
 			     daughters_neutral_pz->at(iLepton), daughters_neutral_e->at(iLepton));
     
-    TLorentzVector p4ScaleUp(daughters_px_TauUp->at(iLepton), daughters_py_TauUp->at(iLepton),
-			     daughters_pz_TauUp->at(iLepton), daughters_e_TauUp->at(iLepton));
-  
-    TLorentzVector p4ScaleDown(daughters_px_TauDown->at(iLepton), daughters_py_TauDown->at(iLepton),
-			       daughters_pz_TauDown->at(iLepton), daughters_e_TauDown->at(iLepton));
+    TLorentzVector p4ScaleUp;
+    if(daughters_TauUpExists->at(iLepton))
+      p4ScaleUp.SetPxPyPzE(daughters_px_TauUp->at(iLepton), daughters_py_TauUp->at(iLepton),
+			   daughters_pz_TauUp->at(iLepton), daughters_e_TauUp->at(iLepton));
+    
+    TLorentzVector p4ScaleDown;
+    if(daughters_TauDownExists->at(iLepton))
+      p4ScaleDown.SetPxPyPzE(daughters_px_TauDown->at(iLepton), daughters_py_TauDown->at(iLepton),
+			     daughters_pz_TauDown->at(iLepton), daughters_e_TauDown->at(iLepton));
 
     TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));    
     TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));    
@@ -1221,6 +1248,189 @@ bool HTauTauTreeBase::isGoodToMatch(unsigned int ind){
 	if(!(isCat1 || isCat2 || isCat3 || isCat4 || isCat5)) return 0;
 	
 	return 1;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+void HTauTauTreeBase::computeSvFit(bool upDownTES){
+
+  if(!doSvFit_ || inputFile_visPtResolution_->IsZombie() ) return;
+  if(!httPairCollection.size()) return;
+
+  HTTPair &aPair = httPairCollection[0];
+  //Legs
+  HTTParticle leg1 = aPair.getLeg1();
+  float mass1;
+  int decay1 = -1;
+  svFitStandalone::kDecayType type1;
+  if(std::abs(leg1.getPDGid())==11){
+    mass1 = 0.51100e-3; //electron mass
+    type1 = svFitStandalone::kTauToElecDecay;
+  }
+  else if(std::abs(leg1.getPDGid())==13){
+    mass1 = 0.10566; //muon mass
+    type1 = svFitStandalone::kTauToMuDecay;
+  }
+  else{//tau->hadrs.
+    decay1 = leg1.getProperty(PropertyEnum::decayMode);
+    mass1 = leg1.getP4().M();
+    if(decay1==0)
+      mass1 = 0.13957; //pi+/- mass
+    type1 = svFitStandalone::kTauToHadDecay;
+  }
+  HTTParticle leg2 = aPair.getLeg2();
+  float mass2;
+  int decay2 = -1;
+  svFitStandalone::kDecayType type2;
+  if(std::abs(leg2.getPDGid())==11){
+    mass2 = 0.51100e-3; //electron mass
+    type2 = svFitStandalone::kTauToElecDecay;
+  }
+  else if(std::abs(leg2.getPDGid())==13){
+    mass2 = 0.10566; //muon mass
+    type2 = svFitStandalone::kTauToMuDecay;
+  }
+  else{//tau->hadrs.
+    decay2 = leg2.getProperty(PropertyEnum::decayMode);
+    mass2 = leg2.getP4().M();
+    if(decay2==0)
+      mass2 = 0.13957; //pi+/- mass
+    type2 = svFitStandalone::kTauToHadDecay;
+  }
+  //Leptons for SvFit
+  std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
+  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4().Pt(), leg1.getP4().Eta(), leg1.getP4().Phi(), mass1, decay1) );
+  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4().Pt(), leg2.getP4().Eta(), leg2.getP4().Phi(), mass2, decay2) );
+  //MET
+  TMatrixD covMET(2, 2);
+  covMET[0][0] = aPair.getMETMatrix().at(0);       
+  covMET[0][1] = aPair.getMETMatrix().at(1);       
+  covMET[1][0] = aPair.getMETMatrix().at(2);       
+  covMET[1][1] = aPair.getMETMatrix().at(3);
+  if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix     
+
+  ////
+  // Define SVfit algorithm
+  unsigned int verbosity = 0;//Set the debug level to 3 for testing
+    
+  TLorentzVector p4SVFit;
+  double SVptUnc = -999.;
+  double SVetaUnc = -999.;
+  double SVphiUnc = -999.;
+  double SVfitTransverseMass = -999.;
+  TVector2 metSVfit; // fitted MET
+  
+  // Run SvFit
+  if(true){//MB: Trivial trick to define scope for svfit algo to destroy it before aglos for up/down are called
+    SVfitStandaloneAlgorithm algo(measuredTauLeptons, aPair.getMET().X(), aPair.getMET().Y(), covMET, verbosity);
+    algo.addLogM(false); //In general, keep it false when using VEGAS integration
+    algo.shiftVisPt(true, inputFile_visPtResolution_);
+    algo.integrateMarkovChain();
+    if( algo.isValidSolution() ){//Get solution    
+      p4SVFit.SetPtEtaPhiM(algo.pt(),algo.eta(),algo.phi(),algo.getMass());
+      SVptUnc = algo.ptUncert();
+      SVetaUnc = algo.etaUncert();
+      SVphiUnc = algo.phiUncert();
+      SVfitTransverseMass = algo.transverseMass();      
+      metSVfit.SetMagPhi(algo.fittedMET().Rho(),algo.fittedMET().Phi()); //This is NOT a vector in the transverse plane! It has eta != 0.
+    }
+    //Set SVFit result in a pair
+    aPair.setP4SVFit(p4SVFit);
+    aPair.setMETSVfit(metSVfit);
+  }
+  //Up/Down if  requested
+  if(upDownTES){
+    TLorentzVector p4SVFitScaleUp;
+    TLorentzVector p4SVFitScaleDown;
+    double SVptUncScaleUp = -999.;
+    double SVptUncScaleDown = -999.;
+    double SVetaUncScaleUp = -999.;
+    double SVetaUncScaleDown = -999.;
+    double SVphiUncScaleUp = -999.;
+    double SVphiUncScaleDown = -999.;
+    double SVfitTransverseMassScaleUp = -999.;
+    double SVfitTransverseMassScaleDown = -999.;
+    TVector2 metSVfitScaleUp; // fitted MET
+    TVector2 metSVfitScaleDown; // fitted MET
+    /// ScaleUp
+    bool isTau1ScaleUp = leg1.getP4ScaleUp().Energy() > 0;
+    bool isTau2ScaleUp = leg2.getP4ScaleUp().Energy() > 0;
+    if(isTau1ScaleUp || isTau2ScaleUp){//Run SvFit for ScaleUp
+      std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptonsScaleUp;
+      //set 1st lepton
+      if(isTau1ScaleUp){
+	if(type1==svFitStandalone::kTauToHadDecay && decay1!=0)
+	  mass1 = leg1.getP4ScaleUp().M();
+	measuredTauLeptonsScaleUp.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4ScaleUp().Pt(), leg1.getP4ScaleUp().Eta(), leg1.getP4ScaleUp().Phi(), mass1, decay1) );
+      }
+      else{
+	measuredTauLeptonsScaleUp.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4().Pt(), leg1.getP4().Eta(), leg1.getP4().Phi(), mass1, decay1) );
+      }
+      //set 2nd lepton
+      if(isTau2ScaleUp){
+	if(type2==svFitStandalone::kTauToHadDecay && decay2!=0)
+	  mass2 = leg2.getP4ScaleUp().M();
+	measuredTauLeptonsScaleUp.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4ScaleUp().Pt(), leg2.getP4ScaleUp().Eta(), leg2.getP4ScaleUp().Phi(), mass2, decay2) );
+      }
+      else{
+	measuredTauLeptonsScaleUp.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4().Pt(), leg2.getP4().Eta(), leg2.getP4().Phi(), mass2, decay2) );
+      }
+      SVfitStandaloneAlgorithm algoScaleUp(measuredTauLeptonsScaleUp, aPair.getMET().X(), aPair.getMET().Y(), covMET, verbosity);
+      algoScaleUp.addLogM(false); //In general, keep it false when using VEGAS integration
+      algoScaleUp.shiftVisPt(true, inputFile_visPtResolution_);
+      algoScaleUp.integrateMarkovChain();
+      if( algoScaleUp.isValidSolution() ){//Get solution    
+	p4SVFitScaleUp.SetPtEtaPhiM(algoScaleUp.pt(),algoScaleUp.eta(),algoScaleUp.phi(),algoScaleUp.getMass());
+	SVptUncScaleUp = algoScaleUp.ptUncert();
+	SVetaUncScaleUp = algoScaleUp.etaUncert();
+	SVphiUncScaleUp = algoScaleUp.phiUncert();
+	SVfitTransverseMassScaleUp = algoScaleUp.transverseMass();      
+	metSVfitScaleUp.SetMagPhi(algoScaleUp.fittedMET().Rho(),algoScaleUp.fittedMET().Phi()); //This is NOT a vector in the transverse plane! It has eta != 0.
+      }
+      //Set SVFit result in a pair
+      aPair.setP4SVFitScaleUp(p4SVFitScaleUp);
+      //aPair.setMETSVfitScaleUp(metSVfitScaleUp);
+    }
+    /// ScaleDown
+    bool isTau1ScaleDown = leg1.getP4ScaleDown().Energy() > 0;
+    bool isTau2ScaleDown = leg2.getP4ScaleDown().Energy() > 0;
+    if(isTau1ScaleDown || isTau2ScaleDown){//Run SvFit for ScaleDown
+      std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptonsScaleDown;
+      //set 1st lepton
+      if(isTau1ScaleDown){
+	if(type1==svFitStandalone::kTauToHadDecay && decay1!=0)
+	  mass1 = leg1.getP4ScaleDown().M();
+	measuredTauLeptonsScaleDown.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4ScaleDown().Pt(), leg1.getP4ScaleDown().Eta(), leg1.getP4ScaleDown().Phi(), mass1, decay1) );
+      }
+      else{
+	measuredTauLeptonsScaleDown.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4().Pt(), leg1.getP4().Eta(), leg1.getP4().Phi(), mass1, decay1) );
+      }
+      //set 2nd lepton
+      if(isTau2ScaleDown){
+	if(type2==svFitStandalone::kTauToHadDecay && decay2!=0)
+	  mass2 = leg2.getP4ScaleDown().M();
+	measuredTauLeptonsScaleDown.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4ScaleDown().Pt(), leg2.getP4ScaleDown().Eta(), leg2.getP4ScaleDown().Phi(), mass2, decay2) );
+      }
+      else{
+	measuredTauLeptonsScaleDown.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4().Pt(), leg2.getP4().Eta(), leg2.getP4().Phi(), mass2, decay2) );
+      }
+      SVfitStandaloneAlgorithm algoScaleDown(measuredTauLeptonsScaleDown, aPair.getMET().X(), aPair.getMET().Y(), covMET, verbosity);
+      algoScaleDown.addLogM(false); //In general, keep it false when using VEGAS integration
+      algoScaleDown.shiftVisPt(true, inputFile_visPtResolution_);
+      algoScaleDown.integrateMarkovChain();
+      if( algoScaleDown.isValidSolution() ){//Get solution    
+	p4SVFitScaleDown.SetPtEtaPhiM(algoScaleDown.pt(),algoScaleDown.eta(),algoScaleDown.phi(),algoScaleDown.getMass());
+	SVptUncScaleDown = algoScaleDown.ptUncert();
+	SVetaUncScaleDown = algoScaleDown.etaUncert();
+	SVphiUncScaleDown = algoScaleDown.phiUncert();
+	SVfitTransverseMassScaleDown = algoScaleDown.transverseMass();      
+	metSVfitScaleDown.SetMagPhi(algoScaleDown.fittedMET().Rho(),algoScaleDown.fittedMET().Phi()); //This is NOT a vector in the transverse plane! It has eta != 0.
+      }
+      //Set SVFit result in a pair
+      aPair.setP4SVFitScaleDown(p4SVFitScaleDown);
+      //aPair.setMETSVfitScaleDown(metSVfitScaleDown);
+    }
+  }
+  return;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

@@ -26,7 +26,7 @@ class HTauhTauhTree : public HTauTauTreeBase {
   unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   /////////////////////////////////////////////////
   
-  HTauhTauhTree(TTree *tree=0, std::string prefix="WAWTT");
+  HTauhTauhTree(TTree *tree=0, bool doSvFit=false, std::string prefix="WAWTT");
   virtual ~HTauhTauhTree();
   
 };
@@ -34,7 +34,7 @@ class HTauhTauhTree : public HTauTauTreeBase {
 #endif
 
 #ifdef HTauhTauhTree_cxx
-HTauhTauhTree::HTauhTauhTree(TTree *tree, std::string prefix) : HTauTauTreeBase(tree, prefix) 
+HTauhTauhTree::HTauhTauhTree(TTree *tree, bool doSvFit, std::string prefix) : HTauTauTreeBase(tree, doSvFit, prefix) 
 {}
 
 HTauhTauhTree::~HTauhTauhTree()

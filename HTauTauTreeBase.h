@@ -39,6 +39,7 @@ public :
   bool electronSelection(unsigned int index);
   virtual bool pairSelection(unsigned int index);
   virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
+  void computeSvFit(bool upDownTES=true);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
   bool isGoodToMatch(unsigned int ind);
@@ -61,6 +62,9 @@ public :
   ScaleFactor myScaleFactor;
   
   unsigned int bestPairIndex_;
+
+  bool doSvFit_;
+  TFile* inputFile_visPtResolution_;
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 
@@ -633,7 +637,7 @@ public :
    TBranch        *b_pvGen_z;   //!
    TBranch        *b_isRefitPV;   //!
 
-   HTauTauTreeBase(TTree *tree=0, std::string prefix="WAW");
+   HTauTauTreeBase(TTree *tree=0, bool doSvFit=false, std::string prefix="WAW");
    virtual ~HTauTauTreeBase();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);

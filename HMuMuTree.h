@@ -33,7 +33,7 @@ class HMuMuTree : public HTauTauTreeBase {
 #endif
 
 #ifdef HMuMuTree_cxx
-HMuMuTree::HMuMuTree(TTree *tree, std::string prefix) : HTauTauTreeBase(tree, prefix) 
+HMuMuTree::HMuMuTree(TTree *tree, std::string prefix) : HTauTauTreeBase(tree, false, prefix) 
 {}
 
 HMuMuTree::~HMuMuTree()
