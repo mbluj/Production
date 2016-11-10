@@ -13,7 +13,7 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
     
     if dataset.split("/")[2].find("Run201")!=-1:
         shortName += "_"+dataset.split("/")[2]
-        pathPart1 = "SingleMuon"
+        pathPart1 = dataset.split("/")[1]
     
     dataDirectory =  "Data/"+publish_data_suffix+"/"+pathPart1
 
