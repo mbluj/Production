@@ -15,7 +15,7 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
         shortName += "_"+dataset.split("/")[2]
         pathPart1 = dataset.split("/")[1]
     
-    dataDirectory =  "Data/"+publish_data_suffix+"/"+pathPart1
+    dataDirectory =  "Data/WAWNTuple/"+publish_data_suffix+"/"+pathPart1
 
     shortName = dataset.split("/")[1]
     if dataset.split("/")[2].find("Run201")!=-1:
@@ -26,7 +26,10 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
 
     if dataset.find("PromptReco-v")!=-1:
         shortName+= "_v"+dataset[dataset.find("PromptReco-v")+12:dataset.find("PromptReco-v")+13]
-        
+
+    if dataset.find("23Sep2016-v")!=-1:
+        shortName+= "_v"+dataset[dataset.find("23Sep2016-v")+11:dataset.find("23Sep2016-v")+12]
+
     if dataset.find("ext")!=-1:
         shortName+= "_"+dataset[dataset.find("ext"):dataset.find("ext")+4]
 
