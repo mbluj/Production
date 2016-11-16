@@ -34,6 +34,7 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
 
    ////////////////////////////////////////////////////////////
    ///Initialization for SvFit
+   inputFile_visPtResolution_ = 0;
    doSvFit_ = doSvFit;
    if(doSvFit_){
      std::cout<<"[HTauTauTreeBase::HTauTauTreeBase] Run with SvFit"<<std::endl;
