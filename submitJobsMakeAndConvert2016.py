@@ -39,7 +39,10 @@ def prepareCrabCfg(dataset,
 
     if dataset.find("t-channel")!=-1:
         shortName+= "_"+dataset[dataset.find("channel")+7:dataset.find("channel")+15]
-        
+
+
+    print dataset, shortName    
+    return    
     shortName = shortName.rstrip("-")
     shortName+="_"+publish_data_suffix
 
