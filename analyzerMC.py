@@ -67,13 +67,13 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM/5668CF4C-4A39-E611-BBCD-00259090766E.root'        
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM/5260BAEE-5539-E611-BE18-0025905C53F0.root'        
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
 process.maxEvents.input = 100
-process.source.eventsToProcess = cms.untracked.VEventRange('1:1421384')
+process.source.eventsToProcess = cms.untracked.VEventRange('1:743343')
 
 # JSON mask for data --> defined in the lumiMask file
 # from JSON file

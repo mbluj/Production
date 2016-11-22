@@ -895,12 +895,6 @@ void HTauTauTreeBase::fillEvent(){
 
   std::string fileName(fChain->GetCurrentFile()->GetName());  
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
-  if(fileName.find("Run20")!=std::string::npos) aType = HTTEvent::DATA;
-  else if(fileName.find("DY")!=std::string::npos && fileName.find("JetsToLL")!=std::string::npos) aType =  HTTEvent::DY;
-  else if(fileName.find("W")!=std::string::npos && fileName.find("JetsToLNu")!=std::string::npos) aType =  HTTEvent::WJets;
-  else if(fileName.find("TT_")!=std::string::npos) aType =  HTTEvent::TTbar;
-  else if(fileName.find("HToTauTau_M")!=std::string::npos) aType =  HTTEvent::H;
-  else if(fileName.find("SUSYGluGluToHToTauTau")!=std::string::npos) aType =  HTTEvent::A;
   httEvent->setSampleType(aType);
 
 }
@@ -1087,7 +1081,12 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
-
+    /*
+    std::cout<<"pt1: "<<aHTTpair.getMuon().getP4().Perp()
+	     <<" pt2: "<<aHTTpair.getTau().getP4().Perp()
+      	     <<" MET: "<<aHTTpair.getMET().Mod()
+	     <<std::endl;
+    */
     //MB the following is finall state specific and should be FIXED
     //TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
     //float scaleFactor = myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
