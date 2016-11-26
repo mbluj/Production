@@ -12,6 +12,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1F.h>
+#include <TH2F.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -42,6 +43,7 @@ public :
   void computeSvFit(bool upDownTES=true);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
+  float getPtReweight();
   bool isGoodToMatch(unsigned int ind);
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
@@ -59,12 +61,15 @@ public :
   TFile *warsawFile;
   HTTEvent *httEvent;
   TH1F* hStats;
+  TH2F* zptmass_histo;
   ScaleFactor myScaleFactor;
   
   unsigned int bestPairIndex_;
 
   bool doSvFit_;
   TFile* inputFile_visPtResolution_;
+  TFile* zPtReweightFile;
+
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 

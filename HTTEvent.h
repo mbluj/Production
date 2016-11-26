@@ -71,6 +71,8 @@ class HTTEvent{
 
   void setMCWeight(float x){mcWeight = x;}
 
+  void setPtReWeight(float x){ptReWeight = x;}
+
   void setLHE_Ht(float x){lheHt = x;}
 
   void setLHEnOutPartons(int x){lheNOutPartons = x;}
@@ -112,6 +114,8 @@ class HTTEvent{
   
   float getMCatNLOWeight() const {return aMCatNLOweight;}
 
+  float setPtReWeight() const {return ptReWeight;}
+
   float getMCWeight() const {return mcWeight;}
 
   float getLHE_Ht() const {return lheHt;}
@@ -149,6 +153,9 @@ class HTTEvent{
   //Generator event weight
   float mcWeight;
 
+  ///Weight used to modify the pt shape.
+  float ptReWeight;
+  
   ///Ht value from LHE record.
   float lheHt;
 

@@ -7,7 +7,6 @@ import urllib
 
 from crab3 import *
 from mergeROOTFiles import *
-from analyzerMC import *
 #########################################
 #########################################
 def prepareCrabCfg(dataset,
@@ -40,15 +39,12 @@ def prepareCrabCfg(dataset,
     if dataset.find("t-channel")!=-1:
         shortName+= "_"+dataset[dataset.find("channel")+7:dataset.find("channel")+15]
 
-
-    print dataset, shortName    
-    return    
     shortName = shortName.rstrip("-")
     shortName+="_"+publish_data_suffix
 
     ##Modify CRAB3 configuration
     config.JobType.psetName = 'analyzerMC.py'
-    #if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1:
+    #if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1
     #    config.JobType.psetName = 'analyzerMC_METCORR.py'
     if dataset.split("/")[2].find("reHLT")==-1:
         config.JobType.psetName = 'analyzerMC_HLT.py'
@@ -56,7 +52,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc']
+    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc','zpt_weights.root']
     
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -70,10 +66,10 @@ def prepareCrabCfg(dataset,
 
     #DYJets
     if dataset.split("/")[2].find("Jets")!=-1:
-        eventsPerJob = 60000
+        eventsPerJob = 30000
     #DY and W 3,4 Jets
     if dataset.split("/")[2].find("3Jets")!=-1 or dataset.split("/")[2].find("4Jets")!=-1:
-        eventsPerJob = 1000
+        eventsPerJob = 500
     
     config.Data.totalUnits =  -1
     config.Data.lumiMask=""
@@ -89,10 +85,10 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 150000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 
 datasets = [
-    #Data
+   #Data
     "/SingleMuon/Run2016B-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016B-23Sep2016-v3/MINIAOD",
     "/SingleMuon/Run2016C-23Sep2016-v1/MINIAOD",
@@ -113,6 +109,13 @@ datasets = [
     "/Tau/Run2016H-PromptReco-v1/MINIAOD",
     "/Tau/Run2016H-PromptReco-v2/MINIAOD",
     "/Tau/Run2016H-PromptReco-v3/MINIAOD",
+    #ICHEP Data
+    "/SingleMuon/Run2016B-PromptReco-v2/MINIAOD",
+    "/SingleMuon/Run2016C-PromptReco-v2/MINIAOD",
+    "/SingleMuon/Run2016D-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016B-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016C-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016D-PromptReco-v2/MINIAOD",
     #Signal SM
     "/GluGluHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/VBFHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",    
@@ -120,6 +123,9 @@ datasets = [
     "/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/GluGluHToTauTau_M130_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/VBFHToTauTau_M130_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/ZHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/ZHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/ZHToTauTau_M120_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     #Signal MSSM
     #"/SUSYGluGluToHToTauTau_M-90_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     #"/SUSYGluGluToHToTauTau_M-120_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
@@ -150,6 +156,13 @@ datasets = [
     "/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM", 
     "/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM", 
     "/WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    ###VVV
+    
+    ###EWK+2jets
+    "/EWKWMinus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/MINIAODSIM",
+    "/EWKWPlus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+    "/EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+    "/EWKZ2Jets_ZToNuNu_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
     ##QCD
     "/QCD_Pt-20toInf_MuEnrichedPt15_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM",
     ##Single T
@@ -159,29 +172,32 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-#datasets = [ "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
-#             "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
-#             "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD"
-#            ]
+datasets = [
+    "/SingleMuon/Run2016B-PromptReco-v2/MINIAOD",
+    "/SingleMuon/Run2016C-PromptReco-v2/MINIAOD",
+    "/SingleMuon/Run2016D-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016B-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016C-PromptReco-v2/MINIAOD",
+    "/Tau/Run2016D-PromptReco-v2/MINIAOD"]
 ###############
+#jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
 ########################################################
+'''
 for dataset in datasets:
     prepareCrabCfg(crabCfgName="crab3.py",
                    dataset=dataset,
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v50")    
+                   publish_data_suffix = "v60")
+'''
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
-'''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v39",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_14_10_2016/")
-'''
-#for a in v1/*v28*; do crab resubmit -d $a; done
-
-#for a in v1/*SingleMu*v26*; do crab status -d $a; done
+        mergeDataset(dataset=dataset, publish_data_suffix = "v60",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_26_11_201/")
+#for a in v1/*v60*; do crab resubmit -d $a; done
+#for a in v1/*Run2016*v60*; do crab report -d $a; done

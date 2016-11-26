@@ -43,15 +43,14 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
     shortName = shortName.rstrip("-")
     shortName+="_"+publish_data_suffix
 
-    outputFileNameMT = outputDir+"/"+shortName+".root"
-    outputFileNameTT = outputDir+"/TT_"+shortName+".root"
-    outputFileNameMM = outputDir+"/MM_"+shortName+".root"
+    outputFileNameMT = outputDir+"/MT/MT_"+shortName+".root"
+    outputFileNameTT = outputDir+"/TT/TT_"+shortName+".root"
+    outputFileNameMM = outputDir+"/MM/MM_"+shortName+".root"
     
-
     dataDirectory += "/"+shortName
     dataDirectory+="/"+os.listdir(dataDirectory)[0]
 
-    command = "mkdir -p "+outputDir
+    command = "mkdir -p "+outputDir+"/MT "+outputDir+"/TT "+outputDir+"/MM "
     os.system(command)
 
     command = "hadd -f "+outputFileNameMT+" "+dataDirectory+"/*/WAWMT*.root"
@@ -59,7 +58,7 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
     command = "hadd -f "+outputFileNameTT+" "+dataDirectory+"/*/WAWTT*.root"
     os.system(command)
     command = "hadd -f "+outputFileNameMM+" "+dataDirectory+"/*/WAWMM*.root"
-    os.system(command)
+    #os.system(command)
 #########################################
 #########################################
 

@@ -16,6 +16,7 @@ void HTTEvent::clear(){
   nPV = 0;
 
   mcWeight = 1.0;
+  ptReWeight = 1.0;
   lheHt = 1.0;
   lheNOutPartons = 0;
   aMCatNLOweight = 1.0;

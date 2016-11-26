@@ -44,7 +44,10 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
      inputFile_visPtResolution_ = new TFile(svInputFileName);
    }
    ////////////////////////////////////////////////////////////
-
+   zPtReweightFile = new TFile("zpt_weights.root");
+   if(!zPtReweightFile) std::cout<<"Z pt reweight file zpt_weights.root is missing."<<std::endl;
+   zptmass_histo = (TH2F*)zPtReweightFile->Get("zptmass_histo");
+   
 }
 
 HTauTauTreeBase::~HTauTauTreeBase()
@@ -57,9 +60,8 @@ HTauTauTreeBase::~HTauTauTreeBase()
      warsawFile->Write();
      delete warsawFile;
    }
-   /////////////////////////
    if(inputFile_visPtResolution_) delete inputFile_visPtResolution_;
-   /////////////////////////
+   if(zPtReweightFile) delete zPtReweightFile;
 }
 
 Int_t HTauTauTreeBase::GetEntry(Long64_t entry)
@@ -635,9 +637,7 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   TBranch *genLeptonBranch = warsawTree->Branch("HTTGenLeptonCollection",&httGenLeptonCollection);
   hStats = new TH1F("hStats","Bookkeeping histogram",11,-0.5,10.5);
   hStats->SetDirectory(warsawFile);
-  
-  //myScaleFactor.init_ScaleFactor("Muon_IsoMu22_OR_TkIsoMu22_eff_fineBinning.root");
-   
+     
   leptonPropertiesList.push_back("PDGIdDaughters");
   leptonPropertiesList.push_back("daughters_charge");
   leptonPropertiesList.push_back("decayMode");
@@ -881,9 +881,10 @@ void HTauTauTreeBase::fillEvent(){
     httEvent->setLHE_Ht(lheHt);
     httEvent->setLHEnOutPartons(lheNOutPartons);    
     httEvent->setGenPV(TVector3(pvGen_x,pvGen_y,pvGen_z));    
-  }
 
-  if(genpart_pdg){
+    float ptReWeight = getPtReweight();
+    httEvent->setPtReWeight(ptReWeight);
+      
     for(unsigned int iGenPart=0;iGenPart<genpart_pdg->size();++iGenPart){
       int absPDGId = std::abs(genpart_pdg->at(iGenPart));
       if(absPDGId == 25 || absPDGId == 23 || absPDGId == 36) httEvent->setDecayModeBoson(genpart_HZDecayMode->at(iGenPart));
@@ -1251,6 +1252,60 @@ bool HTauTauTreeBase::isGoodToMatch(unsigned int ind){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+float HTauTauTreeBase::getPtReweight(){
+
+  TLorentzVector genBosonP4;
+  TLorentzVector topP4, antitopP4;
+
+  for(unsigned int ind = 0; ind < genpart_px->size(); ind++) {
+
+    int genFlags = genpart_flags->at(ind);
+    int absPdgId = std::abs(genpart_pdg->at(ind));
+        
+    TLorentzVector p4(genpart_px->at(ind), genpart_py->at(ind),
+		      genpart_pz->at(ind), genpart_e->at(ind));
+
+    if(genpart_pdg->at(ind)==6) topP4 = p4;
+    if(genpart_pdg->at(ind)==-6) antitopP4 = p4;
+    bool fromHardProcessFinalState = (genFlags & (1<<8)) == (1<<8);
+    bool isElectron = (absPdgId == 11);
+    bool isMuon = (absPdgId == 13);
+    bool isNeutrino = (absPdgId == 12 || absPdgId == 14 || absPdgId == 16);
+    bool isDirectHardProcessTauDecayProduct = (genFlags & (1<<5)) == (1<<5);
+    if ( (fromHardProcessFinalState && (isMuon || isElectron || isNeutrino)) || isDirectHardProcessTauDecayProduct){
+      genBosonP4 += p4;
+    }
+    ///This GenParticle list is missing pions, so we have
+    ///to add hadronic tau, subtract neutral component
+    if(absPdgId == 66615) genBosonP4 += p4;
+    if(absPdgId == 77715) genBosonP4 -= p4;
+  }
+
+  float weight = 1.0;
+
+  //Z pt reweighting
+  if(genBosonP4.M()>1E-3){
+    float mass = genBosonP4.M();
+    float pt = genBosonP4.Perp();
+    int massBin = zptmass_histo->GetXaxis()->FindBin(mass);
+    int ptBin = zptmass_histo->GetYaxis()->FindBin(pt);
+    weight = zptmass_histo->GetBinContent(massBin,ptBin);
+  }
+  
+  ///TT reweighting according to
+  ///https://twiki.cern.ch/twiki/bin/view/CMS/TopSystematics#pt_top_Reweighting
+  if(topP4.M()>1E-3 && antitopP4.M()>1E-3){
+    float topPt = topP4.Perp();
+    float antitopPt = antitopP4.Perp();
+    float weightTop = exp(0.0615-0.0005*topPt);       
+    float weightAntitop= exp(0.0615-0.0005*antitopPt);
+    weight = sqrt(weightTop*weightAntitop);
+  }
+  
+  return weight;
+  }
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
 void HTauTauTreeBase::computeSvFit(bool upDownTES){
 
   if(!doSvFit_ || inputFile_visPtResolution_->IsZombie() ) return;
@@ -1306,8 +1361,9 @@ void HTauTauTreeBase::computeSvFit(bool upDownTES){
   covMET[0][1] = aPair.getMETMatrix().at(1);       
   covMET[1][0] = aPair.getMETMatrix().at(2);       
   covMET[1][1] = aPair.getMETMatrix().at(3);
-  if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix     
 
+  if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix     
+  
   ////
   // Define SVfit algorithm
   unsigned int verbosity = 0;//Set the debug level to 3 for testing
@@ -1320,7 +1376,7 @@ void HTauTauTreeBase::computeSvFit(bool upDownTES){
   TVector2 metSVfit; // fitted MET
   
   // Run SvFit
-  if(true){//MB: Trivial trick to define scope for svfit algo to destroy it before aglos for up/down are called
+  if(true){//MB: Trivial trick to define scope for svfit algo to destroy it before aglos for up/down are called    
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, aPair.getMET().X(), aPair.getMET().Y(), covMET, verbosity);
     algo.addLogM(false); //In general, keep it false when using VEGAS integration
     algo.shiftVisPt(true, inputFile_visPtResolution_);
@@ -1337,8 +1393,10 @@ void HTauTauTreeBase::computeSvFit(bool upDownTES){
     aPair.setP4SVFit(p4SVFit);
     aPair.setMETSVfit(metSVfit);
   }
-  //Up/Down if  requested
-  if(upDownTES){
+  //Up/Down if  requested. Compute only if at least one leg is mathed to hadronic tau.
+  bool isTauMatch = (leg1.getProperty(PropertyEnum::mc_match)==5) ||
+                    (leg2.getProperty(PropertyEnum::mc_match)==5);
+  if(upDownTES && isTauMatch){
     TLorentzVector p4SVFitScaleUp;
     TLorentzVector p4SVFitScaleDown;
     double SVptUncScaleUp = -999.;

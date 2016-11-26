@@ -5,7 +5,7 @@ import os
 from ROOT import gSystem, TChain, TSystem, TFile
 from PSet import process
 
-doSvFit = False
+doSvFit = True
 if doSvFit :
     print "Run with SVFit computation"
 

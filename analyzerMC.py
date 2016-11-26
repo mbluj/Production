@@ -20,7 +20,7 @@ APPLYFSR=False #this is by far the slowest module (not counting SVFit so far)
 #JETCUT="pt>15"
 
 USEMVAMET=False
-APPLYMETCORR=True # flag to enable (True) and disable (False) Z-recoil corrections for 
+APPLYMETCORR=True # flag to enable (True) and disable (False) Z-recoil corrections
 USE_NOHFMET = False # True to exclude HF and run on silver json
 
 SVFITBYPASS=True # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
@@ -67,13 +67,14 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM/5260BAEE-5539-E611-BE18-0025905C53F0.root'        
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM/5260BAEE-5539-E611-BE18-0025905C53F0.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/MINIAODSIM/0064B539-803A-E611-BDEA-002590D0B060.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
 process.maxEvents.input = 100
-process.source.eventsToProcess = cms.untracked.VEventRange('1:743343')
+#process.source.eventsToProcess = cms.untracked.VEventRange('1:743343')
 
 # JSON mask for data --> defined in the lumiMask file
 # from JSON file
