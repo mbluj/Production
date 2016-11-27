@@ -76,7 +76,11 @@ destEndpoint = "file:./Data/"
 directories = [
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/",
     #"/dpm/cis.gov.pl/home/cms/store/user/apyskir/ver6/"
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/SingleMuon/SingleMuonRun2016C23Sep2016_v1_v60/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/"
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/"
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

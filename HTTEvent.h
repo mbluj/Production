@@ -232,7 +232,7 @@ class HTTParticle{
   
   void setPCAGenPV(const TVector3 &aV3) {pcaGenPV = aV3;}
 
-  void setProperties(const std::vector<float> & aProperties) { properties = aProperties;}
+  void setProperties(const std::vector<long double> & aProperties) { properties = aProperties;}
 
   ///Data member getters.
   TLorentzVector getP4() const {return p4;}
@@ -255,7 +255,7 @@ class HTTParticle{
 
   int getCharge() const {return getProperty(PropertyEnum::charge);}
 
-  float getProperty(PropertyEnum index) const {return (unsigned int)index<properties.size()?  properties[(unsigned int)index]: -999;}
+  long double getProperty(PropertyEnum index) const {return (unsigned int)index<properties.size()?  properties[(unsigned int)index]: -999;}
 
   bool hasTriggerMatch(TriggerEnum index) const {return (unsigned int)getProperty(PropertyEnum::isGoodTriggerType)& (1<<(unsigned int)index) &&
                                                         (unsigned int)getProperty(PropertyEnum::FilterFired)& (1<<(unsigned int)index);}
@@ -278,7 +278,7 @@ class HTTParticle{
   ///Vector of vaious particle properties.
   ///Index generated automatically during conversion from
   ///LLR ntuple format
-  std::vector<float> properties;
+  std::vector<long double> properties;
 
 };
 ///////////////////////////////////////////////////

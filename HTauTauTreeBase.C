@@ -913,7 +913,7 @@ void HTauTauTreeBase::fillJets(unsigned int bestPairIndex){
     TLorentzVector p4(jets_px->at(iJet), jets_py->at(iJet),
 		      jets_pz->at(iJet), jets_e->at(iJet));
 
-    std::vector<float> aProperties = getProperties(leptonPropertiesList, iJet);
+    std::vector<long double> aProperties = getProperties(leptonPropertiesList, iJet);
     aJet.setProperties(aProperties);
 
     aJet.setP4(p4);
@@ -965,12 +965,10 @@ void HTauTauTreeBase::fillLeptons(){
     aLepton.setPCARefitPV(pcaRefitPV);
     aLepton.setPCAGenPV(pcaGenPV);
     
-    std::vector<float> aProperties = getProperties(leptonPropertiesList, iLepton);
-    aLepton.setProperties(aProperties);
-    
+    std::vector<long double> aProperties = getProperties(leptonPropertiesList, iLepton);
+    aLepton.setProperties(aProperties);    
     aLepton.setP4(p4);
-    
-    aLepton.setProperties(aProperties);
+
     httLeptonCollection.push_back(aLepton);
   }  
 }
@@ -998,7 +996,7 @@ void HTauTauTreeBase::fillGenLeptons(){
     aLepton.setNeutralP4(getGenComponentP4(iGenPart,0));
     aLepton.setPCA(pca);
 
-    std::vector<float> aProperties = getProperties(genLeptonPropertiesList, iGenPart);
+    std::vector<long double> aProperties = getProperties(genLeptonPropertiesList, iGenPart);
     aLepton.setProperties(aProperties);
 
     httGenLeptonCollection.push_back(aLepton); 
@@ -1100,7 +1098,7 @@ template<class T> T HTauTauTreeBase::getBranchValue(char *branchAddress, unsigne
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-float HTauTauTreeBase::getProperty(std::string name, unsigned int index){
+long double HTauTauTreeBase::getProperty(std::string name, unsigned int index){
 
   if(name=="mc_match") return getMCMatching(index);
   TBranch *branch = fChain->GetBranch(name.c_str());
@@ -1160,10 +1158,10 @@ void HTauTauTreeBase::writePropertiesHeader(const std::vector<std::string> & pro
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-std::vector<float> HTauTauTreeBase::getProperties(const std::vector<std::string> & propertiesList,
+std::vector<long double> HTauTauTreeBase::getProperties(const std::vector<std::string> & propertiesList,
 					      unsigned int index){
 
-  std::vector<float> aProperties;
+  std::vector<long double> aProperties;
  
   for(auto propertyName:propertiesList){
     aProperties.push_back(getProperty(propertyName,index));
