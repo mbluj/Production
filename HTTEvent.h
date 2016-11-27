@@ -257,8 +257,8 @@ class HTTParticle{
 
   float getProperty(PropertyEnum index) const {return (unsigned int)index<properties.size()?  properties[(unsigned int)index]: -999;}
 
-  bool hasTriggerMatch(TriggerEnum index) const {return (unsigned int)getProperty(PropertyEnum::isGoodTriggerType)&(unsigned int)index &&
-                                                        (unsigned int)getProperty(PropertyEnum::FilterFired)&(unsigned int)index;}
+  bool hasTriggerMatch(TriggerEnum index) const {return (unsigned int)getProperty(PropertyEnum::isGoodTriggerType)& (1<<(unsigned int)index) &&
+                                                        (unsigned int)getProperty(PropertyEnum::FilterFired)& (1<<(unsigned int)index);}
  private:
 
   ///Nominal particle four-momentum

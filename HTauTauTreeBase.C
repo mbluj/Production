@@ -1082,17 +1082,7 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
-    /*
-    std::cout<<"pt1: "<<aHTTpair.getMuon().getP4().Perp()
-	     <<" pt2: "<<aHTTpair.getTau().getP4().Perp()
-      	     <<" MET: "<<aHTTpair.getMET().Mod()
-	     <<std::endl;
-    */
-    //MB the following is finall state specific and should be FIXED
-    //TLorentzVector muonP4 = aHTTpair.getMuon().getP4();
-    //float scaleFactor = myScaleFactor.get_ScaleFactor(muonP4.Pt(),muonP4.Eta());
-    //aHTTpair.setMuonTriggerSF(scaleFactor);
-
+    
     httPairCollection.push_back(aHTTpair);
   }
 }
@@ -1140,7 +1130,7 @@ void HTauTauTreeBase::writeTriggersHeader(const TH1F* hLLRCounter){
     std::string name = hLLRCounter->GetXaxis()->GetBinLabel(iBinX);
     std::string pattern = "_v";
     if(name.find(pattern)!=std::string::npos) name.erase(name.find(pattern), pattern.size());    
-    outputFile<<name<<" = "<<iBinX<<", "<<std::endl;
+    outputFile<<name<<" = "<<iBinX-4<<", "<<std::endl;
   }
   outputFile<<"NONE"<<" = "<<hLLRCounter->GetNbinsX()+1<<std::endl;
   outputFile<<"};"<<std::endl;
