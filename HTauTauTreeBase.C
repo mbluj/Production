@@ -9,9 +9,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <TMatrixD.h>
-#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
-
 HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
@@ -1477,6 +1474,35 @@ void HTauTauTreeBase::computeSvFit(bool upDownTES){
     }
   }
   return;
+}
+
+
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+void HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+				   const TVector2 &aMET, const TMatrixD &covMET){
+
+
+  unsigned int verbosity = 0;//Set the debug level to 3 for testing   
+  SVfitStandaloneAlgorithm algo(measuredTauLeptons, aMET.X(), aMET.Y(), covMET, verbosity);
+  TLorentzVector p4SVFit;
+  TVector2 metSVfit;    
+  double SVptUnc = -999.;
+  double SVetaUnc = -999.;
+  double SVphiUnc = -999.;
+  double SVfitTransverseMass = -999.;
+
+  algo.addLogM(false); //In general, keep it false when using VEGAS integration                                                                                 
+  algo.shiftVisPt(true, inputFile_visPtResolution_);
+  algo.integrateMarkovChain();
+  if( algo.isValidSolution() ){//Get solution                                                                                                                   
+    p4SVFit.SetPtEtaPhiM(algo.pt(),algo.eta(),algo.phi(),algo.getMass());
+    SVptUnc = algo.ptUncert();
+    SVetaUnc = algo.etaUncert();
+    SVphiUnc = algo.phiUncert();
+    SVfitTransverseMass = algo.transverseMass();
+    metSVfit.SetMagPhi(algo.fittedMET().Rho(),algo.fittedMET().Phi()); //This is NOT a vector in the transverse plane! It has eta != 0.                         
+  }
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

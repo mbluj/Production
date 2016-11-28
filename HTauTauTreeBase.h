@@ -13,6 +13,7 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TMatrixD.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -20,6 +21,8 @@
 #include "HTTEvent.h"
 #include "ScaleFactor.h"
 #include <iostream>
+
+#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
 
 class HTauTauTreeBase {
 public :
@@ -41,6 +44,12 @@ public :
   virtual bool pairSelection(unsigned int index);
   virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   void computeSvFit(bool upDownTES=true);
+
+  void runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+		    const TVector2 &aMET, const TMatrixD &covMET);
+
+  
+
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
   float getPtReweight();

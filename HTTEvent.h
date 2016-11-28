@@ -282,6 +282,12 @@ class HTTParticle{
 
 };
 ///////////////////////////////////////////////////
+enum sysEffectsEnum{NOMINAL,
+		    TESUp, TESDown, 
+		    JESUp, JESDown,
+		    M2TFRUp, M2TFRDown,
+		    E2TFRUp, E2TFRDown,
+		    DUMMY};
 ///////////////////////////////////////////////////
 class HTTPair{
 
@@ -294,7 +300,7 @@ class HTTPair{
   void clear();
 
   ///Data member setters.
-  void setP4(const TLorentzVector &aP4) {p4 = aP4;}
+  void setP4(const TLorentzVector &aP4, sysEffectsEnum type = NOMINAL) {p4Vector[(unsigned int)type] = aP4;}
 
   void setP4SVFit(const TLorentzVector &aP4) {p4SVFit = aP4;}
 
@@ -356,6 +362,11 @@ class HTTPair{
 
   ///P4 calculated with SV fit. Nominal, and with scale up/down
   TLorentzVector p4SVFit, p4SVFitScaleUp, p4SVFitScaleDown;
+
+  ///Vectors holding results of SVFitcalculations
+  ///for various scale variances.
+  std::vector<TLorentzVector> p4Vector;
+  std::vector<TVector2> metVector;
 
   ///MET vectors
   TVector2 met, metSVfit;
