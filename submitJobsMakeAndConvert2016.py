@@ -44,12 +44,23 @@ def prepareCrabCfg(dataset,
     shortName+="_"+publish_data_suffix
 
     ##Modify CRAB3 configuration
-    config.JobType.psetName = 'analyzerMC.py'
-    #if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1:
-        
-    #    config.JobType.psetName = 'analyzerMC_METCORR.py'
-    if dataset.split("/")[2].find("reHLT")==-1:
+    config.JobType.psetName = 'DUMMY'
+    isWZH = False
+    isReHLT = False
+    if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1:
+        isWZH = True
+
+    if dataset.split("/")[2].find("reHLT")>=0:
+        isReHLT = True
+
+    if isReHLT and isWZH:
+        config.JobType.psetName = 'analyzerMC.py'
+    elif isReHLT and not isWZH:
+        config.JobType.psetName = 'analyzerMC_noMETCorr.py'
+    elif not isReHLT and isWZH:
         config.JobType.psetName = 'analyzerMC_HLT.py'
+    elif not isReHLT and not isWZH:
+        config.JobType.psetName = 'analyzerMC_HLT_noMETCorr.py'
 
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
@@ -91,24 +102,24 @@ eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 
 datasets = [
    #Data
-    #"/SingleMuon/Run2016B-23Sep2016-v1/MINIAOD",
+    "/SingleMuon/Run2016B-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016B-23Sep2016-v3/MINIAOD",
     "/SingleMuon/Run2016C-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016D-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016F-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD",
-    #"/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
+    "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD",
-    #"/Tau/Run2016B-23Sep2016-v1/MINIAOD",
+    "/Tau/Run2016B-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016B-23Sep2016-v3/MINIAOD",
     "/Tau/Run2016C-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016D-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016E-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016F-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016G-23Sep2016-v1/MINIAOD",    
-    #"/Tau/Run2016H-PromptReco-v1/MINIAOD",
+    "/Tau/Run2016H-PromptReco-v1/MINIAOD",
     "/Tau/Run2016H-PromptReco-v2/MINIAOD",
     "/Tau/Run2016H-PromptReco-v3/MINIAOD",
     #ICHEP Data
@@ -180,28 +191,33 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-datasets = []
+#datasets = []
 
              
 ###############
-#jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-jsonFile2016 = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
+jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+jsonFilePromptReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
 ########################################################
-'''
 for dataset in datasets:
+    if dataset.find("PromptReco"):
+        jsonFile2016 = jsonFilePromptReco
+    if dataset.find("ReReco") or dataset.find("Run2016E") or dataset.find("Run2016F") or dataset.find("Run2016G") or dataset.find("Run2016H"):
+        jsonFile2016 = jsonFileReReco
+
     prepareCrabCfg(crabCfgName="crab3.py",
                    dataset=dataset,
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
                    publish_data_suffix = "v60")
-'''
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
+'''
 for dataset in datasets:        
         mergeDataset(dataset=dataset, publish_data_suffix = "v60",
                                       outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_26_11_2016/")
+'''
 #for a in v1/*v60*; do crab resubmit -d $a; done
 #for a in v1/*Run2016*v60*; do crab report -d $a; done
