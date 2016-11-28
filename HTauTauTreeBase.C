@@ -1259,7 +1259,7 @@ float HTauTauTreeBase::getPtReweight(){
     bool isElectron = (absPdgId == 11);
     bool isMuon = (absPdgId == 13);
     bool isNeutrino = (absPdgId == 12 || absPdgId == 14 || absPdgId == 16);
-    bool isDirectHardProcessTauDecayProduct = (genFlags & (1<<5)) == (1<<5);
+    bool isDirectHardProcessTauDecayProduct = (genFlags & (1<<10)) == (1<<10);
     if ( (fromHardProcessFinalState && (isMuon || isElectron || isNeutrino)) || isDirectHardProcessTauDecayProduct){
       genBosonP4 += p4;
     }
