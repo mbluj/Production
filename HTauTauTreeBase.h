@@ -28,7 +28,6 @@ class HTauTauTreeBase {
 public :
 
 /////////////////////////////////////////////////
-  ///Added by AK
   virtual void initWawTree(TTree *tree, std::string prefix="WAW");
 
   void fillEvent();
@@ -43,13 +42,9 @@ public :
   bool electronSelection(unsigned int index);
   virtual bool pairSelection(unsigned int index);
   virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
-  void computeSvFit(bool upDownTES=true);
-
-  void runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
-		    const TVector2 &aMET, const TMatrixD &covMET);
-
-  
-
+  void computeSvFit(HTTPair &aPair, sysEffects::sysEffectsEnum type=sysEffects::NOMINAL_SVFIT);
+  TLorentzVector runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+			      const TVector2 &aMET, const TMatrixD &covMET);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
   float getPtReweight();
@@ -57,8 +52,8 @@ public :
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
   template<typename T> T getBranchValue(char *branchAddress, unsigned int index);
-  long double getProperty(std::string name, unsigned int index);
-  std::vector<long double> getProperties(const std::vector<std::string> & propertiesList, unsigned int index);
+  Double_t getProperty(std::string name, unsigned int index);
+  std::vector<Double_t> getProperties(const std::vector<std::string> & propertiesList, unsigned int index);
   void writePropertiesHeader(const std::vector<std::string> & propertiesList);
   void writeTriggersHeader(const TH1F*);
   
