@@ -102,24 +102,24 @@ eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 
 datasets = [
    #Data
-    "/SingleMuon/Run2016B-23Sep2016-v1/MINIAOD",
+    ##"/SingleMuon/Run2016B-23Sep2016-v1/MINIAOD", #no runs in JSON
     "/SingleMuon/Run2016B-23Sep2016-v3/MINIAOD",
     "/SingleMuon/Run2016C-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016D-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016F-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD",
-    "/SingleMuon/Run2016H-PromptReco-v1/MINIAOD",
+    ##"/SingleMuon/Run2016H-PromptReco-v1/MINIAOD", #no runs in JSON
     "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD",
-    "/Tau/Run2016B-23Sep2016-v1/MINIAOD",
+    ##"/Tau/Run2016B-23Sep2016-v1/MINIAOD", #no runs in JSON
     "/Tau/Run2016B-23Sep2016-v3/MINIAOD",
     "/Tau/Run2016C-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016D-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016E-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016F-23Sep2016-v1/MINIAOD",
     "/Tau/Run2016G-23Sep2016-v1/MINIAOD",    
-    "/Tau/Run2016H-PromptReco-v1/MINIAOD",
+    ##"/Tau/Run2016H-PromptReco-v1/MINIAOD", #no runs in JSON
     "/Tau/Run2016H-PromptReco-v2/MINIAOD",
     "/Tau/Run2016H-PromptReco-v3/MINIAOD",
     #ICHEP Data
@@ -149,7 +149,17 @@ datasets = [
     "/WminusHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     "/WminusHToTauTau_M130_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
     #Signal MSSM
-    "/SUSYGluGluToHToTauTau_M-120_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM", 
+    "/SUSYGluGluToHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-90_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-100_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-110_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-120_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-130_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-140_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-150_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-180_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    "/SUSYGluGluToHToTauTau_M-200_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM"
     #DY
     "/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/MINIAODSIM",
     "/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
@@ -179,8 +189,8 @@ datasets = [
     
     ###EWK+2jets
     "/EWKWMinus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/MINIAODSIM",
-    "/EWKWPlus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
-    "/EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+    #"/EWKWPlus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+    #"/EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
     "/EWKZ2Jets_ZToNuNu_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
     ##QCD
     #"/QCD_Pt-20toInf_MuEnrichedPt15_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM",
@@ -191,11 +201,15 @@ datasets = [
     "/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
 ]
 ##TEST
-#datasets = []             
+datasets = ["/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+            "/EWKWPlus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+            "/EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM",
+             ]
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 jsonFilePromptReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt"
 ########################################################
+'''
 for dataset in datasets:
     if dataset.find("PromptReco"):
         jsonFile2016 = jsonFilePromptReco
@@ -208,14 +222,17 @@ for dataset in datasets:
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
                    publish_data_suffix = "v70")
+'''
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
-'''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v60",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_26_11_2016/")
-'''
-#for a in v1/*v60*; do crab resubmit -d $a; done
-#for a in v1/*Run2016*v60*; do crab report -d $a; done
+        mergeDataset(dataset=dataset, publish_data_suffix = "v70",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_05_12_2016/")
+
+#for a in v1/*v70*; do crab resubmit -d $a; done
+#for a in v1/*Run2016*v70*; do crab report -d $a; done
+
+#mergeJSON.py crab_SingleMuonRun2016*23*/results/processedLumis.json crab_SingleMuonRun2016H*/results/processedLumis.json > processedLumis_SingleMuon.json
+#mergeJSON.py crab_TauRun2016*23*/results/processedLumis.json crab_TauRun2016H*/results/processedLumis.json > processedLumis_Tau.json

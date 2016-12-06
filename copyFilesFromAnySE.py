@@ -74,7 +74,7 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v70/",
     #"/dpm/cis.gov.pl/home/cms/store/user/apyskir/ver6/"
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/"
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
