@@ -95,7 +95,7 @@ class HTTEvent{
 
   void setNTracksInRefit(const int & nTracks) {nTracksInRefit = nTracks;};
 
-  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((int)iBit, value);}
+  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((unsigned int)iBit, value);}
 
   void setMET(const TVector2 &aVector) {met = aVector;}
   ////////////////////////

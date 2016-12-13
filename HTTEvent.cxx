@@ -45,6 +45,8 @@ void HTTEvent::clear(){
   isRefit = false;
 
   nTracksInRefit = 0;
+
+  selectionWord.ResetAllBits();
   
 }
 ////////////////////////////////////////////////

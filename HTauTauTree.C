@@ -63,16 +63,17 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
   ///
   bool triggerSelection = (triggerbit & 1<<0) == (1<<0);
-  
+
+  httEvent->clear();
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
-  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
+  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);  
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
   httEvent->setSelectionBit(SelectionBitsEnum::diMuonVeto,diMuonVeto());
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11));
-  
+
   return muonBaselineSelection && tauBaselineSelection && baselinePair
     && postSynchTau && loosePostSynchMuon
     && !diMuonVeto() && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 13) && !thirdLeptonVeto(indexMuonLeg, indexTauLeg, 11)

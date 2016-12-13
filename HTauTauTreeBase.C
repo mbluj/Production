@@ -687,8 +687,9 @@ void HTauTauTreeBase::Loop(){
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
+      httEvent->clear();
       unsigned int bestPairIndex = Cut(ientry);
-     
+
       fillEvent();
       
       hStats->Fill(0);//Number of events analyzed
@@ -697,6 +698,10 @@ void HTauTauTreeBase::Loop(){
       bestPairIndex_ = bestPairIndex;
 
       if(bestPairIndex<9999){
+
+	///Call pairSelection again to set selection bits for the selected pair.
+        pairSelection(bestPairIndex);
+	///
 	fillJets(bestPairIndex);
 	fillLeptons();
 	fillGenLeptons();
@@ -708,7 +713,6 @@ void HTauTauTreeBase::Loop(){
 	  sysEffects::sysEffectsEnum type = static_cast<sysEffects::sysEffectsEnum>(sysType);
 	  computeSvFit(bestPair, type);
 	}
-
 	warsawTree->Fill();
 	hStats->Fill(2);//Number of events saved to ntuple
 	hStats->Fill(3,httEvent->getMCWeight());//Sum of weights saved to ntuple
@@ -861,7 +865,6 @@ bool HTauTauTreeBase::jetSelection(unsigned int index, unsigned int bestPairInde
 /////////////////////////////////////////////////
 void HTauTauTreeBase::fillEvent(){
 
-  httEvent->clear();
   httEvent->setRun(RunNumber);
   httEvent->setEvent(EventNumber);
   httEvent->setNPV(npv);

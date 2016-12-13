@@ -36,8 +36,8 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
                 if localPath.find(".root")==-1:
                     continue
 
-                if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
-                    continue
+                #if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
+                #    continue
 
                 #if localPath.find("WAWMM_")==-1:
                 #    continue
@@ -64,8 +64,9 @@ grid-proxy-init
 ./copyFilesFromSE.py
 '''
 ##
-user = "akalinow"
+#user = "akalinow"
 #user = "apyskir"
+user = "konec"
 
 #sourceEndpoint = "srm://se.grid.icm.edu.pl:8446/srm/managerv2?SFN=//"
 sourceEndpoint = "srm://se.cis.gov.pl:8446/srm/managerv2?SFN=//"
@@ -74,13 +75,8 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v70/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/apyskir/ver6/"
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/"
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v60/DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/"
+    "/dpm/cis.gov.pl/home/cms/store/user/konec/test/SingleMuon/crab_MKtest"
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v70/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow
