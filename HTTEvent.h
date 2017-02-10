@@ -6,7 +6,8 @@
 #include "TBits.h"
 #include <map>
 #include <vector>
-#include <bitset> 
+#include <bitset>
+#include <iostream>
 
 #include "PropertyEnum.h"
 #include "TriggerEnum.h"
@@ -55,18 +56,18 @@ class HTTEvent{
   };
 
   HTTEvent(){ clear();}
-    
+
   ~HTTEvent(){}
 
   ///Data member setters.
   void setRun(unsigned int x){runId = x;}
-  
+
   void setEvent(unsigned long int x){eventId = x;}
-  
+
   void setNPU(float x){nPU = x;}
-  
+
   void setNPV(unsigned int x){nPV = x;}
-  
+
   void setMCatNLOWeight(float x){aMCatNLOweight = x;}
 
   void setMCWeight(float x){mcWeight = x;}
@@ -78,11 +79,11 @@ class HTTEvent{
   void setLHEnOutPartons(int x){lheNOutPartons = x;}
 
   void setSampleType(sampleTypeEnum x){sampleType = x;}
-  
+
   void setDecayModeMinus(int x){decayModeMinus = x;}
-  
+
   void setDecayModePlus(int x){decayModePlus = x;}
-  
+
   void setDecayModeBoson(int x){decayModeBoson = x;}
 
   void setGenPV(const TVector3 & aPV) {genPV = aPV;}
@@ -95,7 +96,7 @@ class HTTEvent{
 
   void setNTracksInRefit(const int & nTracks) {nTracksInRefit = nTracks;};
 
-  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((unsigned int)iBit, value);}
+  void setSelectionBit(SelectionBitsEnum iBit, bool value = true) {selectionWord.SetBitNumber((int)iBit, value);}
 
   void setMET(const TVector2 &aVector) {met = aVector;}
   ////////////////////////
@@ -107,31 +108,31 @@ class HTTEvent{
   unsigned int getRunId() const {return runId;}
 
   unsigned long int getEventId() const {return eventId;}
-    
+
   float getNPU() const {return nPU;}
-  
+
   unsigned int getNPV() const {return nPV;}
-  
+
   float getMCatNLOWeight() const {return aMCatNLOweight;}
 
-  float setPtReWeight() const {return ptReWeight;}
+  float getPtReWeight() const {return ptReWeight;}
 
   float getMCWeight() const {return mcWeight;}
 
   float getLHE_Ht() const {return lheHt;}
 
   int getLHEnOutPartons() const {return lheNOutPartons;}
-  
+
   sampleTypeEnum getSampleType() const {return sampleType;}
-  
+
   int getDecayModeMinus() const {return decayModeMinus;}
-  
+
   int getDecayModePlus() const {return decayModePlus;}
-  
+
   int getDecayModeBoson() const {return decayModeBoson;}
 
   TVector2 getMET() const {return met;}
-  
+
   const TVector3 & getGenPV() const {return genPV;}
 
   const TVector3 & getAODPV() const {return AODPV;}
@@ -155,7 +156,7 @@ class HTTEvent{
 
   ///Weight used to modify the pt shape.
   float ptReWeight;
-  
+
   ///Ht value from LHE record.
   float lheHt;
 
@@ -176,12 +177,12 @@ class HTTEvent{
 
   ///Boson (H, Z, W) decay mode
   int decayModeBoson;
-    
+
   ///Tau decay modes
   int decayModeMinus, decayModePlus;
 
-  ///Primary Vertices recontructed with different methods  
-  //Generated PV position 
+  ///Primary Vertices recontructed with different methods
+  //Generated PV position
   TVector3 genPV;
 
   //PV stored in miniAOD
@@ -198,7 +199,7 @@ class HTTEvent{
 
   ///Bit word coding event selection result
   TBits selectionWord;
-  
+
   //MET vector
   TVector2 met;
 
@@ -207,10 +208,16 @@ class HTTEvent{
 namespace sysEffects{
 
 enum sysEffectsEnum{NOMINAL, NOMINAL_SVFIT,
-		    TESUp, TESDown, 
+		    TESUp, TESDown,
+		    JESUp, JESDown,
 		    M2TUp, M2TDown,
 		    E2TUp, E2TDown,
-		    DUMMY}; 
+		    J2TUp, J2TDown,
+		    ZPtUp, ZPtDown,
+		    TTUp, TTDown,
+		    QCDSFUp, QCDSFDown,
+		    WSFUp, WSFDown,
+		    DUMMY};
 }
 ///////////////////////////////////////////////////
 class HTTParticle{
@@ -218,7 +225,7 @@ class HTTParticle{
   public:
 
   HTTParticle(){ clear();}
-  
+
   ~HTTParticle(){}
 
   void clear();
@@ -227,29 +234,29 @@ class HTTParticle{
   void setP4(const TLorentzVector &aP4) { p4 = aP4;}
 
   void setChargedP4(const TLorentzVector &aP4) { chargedP4 = aP4;}
-  
+
   void setNeutralP4(const TLorentzVector &aP4) { neutralP4 = aP4;}
 
   void setPCA(const TVector3 &aV3) {pca = aV3;}
 
   void setPCARefitPV(const TVector3 &aV3) {pcaRefitPV = aV3;}
-  
+
   void setPCAGenPV(const TVector3 &aV3) {pcaGenPV = aV3;}
 
   void setProperties(const std::vector<Double_t> & aProperties) { properties = aProperties;}
 
   ///Data member getters.
-  TLorentzVector getP4(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const {return getSystScaleP4(type);}
+  const TLorentzVector & getP4(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const {return getSystScaleP4(type);}
 
-  TLorentzVector getChargedP4() const {return chargedP4;}
+  const TLorentzVector & getChargedP4() const {return chargedP4;}
 
-  TLorentzVector getNeutralP4() const {return neutralP4;}
+  const TLorentzVector getNeutralP4() const {return neutralP4;}
 
-  TVector3 getPCA() const {return pca;}
+  const TVector3 & getPCA() const {return pca;}
 
-  TVector3 getPCARefitPV() const {return pcaRefitPV;}
+  const TVector3 & getPCARefitPV() const {return pcaRefitPV;}
 
-  TVector3 getPCAGenPV() const {return pcaGenPV;}
+  const TVector3 & getPCAGenPV() const {return pcaGenPV;}
 
   int getPDGid() const {return getProperty(PropertyEnum::PDGId);}
 
@@ -264,15 +271,19 @@ class HTTParticle{
   ///Return four-momentum modified according to given systematic effect.
   ///The method recognises particle type, e.g. muons are not affected by
   ///TES variations etc.
-  TLorentzVector getSystScaleP4(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const;
+  const TLorentzVector & getSystScaleP4(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const;
 
   ///Return four-momentum shifted with scale.
   ///Shift modifies three-momentum transverse part only, leaving mass constant.
-  TLorentzVector getShiftedP4(float scale) const;
+  const TLorentzVector & getShiftedP4(float scale) const;
 
   ///Nominal (as recontructed) four-momentum
   TLorentzVector p4;
- 
+
+  ///Scaled four-momentum cache;
+  mutable TLorentzVector p4Cache;
+  mutable sysEffects::sysEffectsEnum lastSystEffect;
+
   ///Charged and neutral components four-momentum
   TLorentzVector chargedP4, neutralP4;
 
@@ -292,8 +303,8 @@ class HTTPair{
 
  public:
 
-  HTTPair(){ clear();}
-  
+  HTTPair();
+
   ~HTTPair(){}
 
   void clear();
@@ -314,42 +325,51 @@ class HTTPair{
   void setLeg2(const HTTParticle &aParticle){leg2 = aParticle;}
 
   void setMETMatrix(float m00, float m01, float m10, float m11) {metMatrix.push_back(m00); metMatrix.push_back(m01); metMatrix.push_back(m10); metMatrix.push_back(m11);}
-  
+
   ///Data member getters.
-  TLorentzVector getP4(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return p4Vector[(unsigned int)type];}
+  const TLorentzVector & getP4(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return p4Vector[(unsigned int)type];}
 
-  TVector2 getMET(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return getSystScaleMET(type);}
+  const TVector2 & getMET(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return getSystScaleMET(type);}
 
-  TVector2 getSVMET(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return svMetVector[(unsigned int)type];}
+  const TVector2 & getSVMET(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return svMetVector[(unsigned int)type];}
 
-  float getMTLeg1() const {return mtLeg1;}
+  float getMTLeg1(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return getSystScaleMT(leg1, type);}
 
-  float getMTLeg2() const {return mtLeg2;}
+  float getMTLeg2(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return getSystScaleMT(leg2, type);}
 
-  HTTParticle getLeg1() const {return leg1;}
+  const HTTParticle & getLeg1() const {return leg1;}
 
-  HTTParticle getLeg2() const {return leg2;}
+  const HTTParticle & getLeg2() const {return leg2;}
 
-  HTTParticle getMuon() const {return abs(leg1.getPDGid())==13 ? leg1 : leg2; }
+  const HTTParticle & getMuon() const {return abs(leg1.getPDGid())==13 ? leg1 : leg2; }
 
-  HTTParticle getTau() const {return abs(leg1.getPDGid())==15 ? leg1 : leg2; }
+  const HTTParticle & getTau() const {return abs(leg1.getPDGid())==15 ? leg1 : leg2; }
 
-  float getMTMuon() const {return abs(leg1.getPDGid())==13 ? getMTLeg1() : getMTLeg2(); }
+  float getMTMuon(sysEffects::sysEffectsEnum type = sysEffects::NOMINAL) const {return abs(leg1.getPDGid())==13 ? getMTLeg1(type) : getMTLeg2(type); }
 
   std::vector<float> getMETMatrix() const {return metMatrix;}
 
  private:
 
-  ///Return MET modified according to given systematic effect.                                                                                    
+  ///Return MET modified according to given systematic effect.
   ///The MET is corrected for accorging leptons corrections.
-  ///The recoil correctino is not updated.                                                                                                
-  TVector2 getSystScaleMET(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const;
+  ///The recoil correctino is not updated.
+  const TVector2 & getSystScaleMET(sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const;
+
+  ///Return transverse mass caluculated according to the scale shifts.
+  float getSystScaleMT(const HTTParticle &aPerticle,
+		       sysEffects::sysEffectsEnum type=sysEffects::NOMINAL) const;
 
   ///Nominal met as calculated from PF.
   ///Includes recoil corrections.
   TVector2 met;
 
-  ///Vectors holding p4 and MET for 
+  ///Scaled four-momentum cache;
+  mutable TVector2 metCache;
+  mutable sysEffects::sysEffectsEnum lastSystEffect;
+  mutable float mtCache;
+
+  ///Vectors holding p4 and MET for
   ///for various scale variances.
   std::vector<TLorentzVector> p4Vector;
   std::vector<TVector2> svMetVector;
@@ -366,4 +386,3 @@ class HTTPair{
 };
 
 #endif
-

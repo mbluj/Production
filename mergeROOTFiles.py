@@ -57,8 +57,8 @@ def mergeDataset(dataset, publish_data_suffix, outputDir):
     os.system(command)
     command = "hadd -f "+outputFileNameTT+" "+dataDirectory+"/*/WAWTT*.root"
     os.system(command)
-    command = "hadd -f "+outputFileNameMM+" "+dataDirectory+"/*/WAWMM*.root"
-    os.system(command)
+    #command = "hadd -f "+outputFileNameMM+" "+dataDirectory+"/*/WAWMM*.root"
+    #os.system(command)
 #########################################
 #########################################
 

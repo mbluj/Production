@@ -33,11 +33,11 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
                 command = "mkdir -p "+path
                 os.system(command)
 
-                if localPath.find(".root")==-1:
-                    continue
-
-                #if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
+                #if localPath.find(".root")==-1:
                 #    continue
+
+                if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
+                    continue
 
                 #if localPath.find("WAWMM_")==-1:
                 #    continue
@@ -64,9 +64,9 @@ grid-proxy-init
 ./copyFilesFromSE.py
 '''
 ##
-#user = "akalinow"
+user = "akalinow"
 #user = "apyskir"
-user = "konec"
+#user = "konec"
 
 #sourceEndpoint = "srm://se.grid.icm.edu.pl:8446/srm/managerv2?SFN=//"
 sourceEndpoint = "srm://se.cis.gov.pl:8446/srm/managerv2?SFN=//"
@@ -75,8 +75,9 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/konec/test/SingleMuon/crab_MKtest"
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v70/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/konec/test/SingleMuon/crab_MKtest"
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v2/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v80/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

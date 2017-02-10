@@ -30,7 +30,7 @@ COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=True
 Is25ns=True
-HLTProcessName='HLT2' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                                                               
+HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                                                               
 if not IsMC:
     HLTProcessName='HLT' #It always 'HLT' for real data                                                                                                                                     
 print "HLTProcessName: ",HLTProcessName

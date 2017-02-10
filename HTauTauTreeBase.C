@@ -1017,7 +1017,7 @@ TLorentzVector HTauTauTreeBase::getGenComponentP4(unsigned int index, unsigned i
     if(std::abs(genpart_pdg->at(iGenPart))==66615) aHadronicP4 =TLorentzVector(genpart_px->at(iGenPart),
 									  genpart_py->at(iGenPart),
 									  genpart_pz->at(iGenPart),
-									  genpart_e->at(iGenPart));									     
+									  genpart_e->at(iGenPart));	     
   }
 
   TLorentzVector aP4;
@@ -1350,7 +1350,7 @@ TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::
   double SVphiUnc = -999.;
   double SVfitTransverseMass = -999.;
 
-  algo.addLogM(false); //In general, keep it false when using VEGAS integration                                                                            
+  algo.addLogM(false); //In general, keep it false when using VEGAS integration 
   algo.shiftVisPt(true, inputFile_visPtResolution_);
   algo.integrateMarkovChain();
   if( algo.isValidSolution() ){//Get solution

@@ -68,13 +68,13 @@ else :
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-PromptReco-v1/MINIAOD/0667AC34-2464-E611-84CE-02163E011979.root'
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD/72446D9C-D89C-E611-9060-002590A3C984.root'
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD/72446D9C-D89C-E611-9060-002590A3C984.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = -1
+process.maxEvents.input = 1000
 #process.source.eventsToProcess = cms.untracked.VEventRange('256677:277938287-256677:max')
 
 # JSON mask for data --> defined in the lumiMask file
