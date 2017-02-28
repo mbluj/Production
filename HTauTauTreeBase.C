@@ -706,6 +706,7 @@ void HTauTauTreeBase::Loop(){
 	fillPairs(bestPairIndex);
 
 	HTTPair & bestPair = httPairCollection[0];
+	
         for(unsigned int sysType = (unsigned int)HTTAnalysis::NOMINAL;
 	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){
 	  HTTAnalysis::sysEffects type = static_cast<HTTAnalysis::sysEffects>(sysType);

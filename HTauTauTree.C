@@ -61,9 +61,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
-  ///
-  bool triggerSelection = (triggerbit & 1<<0) == (1<<0);
-
+  
   httEvent->clearSelectionWord();
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);  
