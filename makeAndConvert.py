@@ -14,7 +14,6 @@ command = "cmsRun -j FrameworkJobReport.xml -p PSet.py"
 os.system(command)
 
 gSystem.CompileMacro('HTTEvent.cxx')
-gSystem.CompileMacro('ScaleFactor.cc')
 gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
 gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauTauTree.C')
@@ -34,6 +33,8 @@ aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 print "TTree entries: ",aTree.GetEntries()
 HTauTauTree(aTree,doSvFit).Loop()
+
+'''
 print "Making the tau*tau tree"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
@@ -42,3 +43,4 @@ print "Making the mu*mu tree"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 HMuMuTree(aTree).Loop()
+'''

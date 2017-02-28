@@ -680,8 +680,6 @@ void HTauTauTreeBase::Loop(){
 
    Long64_t nentries = fChain->GetEntries();
    Long64_t nbytes = 0, nb = 0;
-   //int nPairs = 0;//MB debug
-   //int maxPairs = 100;//MB debug
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
@@ -708,9 +706,9 @@ void HTauTauTreeBase::Loop(){
 	fillPairs(bestPairIndex);
 
 	HTTPair & bestPair = httPairCollection[0];
-        for(unsigned int sysType = (unsigned int)sysEffects::NOMINAL_SVFIT;
-	    sysType<(unsigned int)sysEffects::DUMMY;++sysType){
-	  sysEffects::sysEffectsEnum type = static_cast<sysEffects::sysEffectsEnum>(sysType);
+        for(unsigned int sysType = (unsigned int)HTTAnalysis::NOMINAL;
+	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){
+	  HTTAnalysis::sysEffects type = static_cast<HTTAnalysis::sysEffects>(sysType);
 	  computeSvFit(bestPair, type);
 	}
 	warsawTree->Fill();
@@ -864,6 +862,7 @@ bool HTauTauTreeBase::jetSelection(unsigned int index, unsigned int bestPairInde
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::fillEvent(){
+
 
   httEvent->setRun(RunNumber);
   httEvent->setEvent(EventNumber);
@@ -1052,7 +1051,6 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMTLeg2(mTLeg2);    
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
-    
     httPairCollection.push_back(aHTTpair);
   }
 }
@@ -1268,7 +1266,7 @@ float HTauTauTreeBase::getPtReweight(){
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
-				   sysEffects::sysEffectsEnum type){
+				   HTTAnalysis::sysEffects type){
   
   if(!doSvFit_ || inputFile_visPtResolution_->IsZombie() ) return;
 
@@ -1327,10 +1325,10 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 
   if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix     
   
-  TLorentzVector p4SVFit = aPair.getP4(sysEffects::NOMINAL_SVFIT);
-  if(type==sysEffects::NOMINAL_SVFIT || 
-     leg1.getP4(type)!=leg1.getP4(sysEffects::NOMINAL) ||
-     leg2.getP4(type)!=leg2.getP4(sysEffects::NOMINAL)){
+  TLorentzVector p4SVFit = aPair.getP4(HTTAnalysis::NOMINAL);
+  if(type==HTTAnalysis::NOMINAL || 
+     leg1.getP4(type)!=leg1.getP4(HTTAnalysis::NOMINAL) ||
+     leg2.getP4(type)!=leg2.getP4(HTTAnalysis::NOMINAL)){
        p4SVFit = runSVFitAlgo(measuredTauLeptons, aMET, covMET);
      }    
   aPair.setP4(p4SVFit,type);  

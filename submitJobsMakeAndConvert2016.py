@@ -61,7 +61,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'ScaleFactor.h','ScaleFactor.cc','zpt_weights.root']
+    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h','zpt_weights.root']
     
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -94,12 +94,12 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 40000 #Wjets and DYJets hardoced in code above
 
 from datasetsMoriond17 import datasets
 
 ##TEST
-datasets = ["/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
+datasets = ["/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -112,17 +112,16 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v90")
+                   publish_data_suffix = "v94")
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
 '''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v80",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_09_02_2017/")
+        mergeDataset(dataset=dataset, publish_data_suffix = "v93",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_23_02_2017/")
 '''
-
 #for a in v1/*v80*; do crab resubmit -d $a; done
 #for a in v1/*Run2016*v80*; do crab report -d $a; done
 

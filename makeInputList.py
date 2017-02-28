@@ -4,16 +4,16 @@ import os, re
 import commands
 import math
 
-inputDir="/scratch_local/akalinow/CMS/HiggsCP/Data/NTUPLES_05_12_2016/MM/"
+inputDir="/scratch_local/akalinow/CMS/HiggsCP/Data/NTUPLES_23_02_2017/MT/"
 
 fileList = os.listdir(inputDir)
         
-initString = "inputFile = "
+initString = "inputFiles = "
 
 for aFile in fileList:
     if aFile.find("SUSY")!=-1: 
         continue
-    initString+=inputDir+"/"+aFile+", "
+    initString+=aFile+", "
 
 
 print initString

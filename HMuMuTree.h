@@ -10,7 +10,6 @@
 #include "vector"
 
 #include "HTTEvent.h"
-#include "ScaleFactor.h"
 #include <iostream>
 
 // Header of the base class

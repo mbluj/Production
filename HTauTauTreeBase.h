@@ -18,8 +18,8 @@
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 
+#include "AnalysisEnums.h"
 #include "HTTEvent.h"
-#include "ScaleFactor.h"
 #include <iostream>
 
 #include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
@@ -42,7 +42,7 @@ public :
   bool electronSelection(unsigned int index);
   virtual bool pairSelection(unsigned int index);
   virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
-  void computeSvFit(HTTPair &aPair, sysEffects::sysEffectsEnum type=sysEffects::NOMINAL_SVFIT);
+  void computeSvFit(HTTPair &aPair, HTTAnalysis::sysEffects type=HTTAnalysis::NOMINAL);
   TLorentzVector runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
 			      const TVector2 &aMET, const TMatrixD &covMET);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
@@ -66,7 +66,6 @@ public :
   HTTEvent *httEvent;
   TH1F* hStats;
   TH2F* zptmass_histo;
-  ScaleFactor myScaleFactor;
   
   unsigned int bestPairIndex_;
 

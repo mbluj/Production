@@ -77,7 +77,7 @@ destEndpoint = "file:./Data/"
 directories = [
     #"/dpm/cis.gov.pl/home/cms/store/user/konec/test/SingleMuon/crab_MKtest"
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v2/",
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v80/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v93/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow
