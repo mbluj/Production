@@ -65,11 +65,11 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 			daughters_pz->at(indexLeg2),
 			daughters_e->at(indexLeg2));
 
-  bool tauBaselineSelection1 = tau1P4.Pt()>40 && std::abs(tau1P4.Eta())<2.1 &&
+  bool tauBaselineSelection1 = tau1P4.Pt()>30 && std::abs(tau1P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg1)>0.5 &&
                                std::abs(dz->at(indexLeg1))<0.2 && 
                                std::abs(daughters_charge->at(indexLeg1))==1;			
-  bool tauBaselineSelection2 = tau2P4.Pt()>40 && std::abs(tau2P4.Eta())<2.1 &&
+  bool tauBaselineSelection2 = tau2P4.Pt()>30 && std::abs(tau2P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg2)>0.5 &&
                                std::abs(dz->at(indexLeg2))<0.2 && 
                                std::abs(daughters_charge->at(indexLeg2))==1;			
@@ -82,8 +82,6 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaskLoose;
   bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
   bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
-  ///
-  bool triggerSelection = (triggerbit & 1<<0) == (1<<0);//MB FIXME
   
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,tauBaselineSelection1);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection2);
