@@ -99,7 +99,9 @@ eventsPerJob = 40000 #Wjets and DYJets hardoced in code above
 from datasetsMoriond17 import datasets
 
 ##TEST
-#datasets = ["/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
+#datasets = ["/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",]
+
+#"/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -119,11 +121,11 @@ for dataset in datasets:
 ########################################################
 '''
 for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v93",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_23_02_2017/")
+        mergeDataset(dataset=dataset, publish_data_suffix = "v94",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_03_03_2017/")
 '''
-#for a in v1/*v80*; do crab resubmit -d $a; done
-#for a in v1/*Run2016*v80*; do crab report -d $a; done
+#for a in v1/*v94*; do crab resubmit -d $a; done
+#for a in v1/*Run2016*v94*; do crab report -d $a; done
 
 #mergeJSON.py crab_SingleMuonRun2016*23*/results/processedLumis.json crab_SingleMuonRun2016H*/results/processedLumis.json > processedLumis_SingleMuon.json
 #mergeJSON.py crab_TauRun2016*23*/results/processedLumis.json crab_TauRun2016H*/results/processedLumis.json > processedLumis_Tau.json
