@@ -8,7 +8,7 @@ datasets = [
     "/SingleMuon/Run2016F-23Sep2016-v1/MINIAOD",
     "/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD",
     ##"/SingleMuon/Run2016H-PromptReco-v1/MINIAOD", #no runs in JSON
-     /SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
+     "/SingleMuon/Run2016H-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2016H-PromptReco-v3/MINIAOD",
     ##"/Tau/Run2016B-23Sep2016-v1/MINIAOD", #no runs in JSON
     "/Tau/Run2016B-23Sep2016-v3/MINIAOD",
