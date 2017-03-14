@@ -72,7 +72,7 @@ public :
   bool doSvFit_;
   TFile* inputFile_visPtResolution_;
   TFile* zPtReweightFile;
-
+  TLorentzVector p4SVFit, p4Leg1SVFit, p4Leg2SVFit;   
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 

@@ -45,14 +45,9 @@ def prepareCrabCfg(dataset,
 
     ##Modify CRAB3 configuration
     config.JobType.psetName = 'DUMMY'
-    isWZH = False
-    isReHLT = False
+    isWZH = False    
     if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1:
         isWZH = True
-
-    if dataset.split("/")[2].find("reHLT")>=0:
-        isReHLT = True
-
     if isWZH:
         config.JobType.psetName = 'analyzerMC.py'
     else:
@@ -94,12 +89,15 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 40000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 4000 #Wjets and DYJets hardoced in code above
 
 from datasetsMoriond17 import datasets
 
 ##TEST
-datasets = ["/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
+datasets = [
+ #"/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
+ "/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+ ]
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -112,7 +110,7 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v1_MSSM")
+                   publish_data_suffix = "v1_SM")
 ########################################################
 ########################################################
 ## Merge output ROOT files.

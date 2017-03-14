@@ -135,3 +135,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 #processDumpFile = open('process.dump' , 'w')
 #print >> processDumpFile, process.dumpPython()
+
+if process.source.fileNames[0].find("Run2016H")>-1:
+    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v16'  
+    print "Switching GlobalTag to", process.GlobalTag.globaltag

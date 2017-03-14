@@ -44,7 +44,7 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
    zPtReweightFile = new TFile("zpt_weights.root");
    if(!zPtReweightFile) std::cout<<"Z pt reweight file zpt_weights.root is missing."<<std::endl;
    zptmass_histo = (TH2F*)zPtReweightFile->Get("zptmass_histo");
-   
+     
 }
 
 HTauTauTreeBase::~HTauTauTreeBase()
@@ -660,6 +660,7 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   leptonPropertiesList.push_back("jets_area");
   leptonPropertiesList.push_back("jets_PUJetID");
   leptonPropertiesList.push_back("jets_jecUnc");
+  leptonPropertiesList.push_back("jets_Flavour");
   leptonPropertiesList.push_back("bDiscriminator");
   leptonPropertiesList.push_back("bCSVscore");
   leptonPropertiesList.push_back("PFjetID");
@@ -708,9 +709,10 @@ void HTauTauTreeBase::Loop(){
 	HTTPair & bestPair = httPairCollection[0];
 	
         for(unsigned int sysType = (unsigned int)HTTAnalysis::NOMINAL;
-	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){
+	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){	  
 	  HTTAnalysis::sysEffects type = static_cast<HTTAnalysis::sysEffects>(sysType);
 	  computeSvFit(bestPair, type);
+	  break; ///TEST for synch. ntuple
 	}
 	warsawTree->Fill();
 	hStats->Fill(2);//Number of events saved to ntuple
@@ -875,6 +877,7 @@ void HTauTauTreeBase::fillEvent(){
   
   TVector2 metPF;
   metPF.SetMagPhi(met, metphi);
+  httEvent->setMETFilterDecision(metfilterbit);
   httEvent->setMET(metPF);
 
   if(genpart_pdg){
@@ -1332,34 +1335,50 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
      leg2.getP4(type)!=leg2.getP4(HTTAnalysis::NOMINAL)){
        p4SVFit = runSVFitAlgo(measuredTauLeptons, aMET, covMET);
      }    
-  aPair.setP4(p4SVFit,type);  
+  aPair.setP4(p4SVFit,type);
+  aPair.setLeg1P4(p4Leg1SVFit,type);
+  aPair.setLeg2P4(p4Leg2SVFit,type);
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
 					     const TVector2 &aMET, const TMatrixD &covMET){
 
-
+  
   unsigned int verbosity = 0;//Set the debug level to 3 for testing   
   SVfitStandaloneAlgorithm algo(measuredTauLeptons, aMET.X(), aMET.Y(), covMET, verbosity);
-  TLorentzVector p4SVFit;
-  TVector2 metSVfit;    
-  double SVptUnc = -999.;
-  double SVetaUnc = -999.;
-  double SVphiUnc = -999.;
-  double SVfitTransverseMass = -999.;
-
+  svFitStandalone::MCPtEtaPhiMassAdapter *aQuantitiesAdapter = new svFitStandalone::MCPtEtaPhiMassAdapter();  
+  algo.setMCQuantitiesAdapter(aQuantitiesAdapter);
+  
+  double tauMass = 1.77686; //GeV, PDG value
+  
   algo.addLogM(false); //In general, keep it false when using VEGAS integration 
   algo.shiftVisPt(true, inputFile_visPtResolution_);
   algo.integrateMarkovChain();
-  if( algo.isValidSolution() ){//Get solution
-    p4SVFit.SetPtEtaPhiM(algo.pt(),algo.eta(),algo.phi(),algo.getMass());
-    SVptUnc = algo.ptUncert();
-    SVetaUnc = algo.etaUncert();
-    SVphiUnc = algo.phiUncert();
-    SVfitTransverseMass = algo.transverseMass();
-    metSVfit.SetMagPhi(algo.fittedMET().Rho(),algo.fittedMET().Phi()); //This is NOT a vector in the transverse plane! It has eta != 0.
+  if(algo.isValidSolution() ){//Get solution
+
+    p4SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getPt(),
+			 aQuantitiesAdapter->getEta(),
+			 aQuantitiesAdapter->getPhi(),
+			 aQuantitiesAdapter->getMass());
+    
+    p4Leg1SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg1Pt(),
+			     aQuantitiesAdapter->getLeg1Eta(),
+			     aQuantitiesAdapter->getLeg1Phi(),
+			     tauMass);
+    
+    p4Leg2SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg2Pt(),
+			     aQuantitiesAdapter->getLeg2Eta(),
+			     aQuantitiesAdapter->getLeg2Phi(),
+			     tauMass);
+        
   }
+  else{
+    p4SVFit.SetPtEtaPhiM(0,0,0,0);
+    p4Leg1SVFit.SetPtEtaPhiM(0,0,0,0);
+    p4Leg2SVFit.SetPtEtaPhiM(0,0,0,0);
+  }
+  
   return p4SVFit;
 }
 /////////////////////////////////////////////////

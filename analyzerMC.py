@@ -67,9 +67,7 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM/5260BAEE-5539-E611-BE18-0025905C53F0.root'
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/MINIAODSIM/0064B539-803A-E611-BDEA-002590D0B060.root'
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/MINIAODSIM/02279B81-6E54-E611-ABD9-A0000420FE80.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/1C6F3F7F-96C8-E611-A0D7-0025905A4964.root'
     )
 )
 

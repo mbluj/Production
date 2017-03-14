@@ -91,20 +91,10 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexLeg1,indexLeg2,13));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexLeg1,indexLeg2,11));
   
-  /*
-  std::cout<<" tauBaselineSelection1: "<<tauBaselineSelection1
-	   <<" tauBaselineSelection2: "<<tauBaselineSelection2
-	   <<" passBaselinePair: "<<passBaselinePair
-	   <<" passPostSynchTau1: "<<passPostSynchTau1
-	   <<" passPostSynchTau2: "<<passPostSynchTau2
-	   <<" extraMuonVeto(leg1,leg2): "<<thirdLeptonVeto(indexLeg1,indexLeg2,13)
-	   <<" extraElectronVeto(leg1,leg2): "<<thirdLeptonVeto(indexLeg1,indexLeg2,11)
-	   <<std::endl;
-  */
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
-    //&& ( (postSynchLooseTau1 && postSynchMediumTau2) || (postSynchLooseTau2 && postSynchMediumTau1) )
-    //&& !thirdLeptonVeto(indexLeg1,indexLeg2,13)
-    //&& !thirdLeptonVeto(indexLeg1,indexLeg2,11)
+    && ( (postSynchLooseTau1 && postSynchMediumTau2) || (postSynchLooseTau2 && postSynchMediumTau1) )
+    && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
+    && !thirdLeptonVeto(indexLeg1,indexLeg2,11)
     && true;
 }
 /////////////////////////////////////////////////
