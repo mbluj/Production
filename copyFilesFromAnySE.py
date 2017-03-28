@@ -6,7 +6,7 @@ import sys, re, os, commands, time
 def fileCopied(fileName):
     command = "ls "+fileName.strip("file:")
     result = commands.getoutput(command)
-    
+
     if(str(result).find("No such file or directory")!=-1 or
        str(result).find("Nie ma takiego pliku ani katalogu")!=-1):
            return False
@@ -21,8 +21,8 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
     lines = output.split('\n')
     for line in lines:
         if line.count("/"+user+"/"):
-            localPath = line.split()[6]            
-            if line.split()[0]=='drwxrwxr-x' and (endpoint+localPath)!=sourcePath:                
+            localPath = line.split()[6]
+            if line.split()[0]=='drwxrwxr-x' and (endpoint+localPath)!=sourcePath:
                 print "directory local path: ",localPath
                 copyFilesFromSE(endpoint+localPath,destinationPath, user)
             else:
@@ -44,7 +44,7 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
 
                 if(fileCopied(destination)):
                     continue
-                    
+
                 command = "lcg-cp -v  --vo cms -b -T srmv2 -U srmv2 "+endpoint+localPath+" "+destination + " &"
                 #command = "gfal-copy --force "+endpoint+localPath+" "+destination
                 print "Executing command: ",command
@@ -52,7 +52,7 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
                 command = "ps aux | grep lcg-cp"
                 while commands.getoutput(command).count("lcg-cp")>15:
                     time.sleep(1)
-                
+
 
     #command = "srmls "+destinationPath+"/"+destDirectory
     #os.system(command)
@@ -76,14 +76,13 @@ destEndpoint = "file:./Data/"
 ##katalogi ktore checmy skopiowac
 directories = [
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v2/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v3_MSSM/",
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v1_SM/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_MSSM/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_SM/SingleMuon/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_SM/Tau/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow
-## o tej samej strukturze so na SE, poczawszy od katalogu wystepujacego po 
+## o tej samej strukturze so na SE, poczawszy od katalogu wystepujacego po
 ## nazwie uzytkownika
 for dir in directories:
     copyFilesFromSE(sourceEndpoint+dir,destEndpoint, user)
-
-

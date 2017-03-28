@@ -712,7 +712,7 @@ void HTauTauTreeBase::Loop(){
 	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){	  
 	  HTTAnalysis::sysEffects type = static_cast<HTTAnalysis::sysEffects>(sysType);
 	  computeSvFit(bestPair, type);
-	  break; ///TEST for synch. ntuple
+	  //break; ///TEST for synch. ntuple
 	}
 	warsawTree->Fill();
 	hStats->Fill(2);//Number of events saved to ntuple

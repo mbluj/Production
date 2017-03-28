@@ -14,7 +14,7 @@ def prepareCrabCfg(dataset,
                    crabCfgName,
                    eventsPerJob,
                    jsonFile,
-                   storage_element, 
+                   storage_element,
                    publish_data_suffix):
 
     workdir = publish_data_suffix
@@ -31,6 +31,10 @@ def prepareCrabCfg(dataset,
     if dataset.find("23Sep2016-v")!=-1:
         shortName+= "_v"+dataset[dataset.find("23Sep2016-v")+11:dataset.find("23Sep2016-v")+12]
 
+    if dataset.find("03Feb2017")!=-1:
+        patternEnd = dataset.find("/MINIAOD")
+        shortName+= dataset[dataset.find("03Feb2017")+9:patternEnd]
+
     if dataset.find("ext")!=-1:
         shortName+= "_"+dataset[dataset.find("ext"):dataset.find("ext")+4]
 
@@ -45,7 +49,7 @@ def prepareCrabCfg(dataset,
 
     ##Modify CRAB3 configuration
     config.JobType.psetName = 'DUMMY'
-    isWZH = False    
+    isWZH = False
     if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1:
         isWZH = True
     if isWZH:
@@ -57,7 +61,7 @@ def prepareCrabCfg(dataset,
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
     config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h','zpt_weights.root']
-    
+
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
 
@@ -67,14 +71,14 @@ def prepareCrabCfg(dataset,
     config.Data.inputDBS = 'global'
     config.Data.splitting = 'EventAwareLumiBased'
     config.Data.unitsPerJob = eventsPerJob
-    
+
     #DYJets
     if dataset.split("/")[2].find("Jets")!=-1:
-        eventsPerJob = 30000
+        eventsPerJob = 20000
     #DY and W 3,4 Jets
     if dataset.split("/")[2].find("3Jets")!=-1 or dataset.split("/")[2].find("4Jets")!=-1:
         eventsPerJob = 500
-    
+
     config.Data.totalUnits =  -1
     config.Data.lumiMask=""
     if dataset.split("/")[2].find("Run201")!=-1:
@@ -84,24 +88,44 @@ def prepareCrabCfg(dataset,
         config.JobType.psetName = 'analyzerData.py'
     out = open('crabTmp.py','w')
     out.write(config.pythonise_())
-    out.close()        
+    out.close()
     os.system("crab submit -c crabTmp.py")
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 4000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 
 from datasetsMoriond17 import datasets
 
 ##TEST
 datasets = [
- #"/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"]
- "/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
- ]
+#"/SingleMuon/Run2016B-03Feb2017_ver1-v1/MINIAOD",#No runs in Golden JSON
+    "/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    "/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
+    "/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",
+    ####
+    #"/Tau/Run2016B-03Feb2017_ver1-v1/MINIAOD",
+    "/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    "/Tau/Run2016C-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016D-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016E-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016F-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016G-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD",
+    "/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD",
+#"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
+## "/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+]
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 ########################################################
+'''
 for dataset in datasets:
     jsonFile2016 = jsonFileReReco
 
@@ -110,18 +134,18 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v1_SM")
+                   publish_data_suffix = "v4_SM")
+                  #publish_data_suffix = "v4_MSSM")
+'''
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
-'''
-for dataset in datasets:        
-        mergeDataset(dataset=dataset, publish_data_suffix = "v94",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_03_03_2017/")
-'''
-#for a in v1/*v94*; do crab resubmit -d $a; done
-#for a in v1/*Run2016*v94*; do crab report -d $a; done
+for dataset in datasets:
+        mergeDataset(dataset=dataset, publish_data_suffix = "v4_SM",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_28_03_2017/")
+#for a in v1/*v4_SM*; do crab resubmit -d $a; done
+#for a in v1/*Run2016*v4_SM*; do crab report -d $a; done
 
 #mergeJSON.py crab_SingleMuonRun2016*23*/results/processedLumis.json crab_SingleMuonRun2016H*/results/processedLumis.json > processedLumis_SingleMuon.json
 #mergeJSON.py crab_TauRun2016*23*/results/processedLumis.json crab_TauRun2016H*/results/processedLumis.json > processedLumis_Tau.json
