@@ -25,12 +25,12 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
   if(std::abs(pdgIdLeg1)==13) indexMuonLeg = indexDau1->at(iPair);
   else if(std::abs(pdgIdLeg2)==13) indexMuonLeg = indexDau2->at(iPair);
   else return 0;
-  
+
   unsigned int indexTauLeg = -1;
   if(std::abs(pdgIdLeg1)==15) indexTauLeg = indexDau1->at(iPair);
   else if(std::abs(pdgIdLeg2)==15) indexTauLeg = indexDau2->at(iPair);
   else return 0;
-  
+
   int tauIDmask = 0;
   for(unsigned int iBit=0;iBit<ntauIds;iBit++){
     if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT") tauIDmask |= (1<<iBit);
@@ -41,35 +41,38 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 			daughters_py->at(indexMuonLeg),
 			daughters_pz->at(indexMuonLeg),
 			daughters_e->at(indexMuonLeg));
-  
+
   TLorentzVector tauP4(daughters_px->at(indexTauLeg),
 		       daughters_py->at(indexTauLeg),
 		       daughters_pz->at(indexTauLeg),
 		       daughters_e->at(indexTauLeg));
-  
-  bool muonBaselineSelection =  muonP4.Pt()>23 && std::abs(muonP4.Eta())<2.4 &&	
+
+  int muonIdBit = 7;//Standard Medium ID
+  if(RunNumber<278808 && RunNumber>100000) muonIdBit = 6;//ICHEP Medium MuonID
+
+  bool muonBaselineSelection =  muonP4.Pt()>19 && std::abs(muonP4.Eta())<2.4 &&
 				std::abs(dz->at(indexMuonLeg))<0.2 &&
 				std::abs(dxy->at(indexMuonLeg))<0.045 &&
-			       ((daughters_muonID->at(indexMuonLeg) & (1<<6)) == (1<<6));
+			       ((daughters_muonID->at(indexMuonLeg) & (1<<muonIdBit)) == (1<<muonIdBit));
 
   bool tauBaselineSelection = tauP4.Pt()>20 && std::abs(tauP4.Eta())<2.3 &&
 			      daughters_decayModeFindingOldDMs->at(indexTauLeg)>0.5 &&
-                              std::abs(dz->at(indexTauLeg))<0.2 && 
-                              std::abs(daughters_charge->at(indexTauLeg))==1;			
-  
-  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;							     
+                              std::abs(dz->at(indexTauLeg))<0.2 &&
+                              std::abs(daughters_charge->at(indexTauLeg))==1;
+
+  bool baselinePair = muonP4.DeltaR(tauP4) > 0.5;
   bool postSynchMuon = combreliso->at(indexMuonLeg)<0.15;
   bool loosePostSynchMuon = combreliso->at(indexMuonLeg)<0.3;
   bool postSynchTau = (tauID->at(indexTauLeg) & tauIDmask) == tauIDmask;
 
   ///SUSY synch selection
   //muonBaselineSelection &= muonP4.Pt()>23 && std::abs(muonP4.Eta())<2.1;
-  //tauBaselineSelection &= tauP4.Pt()>30 && std::abs(tauP4.Eta())<2.3;  
+  //tauBaselineSelection &= tauP4.Pt()>30 && std::abs(tauP4.Eta())<2.3;
   ///////////////////////
-  
+
   httEvent->clearSelectionWord();
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,muonBaselineSelection);
-  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);  
+  httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchMuon,postSynchMuon);
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau);
@@ -85,7 +88,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauTauTree::diMuonVeto(){
- 
+
   std::vector<int> muonIndexes;
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
 
@@ -97,7 +100,7 @@ bool HTauTauTree::diMuonVeto(){
 
        bool passLepton = muonP4.Pt()> 15 && std::abs(muonP4.Eta())<2.4 &&
 			 std::abs(dz->at(iLepton))<0.2 &&
-		         std::abs(dxy->at(iLepton))<0.045 && 
+		         std::abs(dxy->at(iLepton))<0.045 &&
        combreliso->at(iLepton)<0.3 &&
        ((daughters_typeOfMuon->at(iLepton) & ((1<<0) + (1<<1) + (1<<2))) == ((1<<0) + (1<<1) + (1<<2)));
 
@@ -105,7 +108,7 @@ bool HTauTauTree::diMuonVeto(){
   }
 
   if(muonIndexes.size()<2) return false;
-  
+
   else{
     for(unsigned int iMuon1=0;iMuon1<muonIndexes.size();++iMuon1){
       TLorentzVector muon1P4(daughters_px->at(iMuon1),
@@ -113,7 +116,7 @@ bool HTauTauTree::diMuonVeto(){
 			     daughters_pz->at(iMuon1),
 			     daughters_e->at(iMuon1));
       int muon1Charge = daughters_charge->at(iMuon1);
-      
+
       for(unsigned int iMuon2=0;iMuon2<muonIndexes.size();++iMuon2){
 	TLorentzVector muon2P4(daughters_px->at(iMuon2),
 			       daughters_py->at(iMuon2),

@@ -30,9 +30,9 @@ COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=True
 Is25ns=True
-HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                                                               
+HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
 if not IsMC:
-    HLTProcessName='HLT' #It always 'HLT' for real data                                                                                                                                     
+    HLTProcessName='HLT' #It always 'HLT' for real data
 print "HLTProcessName: ",HLTProcessName
 
 #relaxed sets for testing purposes
@@ -48,7 +48,7 @@ BCUT="pt>5"
 
 # ------------------------
 DO_ENRICHED=False # do True by default, both ntuples and enriched outputs are saved!
-STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection additional to MiniAOD standard are stored. They can be used to reproduce ntuples when used together with orygnal MiniAOD with two-file-solution    
+STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection additional to MiniAOD standard are stored. They can be used to reproduce ntuples when used together with orygnal MiniAOD with two-file-solution
 # ------------------------
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
@@ -61,18 +61,18 @@ if is80X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_80X.py")
 else :
     execfile(PyFilePath+"python/HiggsTauTauProducer.py")
-    
+
 ### ----------------------------------------------------------------------
 ### Source, better to use sample to run on batch
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/1C6F3F7F-96C8-E611-A0D7-0025905A4964.root'
+        'file:/scratch_local/akalinow/CMS/HiggsCP/Data/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/14CD7198-67BF-E611-95F9-002590D9D8B8.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = 1000
+process.maxEvents.input = -1
 #process.source.eventsToProcess = cms.untracked.VEventRange('1:743343') #MET test
 
 # JSON mask for data --> defined in the lumiMask file
@@ -92,17 +92,17 @@ if DO_ENRICHED:
         fileName = cms.untracked.string('Enriched_miniAOD.root'),
         outputCommands = cms.untracked.vstring('keep *'),
         fastCloning     = cms.untracked.bool(False),
-        #Compression settings from MiniAOD allowing to save about 10% of disc space compared to defults ->                                                                                  
+        #Compression settings from MiniAOD allowing to save about 10% of disc space compared to defults ->
         compressionAlgorithm = cms.untracked.string('LZMA'),
         compressionLevel = cms.untracked.int32(4),
         dropMetaData = cms.untracked.string('ALL'),
         eventAutoFlushCompressedSize = cms.untracked.int32(15728640),
         overrideInputFileSplitLevels = cms.untracked.bool(True)
-        # <-                                                                                                                                                                                
+        # <-
     )
     if STORE_ENRICHEMENT_ONLY:
-        # Store only additional collections compared to MiniAOD necessary to reproduce ntuples (basically MVAMET, lepton pairs with SVFit and corrected jets)                               
-        # Size of about 10% of full EnrichedMiniAOD                                                                                                                                         
+        # Store only additional collections compared to MiniAOD necessary to reproduce ntuples (basically MVAMET, lepton pairs with SVFit and corrected jets)
+        # Size of about 10% of full EnrichedMiniAOD
         process.out.outputCommands.append('drop *')
         process.out.outputCommands.append('keep *_SVllCand_*_*')
         process.out.outputCommands.append('keep *_SVbypass_*_*')
@@ -113,7 +113,7 @@ if DO_ENRICHED:
         process.out.outputCommands.append('keep *_patJetsReapplyJEC_*_*')
         process.out.outputCommands.append('keep *_softLeptons_*_*')
         process.out.outputCommands.append('keep *_genInfo_*_*')
-        #process.out.fileName = 'EnrichementForMiniAOD.root' #FIXME: change name of output file?                                                                                            
+        #process.out.fileName = 'EnrichementForMiniAOD.root' #FIXME: change name of output file?
     process.end = cms.EndPath(process.out)
 
 #process.options = cms.PSet(skipEvent =  cms.untracked.vstring('ProductNotFound')),

@@ -47,7 +47,7 @@ public :
 			      const TVector2 &aMET, const TMatrixD &covMET);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
-  float getPtReweight();
+  float getPtReweight(bool doSUSY=false);
   bool isGoodToMatch(unsigned int ind);
   TLorentzVector getGenComponentP4(unsigned int index, unsigned int iAbsCharge);
 
@@ -65,13 +65,13 @@ public :
   TFile *warsawFile;
   HTTEvent *httEvent;
   TH1F* hStats;
-  TH2F* zptmass_histo;
+  TH2F* zptmass_histo, *zptmass_histo_SUSY;
   
   unsigned int bestPairIndex_;
 
   bool doSvFit_;
   TFile* inputFile_visPtResolution_;
-  TFile* zPtReweightFile;
+  TFile* zPtReweightFile, *zPtReweightSUSYFile;
   TLorentzVector p4SVFit, p4Leg1SVFit, p4Leg2SVFit;   
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;

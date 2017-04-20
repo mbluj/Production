@@ -60,7 +60,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h','zpt_weights.root']
+    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h','zpt_weights.root', 'zpt_weights_summer2016.root']
 
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -98,34 +98,15 @@ eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 from datasetsMoriond17 import datasets
 
 ##TEST
-datasets = [
-#"/SingleMuon/Run2016B-03Feb2017_ver1-v1/MINIAOD",#No runs in Golden JSON
-    "/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
-    "/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
-    "/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",
-    ####
-    #"/Tau/Run2016B-03Feb2017_ver1-v1/MINIAOD",
-    "/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD",
-    "/Tau/Run2016C-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016D-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016E-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016F-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016G-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD",
-    "/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD",
-#"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
+datasets = [ 
+##"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
 ## "/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
 ]
+
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 ########################################################
-'''
 for dataset in datasets:
     jsonFile2016 = jsonFileReReco
 
@@ -134,16 +115,18 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v4_SM")
+                  publish_data_suffix = "v5_SM")
                   #publish_data_suffix = "v4_MSSM")
-'''
+                  #publish_data_suffix = "4Mu_v3")                  
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
+'''
 for dataset in datasets:
         mergeDataset(dataset=dataset, publish_data_suffix = "v4_SM",
                                       outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_28_03_2017/")
+'''
 #for a in v1/*v4_SM*; do crab resubmit -d $a; done
 #for a in v1/*Run2016*v4_SM*; do crab report -d $a; done
 

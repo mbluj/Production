@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) : fChain(0) 
+HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -41,10 +41,14 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
      inputFile_visPtResolution_ = new TFile(svInputFileName);
    }
    ////////////////////////////////////////////////////////////
-   zPtReweightFile = new TFile("zpt_weights.root");
+   zPtReweightFile = new TFile("zpt_weights.root");  
    if(!zPtReweightFile) std::cout<<"Z pt reweight file zpt_weights.root is missing."<<std::endl;
    zptmass_histo = (TH2F*)zPtReweightFile->Get("zptmass_histo");
-     
+
+   zPtReweightSUSYFile = new TFile("zpt_weights_summer2016.root");  
+   if(!zPtReweightSUSYFile) std::cout<<"SUSY Z pt reweight file zpt_weights.root is missing."<<std::endl;
+   zptmass_histo_SUSY = (TH2F*)zPtReweightSUSYFile->Get("zptmass_histo");
+   
 }
 
 HTauTauTreeBase::~HTauTauTreeBase()
@@ -59,6 +63,7 @@ HTauTauTreeBase::~HTauTauTreeBase()
    }
    if(inputFile_visPtResolution_) delete inputFile_visPtResolution_;
    if(zPtReweightFile) delete zPtReweightFile;
+   if(zPtReweightSUSYFile) delete zPtReweightSUSYFile;
 }
 
 Int_t HTauTauTreeBase::GetEntry(Long64_t entry)
@@ -580,7 +585,7 @@ void HTauTauTreeBase::Init(TTree *tree)
    fChain->SetBranchAddress("subjets_pz", &subjets_pz, &b_subjets_pz);
    fChain->SetBranchAddress("subjets_e", &subjets_e, &b_subjets_e);
    fChain->SetBranchAddress("subjets_CSV", &subjets_CSV, &b_subjets_CSV);
-   fChain->SetBranchAddress("subjets_ak8MotherIdx", &subjets_ak8MotherIdx, &b_subjets_ak8MotherIdx);   
+   fChain->SetBranchAddress("subjets_ak8MotherIdx", &subjets_ak8MotherIdx, &b_subjets_ak8MotherIdx);
    fChain->SetBranchAddress("pv_x", &pv_x, &b_pv_x);
    fChain->SetBranchAddress("pv_y", &pv_y, &b_pv_y);
    fChain->SetBranchAddress("pv_z", &pv_z, &b_pv_z);
@@ -615,14 +620,14 @@ void HTauTauTreeBase::Show(Long64_t entry)
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
-  
+
   if(prefix=="") prefix="WAW";
   prefix += "_";
-  std::string filePath(tree->GetCurrentFile()->GetName());   
+  std::string filePath(tree->GetCurrentFile()->GetName());
   size_t location = filePath.find_last_of("/");
   if(location==std::string::npos) location = 0;
   else location+=1;
-  std::string fileName = prefix+filePath.substr(location,filePath.size());   
+  std::string fileName = prefix+filePath.substr(location,filePath.size());
   warsawFile = new TFile(fileName.c_str(),"RECREATE");
   httEvent = new HTTEvent();
   warsawTree = new TTree("HTauTauTree","");
@@ -634,7 +639,7 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   TBranch *genLeptonBranch = warsawTree->Branch("HTTGenLeptonCollection",&httGenLeptonCollection);
   hStats = new TH1F("hStats","Bookkeeping histogram",11,-0.5,10.5);
   hStats->SetDirectory(warsawFile);
-     
+
   leptonPropertiesList.push_back("PDGIdDaughters");
   leptonPropertiesList.push_back("daughters_charge");
   leptonPropertiesList.push_back("decayMode");
@@ -655,7 +660,7 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   leptonPropertiesList.push_back("daughters_L3FilterFired");
   leptonPropertiesList.push_back("daughters_L3FilterFiredLast");
   leptonPropertiesList.push_back("mc_match");
-  
+
   leptonPropertiesList.push_back("jets_rawPt");
   leptonPropertiesList.push_back("jets_area");
   leptonPropertiesList.push_back("jets_PUJetID");
@@ -690,10 +695,10 @@ void HTauTauTreeBase::Loop(){
       unsigned int bestPairIndex = Cut(ientry);
 
       fillEvent();
-      
+
       hStats->Fill(0);//Number of events analyzed
       hStats->Fill(1,httEvent->getMCWeight());//Sum of weights
-      
+
       bestPairIndex_ = bestPairIndex;
 
       if(bestPairIndex<9999){
@@ -707,13 +712,12 @@ void HTauTauTreeBase::Loop(){
 	fillPairs(bestPairIndex);
 
 	HTTPair & bestPair = httPairCollection[0];
-	
         for(unsigned int sysType = (unsigned int)HTTAnalysis::NOMINAL;
-	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){	  
+	    sysType<(unsigned int)HTTAnalysis::DUMMY_SYS;++sysType){
 	  HTTAnalysis::sysEffects type = static_cast<HTTAnalysis::sysEffects>(sysType);
 	  computeSvFit(bestPair, type);
 	  //break; ///TEST for synch. ntuple
-	}
+	}	
 	warsawTree->Fill();
 	hStats->Fill(2);//Number of events saved to ntuple
 	hStats->Fill(3,httEvent->getMCWeight());//Sum of weights saved to ntuple
@@ -722,7 +726,7 @@ void HTauTauTreeBase::Loop(){
 
    writePropertiesHeader(leptonPropertiesList);
 
-   TFile *currentFile = fChain->GetCurrentFile();   
+   TFile *currentFile = fChain->GetCurrentFile();
    TH1F* hLLRCounters = (TH1F*)currentFile->Get("HTauTauTree/Counters");
    if(!hLLRCounters) std::cout<<"Counters histogram not found!"<<std::endl;
    else writeTriggersHeader(hLLRCounters);
@@ -737,7 +741,7 @@ Int_t HTauTauTreeBase::Cut(Long64_t entry){
   for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
     if(pairSelection(iPair)) pairIndexes.push_back(iPair);
   }
-  
+
   return bestPair(pairIndexes);
 }
 /////////////////////////////////////////////////
@@ -772,7 +776,7 @@ bool HTauTauTreeBase::thirdLeptonVeto(unsigned int signalLeg1Index, unsigned int
 			daughters_py->at(signalLeg2Index),
 			daughters_pz->at(signalLeg2Index),
 			daughters_e->at(signalLeg2Index));
-  
+
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
     if(iLepton==signalLeg1Index || iLepton==signalLeg2Index) continue;
     TLorentzVector leptonP4(daughters_px->at(iLepton),
@@ -781,7 +785,7 @@ bool HTauTauTreeBase::thirdLeptonVeto(unsigned int signalLeg1Index, unsigned int
 			    daughters_e->at(iLepton));
     double dr = std::min(leg1P4.DeltaR(leptonP4),leg2P4.DeltaR(leptonP4));
     if(dr<dRmin) continue;
-    if(leptonPdg == 13 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) && 
+    if(leptonPdg == 13 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) &&
        (std::abs(PDGIdDaughters->at(signalLeg1Index))!=leptonPdg || muonSelection(signalLeg1Index)) &&
        (std::abs(PDGIdDaughters->at(signalLeg2Index))!=leptonPdg || muonSelection(signalLeg2Index)) ) return true;
     if(leptonPdg == 11 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton) &&
@@ -808,11 +812,14 @@ bool HTauTauTreeBase::muonSelection(unsigned int index){
 		     daughters_py->at(index),
 		     daughters_pz->at(index),
 		     daughters_e->at(index));
+
+  int muonIdBit = 7;//Standard Medium ID
+  if(RunNumber<278808 && RunNumber>100000) muonIdBit = 6;//ICHEP Medium MuonID
   
   bool passSelection = aP4.Pt()>10 && std::abs(aP4.Eta())<2.4 &&
                        std::abs(dz->at(index))<0.2 &&
                        std::abs(dxy->at(index))<0.045 &&
-		       ((daughters_muonID->at(index) & (1<<6)) == (1<<6)) &&
+		       ((daughters_muonID->at(index) & (1<<muonIdBit)) == (1<<muonIdBit)) &&
 		       combreliso->at(index)<0.3;
 
   return passSelection;
@@ -833,7 +840,7 @@ bool HTauTauTreeBase::electronSelection(unsigned int index){
                        daughters_passConversionVeto->at(index)>0.5 &&
                        daughters_eleMissingHits->at(index)<=1 &&
                        combreliso->at(index)<0.3;
-		
+
   return passSelection;
 }
 /////////////////////////////////////////////////
@@ -844,19 +851,19 @@ bool HTauTauTreeBase::jetSelection(unsigned int index, unsigned int bestPairInde
 		     jets_py->at(index),
 		     jets_pz->at(index),
 		     jets_e->at(index));
-		     
+
   TLorentzVector leg1P4(daughters_px->at(indexDau1->at(bestPairIndex)),
 			daughters_py->at(indexDau1->at(bestPairIndex)),
 			daughters_pz->at(indexDau1->at(bestPairIndex)),
 			daughters_e->at(indexDau1->at(bestPairIndex)));
-		     
+
   TLorentzVector leg2P4(daughters_px->at(indexDau2->at(bestPairIndex)),
 			daughters_py->at(indexDau2->at(bestPairIndex)),
 			daughters_pz->at(indexDau2->at(bestPairIndex)),
 			daughters_e->at(indexDau2->at(bestPairIndex)));
 
-  bool passSelection = aP4.Pt()>20 && std::abs(aP4.Eta())<4.7 &&	      
-  		       aP4.DeltaR(leg1P4) > 0.5 &&	      
+  bool passSelection = aP4.Pt()>20 && std::abs(aP4.Eta())<4.7 &&
+  		       aP4.DeltaR(leg1P4) > 0.5 &&
   		       aP4.DeltaR(leg2P4) > 0.5 &&
 		       PFjetID->at(index)>=1;
 
@@ -874,7 +881,7 @@ void HTauTauTreeBase::fillEvent(){
   httEvent->setAODPV(TVector3(pv_x,pv_y,pv_z));
   httEvent->setRefittedPV(TVector3(pvRefit_x,pvRefit_y,pvRefit_z));
   httEvent->setIsRefit(isRefitPV);
-  
+
   TVector2 metPF;
   metPF.SetMagPhi(met, metphi);
   httEvent->setMETFilterDecision(metfilterbit);
@@ -885,12 +892,16 @@ void HTauTauTreeBase::fillEvent(){
     httEvent->setMCWeight(MC_weight);
     httEvent->setMCatNLOWeight(aMCatNLOweight);
     httEvent->setLHE_Ht(lheHt);
-    httEvent->setLHEnOutPartons(lheNOutPartons);    
-    httEvent->setGenPV(TVector3(pvGen_x,pvGen_y,pvGen_z));    
+    httEvent->setLHEnOutPartons(lheNOutPartons);
+    httEvent->setGenPV(TVector3(pvGen_x,pvGen_y,pvGen_z));
 
     float ptReWeight = getPtReweight();
     httEvent->setPtReWeight(ptReWeight);
-      
+
+    bool doSUSY = true;
+    ptReWeight = getPtReweight(doSUSY);
+    httEvent->setPtReWeightSUSY(ptReWeight);
+
     for(unsigned int iGenPart=0;iGenPart<genpart_pdg->size();++iGenPart){
       int absPDGId = std::abs(genpart_pdg->at(iGenPart));
       if(absPDGId == 25 || absPDGId == 23 || absPDGId == 36) httEvent->setDecayModeBoson(genpart_HZDecayMode->at(iGenPart));
@@ -900,7 +911,7 @@ void HTauTauTreeBase::fillEvent(){
     }
   }
 
-  std::string fileName(fChain->GetCurrentFile()->GetName());  
+  std::string fileName(fChain->GetCurrentFile()->GetName());
   HTTEvent::sampleTypeEnum aType = HTTEvent::DUMMY;
   httEvent->setSampleType(aType);
 
@@ -915,7 +926,7 @@ void HTauTauTreeBase::fillJets(unsigned int bestPairIndex){
 
     if(!jetSelection(iJet, bestPairIndex)) continue;
     HTTParticle aJet;
-    
+
     TLorentzVector p4(jets_px->at(iJet), jets_py->at(iJet),
 		      jets_pz->at(iJet), jets_e->at(iJet));
 
@@ -927,18 +938,18 @@ void HTauTauTreeBase::fillJets(unsigned int bestPairIndex){
     aJet.setP4(p4);
     aJet.setProperties(aProperties);
     httJetCollection.push_back(aJet);
-  }    
+  }
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::fillLeptons(){
 
   httLeptonCollection.clear();
-  
+
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-    
+
     HTTParticle aLepton;
-    
+
     TLorentzVector p4(daughters_px->at(iLepton), daughters_py->at(iLepton),
 		      daughters_pz->at(iLepton), daughters_e->at(iLepton));
 
@@ -948,53 +959,53 @@ void HTauTauTreeBase::fillLeptons(){
     TLorentzVector p4Neutral(daughters_neutral_px->at(iLepton), daughters_neutral_py->at(iLepton),
 			     daughters_neutral_pz->at(iLepton), daughters_neutral_e->at(iLepton));
 
-    TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));    
-    TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));    
-    TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));    
+    TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));
+    TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));
+    TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(p4Charged);
     aLepton.setNeutralP4(p4Neutral);
-        
+
     aLepton.setPCA(pca);
     aLepton.setPCARefitPV(pcaRefitPV);
     aLepton.setPCAGenPV(pcaGenPV);
-    
+
     std::vector<Double_t> aProperties = getProperties(leptonPropertiesList, iLepton);
-    aLepton.setProperties(aProperties);    
+    aLepton.setProperties(aProperties);
     aLepton.setP4(p4);
 
     httLeptonCollection.push_back(aLepton);
-  }  
+  }
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::fillGenLeptons(){
 
   httGenLeptonCollection.clear();
-  
+
   if(!fChain->FindBranch("genpart_pdg")) return;
-  
+
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
     if(std::abs(genpart_pdg->at(iGenPart))!=15) continue;
-    
+
     TLorentzVector p4(genpart_px->at(iGenPart), genpart_py->at(iGenPart),
 		      genpart_pz->at(iGenPart), genpart_e->at(iGenPart));
-    
+
     HTTParticle aLepton;
-    
+
 
     TVector3 pca(genpart_pca_x->at(iGenPart), genpart_pca_y->at(iGenPart), genpart_pca_z->at(iGenPart));
 
     aLepton.setP4(p4);
-    aLepton.setChargedP4(getGenComponentP4(iGenPart,1));    
+    aLepton.setChargedP4(getGenComponentP4(iGenPart,1));
     aLepton.setNeutralP4(getGenComponentP4(iGenPart,0));
     aLepton.setPCA(pca);
 
     std::vector<Double_t> aProperties = getProperties(genLeptonPropertiesList, iGenPart);
     aLepton.setProperties(aProperties);
 
-    httGenLeptonCollection.push_back(aLepton); 
+    httGenLeptonCollection.push_back(aLepton);
   }
 }
 /////////////////////////////////////////////////
@@ -1002,16 +1013,16 @@ void HTauTauTreeBase::fillGenLeptons(){
 TLorentzVector HTauTauTreeBase::getGenComponentP4(unsigned int index, unsigned int iAbsCharge){
 
   TLorentzVector aNeutralP4, aChargedP4, aHadronicP4, aLeptonP4;
-    
+
   for(unsigned int iGenPart=0;iGenPart<genpart_px->size();++iGenPart){
-    
+
     if((unsigned int)genpart_TauMothInd->at(iGenPart)!=index) continue;
 
     if(std::abs(genpart_pdg->at(iGenPart))==11 || std::abs(genpart_pdg->at(iGenPart))==13) aLeptonP4 =TLorentzVector(genpart_px->at(iGenPart),
 													   genpart_py->at(iGenPart),
 													   genpart_pz->at(iGenPart),
 													   genpart_e->at(iGenPart));
-    
+
     if(std::abs(genpart_pdg->at(iGenPart))==77715) aNeutralP4 =TLorentzVector(genpart_px->at(iGenPart),
 									 genpart_py->at(iGenPart),
 									 genpart_pz->at(iGenPart),
@@ -1020,7 +1031,7 @@ TLorentzVector HTauTauTreeBase::getGenComponentP4(unsigned int index, unsigned i
     if(std::abs(genpart_pdg->at(iGenPart))==66615) aHadronicP4 =TLorentzVector(genpart_px->at(iGenPart),
 									  genpart_py->at(iGenPart),
 									  genpart_pz->at(iGenPart),
-									  genpart_e->at(iGenPart));	     
+									  genpart_e->at(iGenPart));
   }
 
   TLorentzVector aP4;
@@ -1038,10 +1049,10 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
 
   for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
     if(iPair!=bestPairIndex) continue;
-    
+
     TLorentzVector p4(mothers_px->at(iPair), mothers_py->at(iPair),
 		      mothers_pz->at(iPair), mothers_e->at(iPair));
-    
+
     TVector2 met(METx->at(iPair), METy->at(iPair));
 
     float mTLeg1 = mT_Dau1->at(iPair);
@@ -1052,7 +1063,7 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
     aHTTpair.setMET(met);
     aHTTpair.setMETMatrix(MET_cov00->at(iPair), MET_cov01->at(iPair), MET_cov10->at(iPair), MET_cov11->at(iPair));
     aHTTpair.setMTLeg1(mTLeg1);
-    aHTTpair.setMTLeg2(mTLeg2);    
+    aHTTpair.setMTLeg2(mTLeg2);
     aHTTpair.setLeg1(httLeptonCollection.at(indexDau1->at(iPair)));
     aHTTpair.setLeg2(httLeptonCollection.at(indexDau2->at(iPair)));
     httPairCollection.push_back(aHTTpair);
@@ -1068,14 +1079,14 @@ template<class T> T HTauTauTreeBase::getBranchValue(char *branchAddress, unsigne
     //std::cout<<"Index - size mismatch "<<std::endl;
     return 0;
   }
-  return aVector->at(index);  
+  return aVector->at(index);
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 Double_t HTauTauTreeBase::getProperty(std::string name, unsigned int index){
 
   if(name=="mc_match") return getMCMatching(index);
-  
+
   TBranch *branch = fChain->GetBranch(name.c_str());
   if(!branch){
     std::cout<<"Branch: "<<name<<" not found in the TTree."<<std::endl;
@@ -1089,7 +1100,7 @@ Double_t HTauTauTreeBase::getProperty(std::string name, unsigned int index){
   if(branchClass=="vector<int>") return getBranchValue<int>(branchAddress, index);
   if(branchClass=="vector<bool>") return getBranchValue<bool>(branchAddress, index);
   if(branchClass=="vector<Long64_t>") return getBranchValue<Long64_t>(branchAddress, index);
-  
+
   return 0;
 }
 /////////////////////////////////////////////////
@@ -1102,7 +1113,7 @@ void HTauTauTreeBase::writeTriggersHeader(const TH1F* hLLRCounter){
   for(unsigned int iBinX=4;iBinX<(unsigned int)(hLLRCounter->GetNbinsX()+1);++iBinX){
     std::string name = hLLRCounter->GetXaxis()->GetBinLabel(iBinX);
     std::string pattern = "_v";
-    if(name.find(pattern)!=std::string::npos) name.erase(name.find(pattern), pattern.size());    
+    if(name.find(pattern)!=std::string::npos) name.erase(name.find(pattern), pattern.size());
     outputFile<<name<<" = "<<iBinX-4<<", "<<std::endl;
   }
   outputFile<<"NONE"<<" = "<<hLLRCounter->GetNbinsX()+1<<std::endl;
@@ -1137,11 +1148,11 @@ std::vector<Double_t> HTauTauTreeBase::getProperties(const std::vector<std::stri
 					      unsigned int index){
 
   std::vector<Double_t> aProperties;
- 
+
   for(auto propertyName:propertiesList){
     aProperties.push_back(getProperty(propertyName,index));
   }
-  
+
   return aProperties;
 }
 /////////////////////////////////////////////////
@@ -1152,23 +1163,23 @@ int HTauTauTreeBase::getMCMatching(unsigned int index){
   float dR = 100;
   unsigned int gen_ind = -1;
   if(index>=daughters_px->size()) return -999;
-  
+
   TLorentzVector p4_1(daughters_px->at(index), daughters_py->at(index),
 		      daughters_pz->at(index), daughters_e->at(index));
-  
+
   for(unsigned int ind = 0; ind < genpart_px->size(); ind++) {
 
     if(!isGoodToMatch(ind)) continue;
     TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 		          genpart_pz->at(ind), genpart_e->at(ind));
-    if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}	
+    if(dR > p4_1.DeltaR(p4_tmp)) {dR = p4_1.DeltaR(p4_tmp); gen_ind = ind;}
   }
-  
+
   if((int)gen_ind == -1) return 6;
-  
+
   TLorentzVector p4_2(genpart_px->at(gen_ind), genpart_py->at(gen_ind),
 		      genpart_pz->at(gen_ind), genpart_e->at(gen_ind));
-		      		      
+
   if(dR > 0.2) return 6;
   int genFlags = genpart_flags->at(gen_ind);
   int absPdgId = std::abs(genpart_pdg->at(gen_ind));
@@ -1176,46 +1187,46 @@ int HTauTauTreeBase::getMCMatching(unsigned int index){
     int motherTau_ind = genpart_TauMothInd->at(gen_ind);
     genFlags = genpart_flags->at(motherTau_ind);
   }
-		      
+
   if(absPdgId == 11 && p4_2.Pt() > 8 && (genFlags & (1<<0)) == (1<<0)) return 1;
   if(absPdgId == 13 && p4_2.Pt() > 8 && (genFlags & (1<<0)) == (1<<0)) return 2;
   if(absPdgId == 11 && p4_2.Pt() > 8 && (genFlags & (1<<5)) == (1<<5)) return 3;
   if(absPdgId == 13 && p4_2.Pt() > 8 && (genFlags & (1<<5)) == (1<<5)) return 4;
   if(absPdgId == 66615 && p4_2.Pt() > 15 && (genFlags & (1<<0)) == (1<<0)) return 5;
   return 6;
-  
+
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 bool HTauTauTreeBase::isGoodToMatch(unsigned int ind){
-	
+
 	if(!(std::abs(genpart_pdg->at(ind))==11 || std::abs(genpart_pdg->at(ind))==13 || std::abs(genpart_pdg->at(ind))==66615)) return 0;
 	if(std::abs(genpart_px->at(ind))<1E-3 && std::abs(genpart_py->at(ind))<1E-3) return 0;
-	
+
 	int genFlagsTmp = genpart_flags->at(ind);
 	int absPdgIdTmp = std::abs(genpart_pdg->at(ind));
-	
+
 	if(absPdgIdTmp==66615){
 	  int motherTau_indTmp = genpart_TauMothInd->at(ind);
 	  genFlagsTmp = genpart_flags->at(motherTau_indTmp);
 	}
-	
+
 	TLorentzVector p4_tmp(genpart_px->at(ind), genpart_py->at(ind),
 				genpart_pz->at(ind), genpart_e->at(ind));
-				
+
 	bool isCat1 = absPdgIdTmp == 11 && p4_tmp.Pt() > 8 && (genFlagsTmp & (1<<0)) == (1<<0);
 	bool isCat2 = absPdgIdTmp == 13 && p4_tmp.Pt() > 8 && (genFlagsTmp & (1<<0)) == (1<<0);
 	bool isCat3 = absPdgIdTmp == 11 && p4_tmp.Pt() > 8 && (genFlagsTmp & (1<<5)) == (1<<5);
 	bool isCat4 = absPdgIdTmp == 13 && p4_tmp.Pt() > 8 && (genFlagsTmp & (1<<5)) == (1<<5);
 	bool isCat5 = absPdgIdTmp == 66615 && p4_tmp.Pt() > 15 && (genFlagsTmp & (1<<0)) == (1<<0);
-	
+
 	if(!(isCat1 || isCat2 || isCat3 || isCat4 || isCat5)) return 0;
-	
+
 	return 1;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-float HTauTauTreeBase::getPtReweight(){
+float HTauTauTreeBase::getPtReweight(bool doSUSY){
 
   TLorentzVector genBosonP4;
   TLorentzVector topP4, antitopP4;
@@ -1224,7 +1235,7 @@ float HTauTauTreeBase::getPtReweight(){
 
     int genFlags = genpart_flags->at(ind);
     int absPdgId = std::abs(genpart_pdg->at(ind));
-        
+
     TLorentzVector p4(genpart_px->at(ind), genpart_py->at(ind),
 		      genpart_pz->at(ind), genpart_e->at(ind));
 
@@ -1247,31 +1258,34 @@ float HTauTauTreeBase::getPtReweight(){
   float weight = 1.0;
 
   //Z pt reweighting
+  TH2F *hWeight = zptmass_histo;
+  if(doSUSY) hWeight = zptmass_histo_SUSY;
+  
   if(genBosonP4.M()>1E-3){
     float mass = genBosonP4.M();
-    float pt = genBosonP4.Perp();
-    int massBin = zptmass_histo->GetXaxis()->FindBin(mass);
-    int ptBin = zptmass_histo->GetYaxis()->FindBin(pt);
-    weight = zptmass_histo->GetBinContent(massBin,ptBin);
+    float pt = genBosonP4.Perp();    
+    int massBin = hWeight->GetXaxis()->FindBin(mass);
+    int ptBin = hWeight->GetYaxis()->FindBin(pt);
+    weight = hWeight->GetBinContent(massBin,ptBin);
   }
-  
+
   ///TT reweighting according to
   ///https://twiki.cern.ch/twiki/bin/view/CMS/TopSystematics#pt_top_Reweighting
   if(topP4.M()>1E-3 && antitopP4.M()>1E-3){
     float topPt = topP4.Perp();
     float antitopPt = antitopP4.Perp();
-    float weightTop = exp(0.0615-0.0005*topPt);       
+    float weightTop = exp(0.0615-0.0005*topPt);
     float weightAntitop= exp(0.0615-0.0005*antitopPt);
     weight = sqrt(weightTop*weightAntitop);
   }
-  
+
   return weight;
   }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 				   HTTAnalysis::sysEffects type){
-  
+
   if(!doSvFit_ || inputFile_visPtResolution_->IsZombie() ) return;
 
   //Legs
@@ -1315,26 +1329,26 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
   }
   //Leptons for SvFit
   std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
-  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4(type).Pt(), leg1.getP4(type).Eta(), 
+  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4(type).Pt(), leg1.getP4(type).Eta(),
 								  leg1.getP4(type).Phi(), mass1, decay1) );
-  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4(type).Pt(), leg2.getP4(type).Eta(), 
+  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4(type).Pt(), leg2.getP4(type).Eta(),
 								  leg2.getP4(type).Phi(), mass2, decay2) );
   //MET
   TVector2 aMET = aPair.getMET(type);
   TMatrixD covMET(2, 2);
-  covMET[0][0] = aPair.getMETMatrix().at(0);       
-  covMET[0][1] = aPair.getMETMatrix().at(1);       
-  covMET[1][0] = aPair.getMETMatrix().at(2);       
+  covMET[0][0] = aPair.getMETMatrix().at(0);
+  covMET[0][1] = aPair.getMETMatrix().at(1);
+  covMET[1][0] = aPair.getMETMatrix().at(2);
   covMET[1][1] = aPair.getMETMatrix().at(3);
 
-  if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix     
-  
+  if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix
+
   TLorentzVector p4SVFit = aPair.getP4(HTTAnalysis::NOMINAL);
-  if(type==HTTAnalysis::NOMINAL || 
+  if(type==HTTAnalysis::NOMINAL ||
      leg1.getP4(type)!=leg1.getP4(HTTAnalysis::NOMINAL) ||
      leg2.getP4(type)!=leg2.getP4(HTTAnalysis::NOMINAL)){
        p4SVFit = runSVFitAlgo(measuredTauLeptons, aMET, covMET);
-     }    
+     }
   aPair.setP4(p4SVFit,type);
   aPair.setLeg1P4(p4Leg1SVFit,type);
   aPair.setLeg2P4(p4Leg2SVFit,type);
@@ -1344,15 +1358,15 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
 					     const TVector2 &aMET, const TMatrixD &covMET){
 
-  
-  unsigned int verbosity = 0;//Set the debug level to 3 for testing   
+
+  unsigned int verbosity = 0;//Set the debug level to 3 for testing
   SVfitStandaloneAlgorithm algo(measuredTauLeptons, aMET.X(), aMET.Y(), covMET, verbosity);
-  svFitStandalone::MCPtEtaPhiMassAdapter *aQuantitiesAdapter = new svFitStandalone::MCPtEtaPhiMassAdapter();  
+  svFitStandalone::MCPtEtaPhiMassAdapter *aQuantitiesAdapter = new svFitStandalone::MCPtEtaPhiMassAdapter();
   algo.setMCQuantitiesAdapter(aQuantitiesAdapter);
-  
+
   double tauMass = 1.77686; //GeV, PDG value
-  
-  algo.addLogM(false); //In general, keep it false when using VEGAS integration 
+
+  algo.addLogM(false); //In general, keep it false when using VEGAS integration
   algo.shiftVisPt(true, inputFile_visPtResolution_);
   algo.integrateMarkovChain();
   if(algo.isValidSolution() ){//Get solution
@@ -1361,24 +1375,24 @@ TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::
 			 aQuantitiesAdapter->getEta(),
 			 aQuantitiesAdapter->getPhi(),
 			 aQuantitiesAdapter->getMass());
-    
+
     p4Leg1SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg1Pt(),
 			     aQuantitiesAdapter->getLeg1Eta(),
 			     aQuantitiesAdapter->getLeg1Phi(),
 			     tauMass);
-    
+
     p4Leg2SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg2Pt(),
 			     aQuantitiesAdapter->getLeg2Eta(),
 			     aQuantitiesAdapter->getLeg2Phi(),
 			     tauMass);
-        
+
   }
   else{
     p4SVFit.SetPtEtaPhiM(0,0,0,0);
     p4Leg1SVFit.SetPtEtaPhiM(0,0,0,0);
     p4Leg2SVFit.SetPtEtaPhiM(0,0,0,0);
   }
-  
+
   return p4SVFit;
 }
 /////////////////////////////////////////////////

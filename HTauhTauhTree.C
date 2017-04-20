@@ -27,11 +27,11 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 
   int tauIDmask = 0, tauIDmaskMedium = 0 , tauIDmaskLoose = 0;
   for(unsigned int iBit=0;iBit<ntauIds;iBit++){
-    if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT") 
+    if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT")
       tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="byMediumIsolationMVArun2v1DBoldDMwLT") 
+    if(tauIDStrings[iBit]=="byMediumIsolationMVArun2v1DBoldDMwLT")
       tauIDmaskMedium |= (1<<iBit);
-    if(tauIDStrings[iBit]=="byLooseIsolationMVArun2v1DBoldDMwLT") 
+    if(tauIDStrings[iBit]=="byLooseIsolationMVArun2v1DBoldDMwLT")
       tauIDmaskLoose |= (1<<iBit);
     if(tauIDStrings[iBit]=="againstMuonLoose3") {
       tauIDmask |= (1<<iBit);
@@ -52,7 +52,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   if(pt2_2>pt2_1){//tau with higher-Pt first
     unsigned int indexLegTmp = indexLeg1;
     indexLeg1 = indexLeg2;
-    indexLeg2 = indexLegTmp;    
+    indexLeg2 = indexLegTmp;
   }
   TLorentzVector tau1P4(daughters_px->at(indexLeg1),
 			daughters_py->at(indexLeg1),
@@ -67,14 +67,14 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
 
   bool tauBaselineSelection1 = tau1P4.Pt()>35 && std::abs(tau1P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg1)>0.5 &&
-                               std::abs(dz->at(indexLeg1))<0.2 && 
-                               std::abs(daughters_charge->at(indexLeg1))==1;			
+                               std::abs(dz->at(indexLeg1))<0.2 &&
+                               std::abs(daughters_charge->at(indexLeg1))==1;
   bool tauBaselineSelection2 = tau2P4.Pt()>35 && std::abs(tau2P4.Eta())<2.1 &&
                                daughters_decayModeFindingOldDMs->at(indexLeg2)>0.5 &&
-                               std::abs(dz->at(indexLeg2))<0.2 && 
-                               std::abs(daughters_charge->at(indexLeg2))==1;			
-  
-  bool baselinePair = tau1P4.DeltaR(tau2P4) > 0.5;							     
+                               std::abs(dz->at(indexLeg2))<0.2 &&
+                               std::abs(daughters_charge->at(indexLeg2))==1;
+
+  bool baselinePair = tau1P4.DeltaR(tau2P4) > 0.5;
   bool postSynchTau1 = (tauID->at(indexLeg1) & tauIDmask) == tauIDmask;
   bool postSynchTau2 = (tauID->at(indexLeg2) & tauIDmask) == tauIDmask;
   ///
@@ -82,7 +82,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchLooseTau2 = (tauID->at(indexLeg2) & tauIDmaskLoose) == tauIDmaskLoose;
   bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
   bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
-  
+
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,tauBaselineSelection1);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection2);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
@@ -90,7 +90,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   httEvent->setSelectionBit(SelectionBitsEnum::postSynchTau,postSynchTau2);
   httEvent->setSelectionBit(SelectionBitsEnum::extraMuonVeto,thirdLeptonVeto(indexLeg1,indexLeg2,13));
   httEvent->setSelectionBit(SelectionBitsEnum::extraElectronVeto,thirdLeptonVeto(indexLeg1,indexLeg2,11));
-  
+
   return tauBaselineSelection1 && tauBaselineSelection2 && baselinePair
     && ( (postSynchLooseTau1 && postSynchMediumTau2) || (postSynchLooseTau2 && postSynchMediumTau1) )
     && !thirdLeptonVeto(indexLeg1,indexLeg2,13)
@@ -122,10 +122,10 @@ unsigned int HTauhTauhTree::bestPair(std::vector<unsigned int> &pairIndexes){
       //MB: More isolated for MVAIso means higher value so inverted here to keep standard convention in comparison
       double iso_1_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index);
       double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index);
-      
-      if(iso_1_i>iso_1) continue; 
+
+      if(iso_1_i>iso_1) continue;
       if(iso_1_i==iso_1 && pt2_1_i<pt2_1) continue;
-      if(iso_2_i>iso_2) continue; 
+      if(iso_2_i>iso_2) continue;
       if(iso_2_i==iso_2 && pt2_2_i<pt2_2) continue;
       bestIndex = iPair;
       iso_1 = iso_1_i;

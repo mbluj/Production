@@ -36,11 +36,11 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
                 #if localPath.find(".root")==-1:
                 #    continue
 
-                if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
-                    continue
-
-                #if localPath.find("WAWMM_")==-1:
+                #if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
                 #    continue
+
+                if localPath.find("WAWMM_")==-1:
+                    continue
 
                 if(fileCopied(destination)):
                     continue
@@ -75,10 +75,9 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v2/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v3/",
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_MSSM/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_SM/SingleMuon/",
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_SM/Tau/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_SM_Synch/Tau/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow
