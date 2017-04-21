@@ -692,6 +692,7 @@ void HTauTauTreeBase::Loop(){
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
       httEvent->clear();
+      
       unsigned int bestPairIndex = Cut(ientry);
 
       fillEvent();
@@ -741,7 +742,7 @@ Int_t HTauTauTreeBase::Cut(Long64_t entry){
   for(unsigned int iPair=0;iPair<mothers_px->size();++iPair){
     if(pairSelection(iPair)) pairIndexes.push_back(iPair);
   }
-
+  
   return bestPair(pairIndexes);
 }
 /////////////////////////////////////////////////
@@ -895,7 +896,7 @@ void HTauTauTreeBase::fillEvent(){
     httEvent->setLHEnOutPartons(lheNOutPartons);
     httEvent->setGenPV(TVector3(pvGen_x,pvGen_y,pvGen_z));
 
-    float ptReWeight = getPtReweight();
+    double ptReWeight = getPtReweight();
     httEvent->setPtReWeight(ptReWeight);
 
     bool doSUSY = true;
@@ -1055,8 +1056,8 @@ void HTauTauTreeBase::fillPairs(unsigned int bestPairIndex){
 
     TVector2 met(METx->at(iPair), METy->at(iPair));
 
-    float mTLeg1 = mT_Dau1->at(iPair);
-    float mTLeg2 = mT_Dau2->at(iPair);
+    double mTLeg1 = mT_Dau1->at(iPair);
+    double mTLeg2 = mT_Dau2->at(iPair);
 
     HTTPair aHTTpair;
     aHTTpair.setP4(p4);
@@ -1096,7 +1097,7 @@ Double_t HTauTauTreeBase::getProperty(std::string name, unsigned int index){
   char *branchAddress = branch->GetAddress();
   std::string branchClass(branch->GetClassName());
 
-  if(branchClass=="vector<float>") return getBranchValue<float>(branchAddress, index);
+  if(branchClass=="vector<double>") return getBranchValue<double>(branchAddress, index);
   if(branchClass=="vector<int>") return getBranchValue<int>(branchAddress, index);
   if(branchClass=="vector<bool>") return getBranchValue<bool>(branchAddress, index);
   if(branchClass=="vector<Long64_t>") return getBranchValue<Long64_t>(branchAddress, index);
@@ -1160,7 +1161,7 @@ std::vector<Double_t> HTauTauTreeBase::getProperties(const std::vector<std::stri
 int HTauTauTreeBase::getMCMatching(unsigned int index){
 
   if(!fChain->FindBranch("genpart_pdg")) return -999;
-  float dR = 100;
+  double dR = 100;
   unsigned int gen_ind = -1;
   if(index>=daughters_px->size()) return -999;
 
@@ -1226,7 +1227,7 @@ bool HTauTauTreeBase::isGoodToMatch(unsigned int ind){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-float HTauTauTreeBase::getPtReweight(bool doSUSY){
+double HTauTauTreeBase::getPtReweight(bool doSUSY){
 
   TLorentzVector genBosonP4;
   TLorentzVector topP4, antitopP4;
@@ -1255,15 +1256,15 @@ float HTauTauTreeBase::getPtReweight(bool doSUSY){
     if(absPdgId == 77715) genBosonP4 -= p4;
   }
 
-  float weight = 1.0;
+  double weight = 1.0;
 
   //Z pt reweighting
   TH2F *hWeight = zptmass_histo;
   if(doSUSY) hWeight = zptmass_histo_SUSY;
   
   if(genBosonP4.M()>1E-3){
-    float mass = genBosonP4.M();
-    float pt = genBosonP4.Perp();    
+    double mass = genBosonP4.M();
+    double pt = genBosonP4.Perp();    
     int massBin = hWeight->GetXaxis()->FindBin(mass);
     int ptBin = hWeight->GetYaxis()->FindBin(pt);
     weight = hWeight->GetBinContent(massBin,ptBin);
@@ -1272,10 +1273,10 @@ float HTauTauTreeBase::getPtReweight(bool doSUSY){
   ///TT reweighting according to
   ///https://twiki.cern.ch/twiki/bin/view/CMS/TopSystematics#pt_top_Reweighting
   if(topP4.M()>1E-3 && antitopP4.M()>1E-3){
-    float topPt = topP4.Perp();
-    float antitopPt = antitopP4.Perp();
-    float weightTop = exp(0.0615-0.0005*topPt);
-    float weightAntitop= exp(0.0615-0.0005*antitopPt);
+    double topPt = topP4.Perp();
+    double antitopPt = antitopP4.Perp();
+    double weightTop = exp(0.0615-0.0005*topPt);
+    double weightAntitop= exp(0.0615-0.0005*antitopPt);
     weight = sqrt(weightTop*weightAntitop);
   }
 
@@ -1290,7 +1291,7 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 
   //Legs
   HTTParticle leg1 = aPair.getLeg1();
-  float mass1;
+  double mass1;
   int decay1 = -1;
   svFitStandalone::kDecayType type1;
   if(std::abs(leg1.getPDGid())==11){
@@ -1309,7 +1310,7 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
     type1 = svFitStandalone::kTauToHadDecay;
   }
   HTTParticle leg2 = aPair.getLeg2();
-  float mass2;
+  double mass2;
   int decay2 = -1;
   svFitStandalone::kDecayType type2;
   if(std::abs(leg2.getPDGid())==11){

@@ -98,10 +98,10 @@ eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
 from datasetsMoriond17 import datasets
 
 ##TEST
-datasets = [ 
+#datasets = [ 
 ##"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
-## "/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
-]
+#"/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+#]
 
 
 ###############
@@ -115,8 +115,8 @@ for dataset in datasets:
                    eventsPerJob=eventsPerJob,
                    jsonFile=jsonFile2016,
                    storage_element="T2_PL_Swierk",
-                  publish_data_suffix = "v5_SM")
-                  #publish_data_suffix = "v4_MSSM")
+                   publish_data_suffix = "v5_SM")
+                  #publish_data_suffix = "v5_MSSM_Synch")
                   #publish_data_suffix = "4Mu_v3")                  
 ########################################################
 ########################################################
