@@ -706,7 +706,7 @@ void HTauTauTreeBase::Loop(){
 
 	///Call pairSelection again to set selection bits for the selected pair.
         pairSelection(bestPairIndex);
-	///
+		
 	fillJets(bestPairIndex);
 	fillLeptons();
 	fillGenLeptons();
@@ -975,7 +975,16 @@ void HTauTauTreeBase::fillLeptons(){
     std::vector<Double_t> aProperties = getProperties(leptonPropertiesList, iLepton);
     aLepton.setProperties(aProperties);
     aLepton.setP4(p4);
-
+    
+    ///4Mu setting
+    /*
+    int pdgId = aLepton.getProperty(PropertyEnum::PDGId);
+    if(std::abs(pdgId)!=13) continue;
+    unsigned int muonIDmask = (1<<0);
+    bool muonID = (int)aLepton.getProperty(PropertyEnum::muonID) & muonIDmask;
+    if(!muonID) continue;    
+    */
+    /////   
     httLeptonCollection.push_back(aLepton);
   }
 }

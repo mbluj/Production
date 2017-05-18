@@ -9,16 +9,23 @@ doSvFit = True
 if doSvFit :
     print "Run with SVFit computation"
 
+#Some system have problem runnig compilation (missing glibc-static library?).
+#First we try to compile, and only ther we start time consuming cmssw
+status = gSystem.CompileMacro('HTTEvent.cxx')
+gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
+status *= gSystem.CompileMacro('HTauTauTreeBase.C')
+status *= gSystem.CompileMacro('HTauTauTree.C')
+status *= gSystem.CompileMacro('HTauhTauhTree.C')
+status *= gSystem.CompileMacro('HMuMuTree.C')
+
+print "Compilation status: ",status
+if status==0:
+    exit(-1)
+
 #Produce framework report required by CRAB
 command = "cmsRun -j FrameworkJobReport.xml -p PSet.py"
 os.system(command)
 
-gSystem.CompileMacro('HTTEvent.cxx')
-gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
-gSystem.CompileMacro('HTauTauTreeBase.C')
-gSystem.CompileMacro('HTauTauTree.C')
-gSystem.CompileMacro('HTauhTauhTree.C')
-gSystem.CompileMacro('HMuMuTree.C')
 from ROOT import HTauTauTree
 from ROOT import HTauhTauhTree
 from ROOT import HMuMuTree

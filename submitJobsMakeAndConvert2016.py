@@ -8,6 +8,10 @@ import urllib
 from crab3 import *
 from mergeROOTFiles import *
 from analyzerMC import *
+
+
+submitJobs = True
+mergeJobs = not submitJobs
 #########################################
 #########################################
 def prepareCrabCfg(dataset,
@@ -74,10 +78,10 @@ def prepareCrabCfg(dataset,
 
     #DYJets
     if dataset.split("/")[2].find("Jets")!=-1:
-        eventsPerJob = 20000
+        eventsPerJob = 40000
     #DY and W 3,4 Jets
     if dataset.split("/")[2].find("3Jets")!=-1 or dataset.split("/")[2].find("4Jets")!=-1:
-        eventsPerJob = 500
+        eventsPerJob = 1000
 
     config.Data.totalUnits =  -1
     config.Data.lumiMask=""
@@ -93,44 +97,75 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 50000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 100000 #Wjets and DYJets hardoced in code above
+
+#eventsPerJob = 500000#4Mu analysis
 
 from datasetsMoriond17 import datasets
 
+'''
 ##TEST
-#datasets = [ 
+datasets = [
+    #"/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    #"/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD",
+    #"/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD",
+    "/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    "/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD",
+    "/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
+    "/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",    
+    #"/DoubleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    #"/DoubleMuon/Run2016C-03Feb2017-v1/MINIAOD",
+    #"/DoubleMuon/Run2016D-03Feb2017-v1/MINIAOD",
+    #"/DoubleMuon/Run2016E-03Feb2017-v1/MINIAOD",
+    #"/DoubleMuon/Run2016F-03Feb2017-v1/MINIAOD",
+    #"/DoubleMuon/Run2016G-03Feb2017-v1/MINIAOD",
+    #"/DoubleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
+    #"/DoubleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",
+    #"/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",      
 ##"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
 #"/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
-#]
+]
+'''
+
+
 
 
 ###############
 jsonFileReReco = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 ########################################################
-for dataset in datasets:
-    jsonFile2016 = jsonFileReReco
+if submitJobs:
+    for dataset in datasets:
+        jsonFile2016 = jsonFileReReco
 
-    prepareCrabCfg(crabCfgName="crab3.py",
-                   dataset=dataset,
-                   eventsPerJob=eventsPerJob,
-                   jsonFile=jsonFile2016,
-                   storage_element="T2_PL_Swierk",
-                   publish_data_suffix = "v5_SM")
-                  #publish_data_suffix = "v5_MSSM_Synch")
-                  #publish_data_suffix = "4Mu_v3")                  
+        prepareCrabCfg(crabCfgName="crab3.py",
+                       dataset=dataset,
+                       eventsPerJob=eventsPerJob,
+                       jsonFile=jsonFile2016,
+                       storage_element="T2_PL_Swierk",
+                       publish_data_suffix = "v8_SM")
+                       #publish_data_suffix = "v5_MSSM_Synch")
+                       #publish_data_suffix = "4Mu_v5")                  
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
-'''
-for dataset in datasets:
-        mergeDataset(dataset=dataset, publish_data_suffix = "v4_SM",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_28_03_2017/")
-'''
-#for a in v1/*v4_SM*; do crab resubmit -d $a; done
-#for a in v1/*Run2016*v4_SM*; do crab report -d $a; done
+if mergeJobs:
+    for dataset in datasets:
+        mergeDataset(dataset=dataset, publish_data_suffix = "v8_SM",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/NTUPLES_17_05_2017/")
+
+#for a in v1/*v7_SM*; do crab resubmit -d $a; done
+#for a in v1/*Run2016*v7_SM*; do crab report -d $a; done
 
 #mergeJSON.py crab_SingleMuonRun2016*23*/results/processedLumis.json crab_SingleMuonRun2016H*/results/processedLumis.json > processedLumis_SingleMuon.json
 #mergeJSON.py crab_TauRun2016*23*/results/processedLumis.json crab_TauRun2016H*/results/processedLumis.json > processedLumis_Tau.json
 #for a in *json; do echo $a >>  lumi.out; ~/.local/bin/brilcalc lumi --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/normtag_DATACERT.json -i $a; done >>  lumi.out
 #grep -A 5 'Summary\|Run2016' lumi.out
+
+'''
+
+'''
+
+
