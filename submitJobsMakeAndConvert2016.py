@@ -70,7 +70,7 @@ def prepareCrabCfg(dataset,
     config.General.requestName = shortName
 
     config.Data.inputDataset = dataset
-    config.Data.outLFNDirBase = '/store/user/apyskir/'+publish_data_suffix+"/"
+    config.Data.outLFNDirBase = '/store/user/akalinow/'+publish_data_suffix+"/"
     config.Data.outputDatasetTag = shortName
     config.Data.inputDBS = 'global'
     config.Data.splitting = 'EventAwareLumiBased'
@@ -146,7 +146,7 @@ if submitJobs:
                        eventsPerJob=eventsPerJob,
                        jsonFile=jsonFile2016,
                        storage_element="T2_PL_Swierk",
-                       publish_data_suffix = "v2")
+                       publish_data_suffix = "SM_v8")
                        #publish_data_suffix = "v5_MSSM_Synch")
                        #publish_data_suffix = "4Mu_v5")                  
 ########################################################
