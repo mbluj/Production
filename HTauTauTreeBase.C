@@ -41,7 +41,7 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
      inputFile_visPtResolution_ = new TFile(svInputFileName);
    }
    ////////////////////////////////////////////////////////////
-   zPtReweightFile = new TFile("zpt_weights.root");  
+   zPtReweightFile = new TFile("zpt_weights_2016_BtoH.root");  
    if(!zPtReweightFile) std::cout<<"Z pt reweight file zpt_weights.root is missing."<<std::endl;
    zptmass_histo = (TH2F*)zPtReweightFile->Get("zptmass_histo");
 
@@ -786,12 +786,12 @@ bool HTauTauTreeBase::thirdLeptonVeto(unsigned int signalLeg1Index, unsigned int
 			    daughters_e->at(iLepton));
     double dr = std::min(leg1P4.DeltaR(leptonP4),leg2P4.DeltaR(leptonP4));
     if(dr<dRmin) continue;
-    if(leptonPdg == 13 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) &&
-       (std::abs(PDGIdDaughters->at(signalLeg1Index))!=leptonPdg || muonSelection(signalLeg1Index)) &&
-       (std::abs(PDGIdDaughters->at(signalLeg2Index))!=leptonPdg || muonSelection(signalLeg2Index)) ) return true;
-    if(leptonPdg == 11 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton) &&
-       (std::abs(PDGIdDaughters->at(signalLeg1Index))!=leptonPdg || electronSelection(signalLeg1Index)) &&
-       (std::abs(PDGIdDaughters->at(signalLeg2Index))!=leptonPdg || electronSelection(signalLeg2Index)) ) return true;
+    if(leptonPdg == 13 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && muonSelection(iLepton) && true) return true;
+/*       (std::abs(PDGIdDaughters->at(signalLeg1Index))!=leptonPdg || muonSelection(signalLeg1Index)) &&
+       (std::abs(PDGIdDaughters->at(signalLeg2Index))!=leptonPdg || muonSelection(signalLeg2Index)) ) return true; */ //AP 25/05/17: this part is outdated
+    if(leptonPdg == 11 && std::abs(PDGIdDaughters->at(iLepton))==leptonPdg && electronSelection(iLepton) && true) return true;
+/*       (std::abs(PDGIdDaughters->at(signalLeg1Index))!=leptonPdg || electronSelection(signalLeg1Index)) &&
+       (std::abs(PDGIdDaughters->at(signalLeg2Index))!=leptonPdg || electronSelection(signalLeg2Index)) ) return true; */ //AP 25/05/17: this part is outdated
   }
   return false;
 }
