@@ -64,7 +64,7 @@ def prepareCrabCfg(dataset,
     config.JobType.disableAutomaticOutputCollection = True
     config.JobType.scriptExe = 'makeAndConvert.py'
     config.JobType.outputFiles = ['WAWMT_HTauTauAnalysis.root', 'WAWTT_HTauTauAnalysis.root', 'WAWMM_HTauTauAnalysis.root']
-    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h','zpt_weights.root', 'zpt_weights_summer2016.root']
+    config.JobType.inputFiles = ['HTauTauTreeBase.C', 'HTauTauTreeBase.h', 'HTauhTauhTree.C', 'HTauhTauhTree.h','HTauTauTree.C', 'HTauTauTree.h','HMuMuTree.C', 'HMuMuTree.h', 'HTTEvent.cxx', 'HTTEvent.h', 'AnalysisEnums.h', 'PropertyEnum.h', 'TriggerEnum.h', 'SelectionBitsEnum.h', 'zpt_weights_summer2016.root', 'zpt_weights_2016_BtoH.root']
 
     config.Site.storageSite = storage_element
     config.General.requestName = shortName
@@ -109,12 +109,13 @@ datasets = [
     #"/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
     #"/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD",
     #"/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD",
-    "/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD",
-    "/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD",
-    "/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
-    "/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",    
+    #"/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD",
+    #"/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM",
+    #"/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD",
+    #"/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD",
+    #"/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD",
+    #"/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD",
+    #"/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD",    
     #"/DoubleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD",
     #"/DoubleMuon/Run2016C-03Feb2017-v1/MINIAOD",
     #"/DoubleMuon/Run2016D-03Feb2017-v1/MINIAOD",
@@ -126,6 +127,7 @@ datasets = [
     #"/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",      
 ##"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM",
 #"/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+    "/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM"
 ]
 '''
 
