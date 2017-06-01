@@ -70,7 +70,7 @@ def prepareCrabCfg(dataset,
     config.General.requestName = shortName
 
     config.Data.inputDataset = dataset
-    config.Data.outLFNDirBase = '/store/user/apyskir/'+publish_data_suffix+"/"
+    config.Data.outLFNDirBase = '/store/user/akalinow/'+publish_data_suffix+"/"
     config.Data.outputDatasetTag = shortName
     config.Data.inputDBS = 'global'
     config.Data.splitting = 'EventAwareLumiBased'
