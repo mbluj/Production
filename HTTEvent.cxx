@@ -76,9 +76,9 @@ const TLorentzVector & HTTParticle::getSystScaleP4(HTTAnalysis::sysEffects type)
     if(std::abs(getPDGid())==15 && getProperty(PropertyEnum::mc_match)==5){
       int dm = getProperty(PropertyEnum::decayMode);
       if(dm==0) //1-prong
-	return getShiftedP4(1-TES_1p,true);
+	return getShiftedP4(1+TES_1p,true);
       else if(dm==1 || dm==2) //1-prong+pi0s
-	return getShiftedP4(1+ES_1ppi0,false);
+	return getShiftedP4(1+TES_1ppi0,false);
       else if(dm==10) //3-prongs
 	return getShiftedP4(1+TES_3p,false);
       else //others
@@ -213,7 +213,7 @@ const TVector2 & HTTPair::getSystScaleMET(HTTAnalysis::sysEffects type) const{
       double metX = met.X();
       metX+=leg1.getP4(HTTAnalysis::DUMMY_SYS).X(); //uncor
       metX+=leg2.getP4(HTTAnalysis::DUMMY_SYS).X(); //uncor
-      metX==leg1.getP4(HTTAnalysis::NOMINAL).X();
+      metX-=leg1.getP4(HTTAnalysis::NOMINAL).X();
       metX-=leg2.getP4(HTTAnalysis::NOMINAL).X();
       
       double metY = met.Y();
