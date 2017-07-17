@@ -67,12 +67,12 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/afs/cern.ch/work/a/apyskir/scratch/Data/0863B733-1A39-E611-AF47-0025905C53D8.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/14CD7198-67BF-E611-95F9-002590D9D8B8.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = 10000
+process.maxEvents.input = 100
 #process.source.eventsToProcess = cms.untracked.VEventRange('1:743343') #MET test
 
 # JSON mask for data --> defined in the lumiMask file
