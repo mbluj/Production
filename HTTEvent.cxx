@@ -72,8 +72,8 @@ const TLorentzVector & HTTParticle::getNominalShiftedP4() const{
   float TES_1p=-0.005, TES_1ppi0=0.011, TES_3p=0.006;
 
   //correct nominal scale of genuine taus
-  if(std::abs(getPDGid())==15 && getProperty(PropertyEnum::mc_match)==5){
-    int dm = getProperty(PropertyEnum::decayMode);
+  if(std::abs(getPDGid())==15 && getProperty(PropertyEnum::mc_match)==5){    
+    int dm = getProperty(PropertyEnum::decayMode);    
     if(dm==0) //1-prong
       return getShiftedP4(1+TES_1p,true);
     else if(dm==1 || dm==2) //1-prong+pi0s
@@ -95,7 +95,7 @@ const TLorentzVector & HTTParticle::getSystScaleP4(HTTAnalysis::sysEffects type)
 
   lastSystEffect = type;
 
-  if(std::abs(getPDGid())==15 && getProperty(PropertyEnum::mc_match)==5){
+  if(std::abs(getPDGid())==15 && getProperty(PropertyEnum::mc_match)==5){    
     ///True taus    
     if(type!=HTTAnalysis::TESUp && type!=HTTAnalysis::TESDown) return getNominalShiftedP4();    
     float direction = 1;
@@ -218,8 +218,8 @@ const TVector2 & HTTPair::getSystScaleMET(HTTAnalysis::sysEffects type) const{
       metY-=leg1.getP4(HTTAnalysis::NOMINAL).Y();
       metY-=leg2.getP4(HTTAnalysis::NOMINAL).Y();
       
-      metCache.SetX(met.X());
-      metCache.SetY(met.Y());
+      metCache.SetX(metX);
+      metCache.SetY(metY);
       return metCache;
     }
     return met;
@@ -238,8 +238,9 @@ const TVector2 & HTTPair::getSystScaleMET(HTTAnalysis::sysEffects type) const{
   metY-=leg1.getP4(type).Y();
   metY-=leg2.getP4(type).Y();
 
-  metCache.SetX(met.X());
-  metCache.SetY(met.Y());
+  metCache.SetX(metX);
+  metCache.SetY(metY);
+
   return metCache;
 }
 ////////////////////////////////////////////////
