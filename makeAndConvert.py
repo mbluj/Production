@@ -43,7 +43,7 @@ print "Making the tau*tau tree"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 HTauhTauhTree(aTree,doSvFit).Loop()
-print "Making the mu*mu tree"
+print "Making the mu*mu tree with"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
 HMuMuTree(aTree).Loop()

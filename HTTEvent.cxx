@@ -89,7 +89,8 @@ const TLorentzVector & HTTParticle::getNominalShiftedP4() const{
 ////////////////////////////////////////////////
 const TLorentzVector & HTTParticle::getSystScaleP4(HTTAnalysis::sysEffects type) const{
 
-  if(type==HTTAnalysis::NOMINAL) return getNominalShiftedP4();          
+  if(type==HTTAnalysis::DUMMY_SYS) return p4;
+  else if(type==HTTAnalysis::NOMINAL) return getNominalShiftedP4();          
   else if(lastSystEffect==type) return p4Cache;
 
   lastSystEffect = type;
@@ -226,14 +227,14 @@ const TVector2 & HTTPair::getSystScaleMET(HTTAnalysis::sysEffects type) const{
   else if(lastSystEffect==type) return metCache;
 
   double metX = met.X();
-  metX+=leg1.getP4(HTTAnalysis::NOMINAL).X();
-  metX+=leg2.getP4(HTTAnalysis::NOMINAL).X();
+  metX+=leg1.getP4(HTTAnalysis::DUMMY_SYS).X();
+  metX+=leg2.getP4(HTTAnalysis::DUMMY_SYS).X();
   metX-=leg1.getP4(type).X();
   metX-=leg2.getP4(type).X();
 
   double metY = met.Y();
-  metY+=leg1.getP4(HTTAnalysis::NOMINAL).Y();
-  metY+=leg2.getP4(HTTAnalysis::NOMINAL).Y();
+  metY+=leg1.getP4(HTTAnalysis::DUMMY_SYS).Y();
+  metY+=leg2.getP4(HTTAnalysis::DUMMY_SYS).Y();
   metY-=leg1.getP4(type).Y();
   metY-=leg2.getP4(type).Y();
 
