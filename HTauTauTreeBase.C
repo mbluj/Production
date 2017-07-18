@@ -1367,9 +1367,13 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
   if(covMET[0][0]==0 && covMET[1][0]==0 && covMET[0][1]==0 && covMET[1][1]==0) return; //singular covariance matrix
 
   TLorentzVector p4SVFit = aPair.getP4(HTTAnalysis::NOMINAL);
+  TLorentzVector leg1P4Nominal = leg1.getP4(HTTAnalysis::NOMINAL);
+  TLorentzVector leg2P4Nominal = leg2.getP4(HTTAnalysis::NOMINAL);
+
+  
   if(type==HTTAnalysis::NOMINAL ||
-     leg1.getP4(type)!=leg1.getP4(HTTAnalysis::NOMINAL) ||
-     leg2.getP4(type)!=leg2.getP4(HTTAnalysis::NOMINAL)){
+     leg1.getP4(type)!=leg1P4Nominal ||
+     leg2.getP4(type)!=leg2P4Nominal){
        p4SVFit = runSVFitAlgo(measuredTauLeptons, aMET, covMET);
      }
   aPair.setP4(p4SVFit,type);
