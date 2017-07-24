@@ -53,12 +53,16 @@ STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection add
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
 print "is80X: " , is80X
+is92X = True if 'CMSSW_9' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+print "is92X: " , is92X
 ##
 ## Standard sequence
 ##
 
 if is80X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_80X.py")
+elif is92X:
+    execfile(PyFilePath+"python/HiggsTauTauProducer_92X.py")
 else :
     execfile(PyFilePath+"python/HiggsTauTauProducer.py")
     
