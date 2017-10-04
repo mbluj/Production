@@ -127,7 +127,7 @@ process.p = cms.Path(process.Candidates)
 
 # Silence output
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.MessageLogger.categories.append('onlyError')
 #process.MessageLogger.cerr.onlyError=cms.untracked.PSet(threshold  = cms.untracked.string('ERROR'))
 #process.MessageLogger.cerr.threshold='ERROR'
@@ -138,3 +138,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #processDumpFile = open('process.dump' , 'w')
 #print >> processDumpFile, process.dumpPython()
+
+if process.source.fileNames[0].find("92X_upgrade2017_realistic_v10")>-1:
+    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v10'
+    print "Switching GlobalTag to", process.GlobalTag.globaltag
