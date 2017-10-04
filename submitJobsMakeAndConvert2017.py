@@ -110,7 +110,7 @@ datasets = [
 '''
 
 ###############
-jsonFilePrompt = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-299420_13TeV_PromptReco_Collisions17_JSON.txt"
+jsonFilePrompt = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt"
 ########################################################
 if submitJobs:
     for dataset in datasets:
