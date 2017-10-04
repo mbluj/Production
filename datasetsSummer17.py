@@ -8,7 +8,7 @@ datasets = [
     "/SingleMuon/Run2017C-PromptReco-v2/MINIAOD",
     "/SingleMuon/Run2017C-PromptReco-v3/MINIAOD",
     "/SingleMuon/Run2017D-PromptReco-v1/MINIAOD",
-    "/SingleMuon/Run2017E-PromptReco-v1/MINIAOD",
+    #"/SingleMuon/Run2017E-PromptReco-v1/MINIAOD",
     ####
     #"/Tau/Run2017A-PromptReco-v1/MINIAOD",
     #"/Tau/Run2017A-PromptReco-v2/MINIAOD",
@@ -19,7 +19,7 @@ datasets = [
     "/Tau/Run2017C-PromptReco-v2/MINIAOD",
     "/Tau/Run2017C-PromptReco-v3/MINIAOD",
     "/Tau/Run2017D-PromptReco-v1/MINIAOD",
-    "/Tau/Run2017E-PromptReco-v1/MINIAOD",
+    #"/Tau/Run2017E-PromptReco-v1/MINIAOD",
     #Signal SM
     "/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
     "/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
