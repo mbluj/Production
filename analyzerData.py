@@ -30,9 +30,9 @@ COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=False
 Is25ns=True
-HLTProcessName='HLT2' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                                                               
+HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                                                               
 if not IsMC:
-    HLTProcessName='HLT' #It always 'HLT' for real data                                                                                                                                     
+    HLTProcessName='HLT' #It always 'HLT' for real data
 print "HLTProcessName: ",HLTProcessName
 
 #relaxed sets for testing purposes
@@ -53,12 +53,16 @@ STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection add
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
 print "is80X: " , is80X
+is92X = True if 'CMSSW_9' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+print "is92X: " , is92X
 ##
 ## Standard sequence
 ##
 
 if is80X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_80X.py")
+elif is92X:
+    execfile(PyFilePath+"python/HiggsTauTauProducer_92X.py")
 else :
     execfile(PyFilePath+"python/HiggsTauTauProducer.py")
 
@@ -69,7 +73,9 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-PromptReco-v1/MINIAOD/0667AC34-2464-E611-84CE-02163E011979.root'
         #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD/72446D9C-D89C-E611-9060-002590A3C984.root'
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
+        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
+        'file:/mnt/home/mbluj/work/data/92X/MINIAOD/Run2017C_SingleMuon_PromptReco-v1/000_299_368_00000_5E4BC918-8C6D-E711-9C2F-02163E012A9F.root',
+        #'file:/mnt/home/mbluj/work/data/92X/MINIAOD/Run2017B_Tau_PromptReco-v2/000_298_996_00000_3E5B73F4-146A-E711-97AD-02163E0144FB.root'
     )
 )
 
