@@ -83,6 +83,7 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   bool postSynchMediumTau1 = (tauID->at(indexLeg1) & tauIDmaskMedium) == tauIDmaskMedium;
   bool postSynchMediumTau2 = (tauID->at(indexLeg2) & tauIDmaskMedium) == tauIDmaskMedium;
 
+  httEvent->clearSelectionWord();
   httEvent->setSelectionBit(SelectionBitsEnum::muonBaselineSelection,tauBaselineSelection1);
   httEvent->setSelectionBit(SelectionBitsEnum::tauBaselineSelection,tauBaselineSelection2);
   httEvent->setSelectionBit(SelectionBitsEnum::baselinePair,baselinePair);
