@@ -70,7 +70,7 @@ def prepareCrabCfg(dataset,
     config.General.requestName = shortName
 
     config.Data.inputDataset = dataset
-    config.Data.outLFNDirBase = '/store/user/bluj/WAWNTuple/'+publish_data_suffix+"/"
+    config.Data.outLFNDirBase = '/store/user/akalinow/WAWNTuple/'+publish_data_suffix+"/"
     config.Data.outputDatasetTag = shortName
     config.Data.inputDBS = 'global'
     config.Data.splitting = 'EventAwareLumiBased'
@@ -103,25 +103,23 @@ eventsPerJob = 100000 #Wjets and DYJets hardoced in code above
 from datasetsSummer17 import datasets
 
 ##TEST
-'''
 datasets = [
-    #"/SingleMuon/Run2017B-PromptReco-v2/MINIAOD",
+    "/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD",
 ]
-'''
 
 ###############
-jsonFilePrompt = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt"
+jsonFile = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
 ########################################################
 if submitJobs:
     for dataset in datasets:
-        jsonFile2017 = jsonFilePrompt
+        jsonFile2017 = jsonFile
 
         prepareCrabCfg(crabCfgName="crab3.py",
                        dataset=dataset,
                        eventsPerJob=eventsPerJob,
                        jsonFile=jsonFile2017,
                        storage_element="T2_PL_Swierk",
-                       publish_data_suffix = "Summer17_v1")                  
+                       publish_data_suffix = "Summer17_test_v2")                  
 ########################################################
 ########################################################
 ## Merge output ROOT files.
@@ -129,7 +127,7 @@ if submitJobs:
 if mergeJobs:
     for dataset in datasets:
         mergeDataset(dataset=dataset, publish_data_suffix = "Summer17_v1",
-                                      outputDir="/mnt/home/mbluj/work/data/WAWNTuples/2017/NTUPLES_01_08_2017/")
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/WAWNTuples/2017/NTUPLES_10_10_2017/")
 
 #for a in v1/*v7_SM*; do crab resubmit -d $a; done
 #for a in v1/*Run2016*v7_SM*; do crab report -d $a; done

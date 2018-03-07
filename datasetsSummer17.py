@@ -1,38 +1,29 @@
 datasets = [
     #Data
-    #"/SingleMuon/Run2017A-PromptReco-v2/MINIAOD",
-    #"/SingleMuon/Run2017A-PromptReco-v3/MINIAOD",
-    "/SingleMuon/Run2017B-PromptReco-v1/MINIAOD",
-    "/SingleMuon/Run2017B-PromptReco-v2/MINIAOD",
-    "/SingleMuon/Run2017C-PromptReco-v1/MINIAOD",
-    "/SingleMuon/Run2017C-PromptReco-v2/MINIAOD",
-    "/SingleMuon/Run2017C-PromptReco-v3/MINIAOD",
-    "/SingleMuon/Run2017D-PromptReco-v1/MINIAOD",
-    "/SingleMuon/Run2017E-PromptReco-v1/MINIAOD",
-    ####
-    #"/Tau/Run2017A-PromptReco-v1/MINIAOD",
-    #"/Tau/Run2017A-PromptReco-v2/MINIAOD",
-    #"/Tau/Run2017A-PromptReco-v3/MINIAOD",
-    "/Tau/Run2017B-PromptReco-v1/MINIAOD",
-    "/Tau/Run2017B-PromptReco-v2/MINIAOD",
-    "/Tau/Run2017C-PromptReco-v1/MINIAOD",
-    "/Tau/Run2017C-PromptReco-v2/MINIAOD",
-    "/Tau/Run2017C-PromptReco-v3/MINIAOD",
-    "/Tau/Run2017D-PromptReco-v1/MINIAOD",
-    "/Tau/Run2017E-PromptReco-v1/MINIAOD",
+    "/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD",
+    "/SingleMuon/Run2017C-17Nov2017-v1/MINIAOD",
+    "/SingleMuon/Run2017D-17Nov2017-v1/MINIAOD",
+    "/SingleMuon/Run2017E-17Nov2017-v1/MINIAOD",
+    "/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD",
+    ####    
+    "/SingleTau/Run2017B-17Nov2017-v1/MINIAOD",
+    "/SingleTau/Run2017C-17Nov2017-v1/MINIAOD",
+    "/SingleTau/Run2017D-17Nov2017-v1/MINIAOD",
+    "/SingleTau/Run2017E-17Nov2017-v1/MINIAOD",
+    "/SingleTau/Run2017F-17Nov2017-v1/MINIAOD",
     #Signal SM
     "/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
     "/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
     #Signal MSSM (only mass closest to 125GeV for CP)
     "/SUSYGluGluToBBHToTauTau_M-140_TuneCUETP8M1_13TeV-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
     "/SUSYGluGluToHToTauTau_M-140_TuneCUETP8M1_13TeV-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
-    #DY (only inclisive)
+    #DY (only inclusive)
     "/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10_ext1-v2/MINIAODSIM", #use v2, v1 is incorrect?
     #"/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v1/MINIAODSIM",
     #"/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v1/MINIAODSIM",
     #"/DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
     #"/DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v2/MINIAODSIM",
-    #Wjets (only inclisive)
+    #Wjets (only inclusive)
     "/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v1/MINIAODSIM",
     #"/W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v1/MINIAODSIM",
     #"/W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer17MiniAOD-92X_upgrade2017_realistic_v10-v1/MINIAODSIM",

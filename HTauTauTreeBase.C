@@ -947,8 +947,6 @@ void HTauTauTreeBase::fillJets(unsigned int bestPairIndex){
     std::vector<Double_t> aProperties = getProperties(leptonPropertiesList, iJet);
     ///Set jet PDG id by hand
     aProperties[(unsigned int)PropertyEnum::PDGId] = 98.0;
-    aJet.setProperties(aProperties);
-
     aJet.setP4(p4);
     aJet.setProperties(aProperties);
     httJetCollection.push_back(aJet);
