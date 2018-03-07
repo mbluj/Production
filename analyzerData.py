@@ -145,3 +145,21 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 if process.source.fileNames[0].find("Run2016H")>-1:
     process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v16'  
     print "Switching GlobalTag to", process.GlobalTag.globaltag
+elif process.source.fileNames[0].find("Run2017B")>-1:
+    process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v4'  
+    print "Switching GlobalTag to", process.GlobalTag.globaltag
+elif process.source.fileNames[0].find("Run2017C")>-1:
+    if process.source.fileNames[0].find("PromptReco-v1")>-1:
+        process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v5'
+    elif process.source.fileNames[0].find("PromptReco-v2")>-1:
+        process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v7'
+    else:
+        process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v8'
+    print "Switching GlobalTag to", process.GlobalTag.globaltag
+elif process.source.fileNames[0].find("Run2017D")>-1:
+    process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v8'  
+    print "Switching GlobalTag to", process.GlobalTag.globaltag
+elif process.source.fileNames[0].find("Run2017E")>-1:
+    process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v9'  
+    print "Switching GlobalTag to", process.GlobalTag.globaltag
+ 

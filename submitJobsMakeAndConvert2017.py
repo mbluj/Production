@@ -57,7 +57,8 @@ def prepareCrabCfg(dataset,
     if dataset.split("/")[2].find("JetsToLL")!=-1 or dataset.split("/")[2].find("JetsToLNu")!=-1 or dataset.split("/")[2].find("HToTauTau")!=-1:
         isWZH = True
     if isWZH:
-        config.JobType.psetName = 'analyzerMC.py'
+        #config.JobType.psetName = 'analyzerMC.py'
+        config.JobType.psetName = 'analyzerMC_noMETCorr.py' #do not apply it as not estimated yet
     else:
         config.JobType.psetName = 'analyzerMC_noMETCorr.py'
 
