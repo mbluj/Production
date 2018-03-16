@@ -56,6 +56,13 @@ public :
   std::vector<Double_t> getProperties(const std::vector<std::string> & propertiesList, unsigned int index);
   void writePropertiesHeader(const std::vector<std::string> & propertiesList);
   void writeTriggersHeader(const TH1F*);
+
+  void fillSVFitTree(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+		     const TVector2 &aMET, const TMatrixD &covMET, float mcMass, float cubaMass,
+		     float cpuTimeMC, float cpuTimeCuba);
+
+  SVFitEvent *aSVFitEvent;
+  TTree *svFitTree;
   
   std::vector<HTTPair> httPairCollection;
   std::vector<HTTParticle> httJetCollection;
@@ -118,59 +125,72 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
-   ULong64_t       EventNumber;
+    ULong64_t       EventNumber;
    Int_t           RunNumber;
    Int_t           lumi;
    Long64_t        triggerbit;
    Int_t           metfilterbit;
-   Double_t         met;
-   Double_t         metphi;
-   Double_t         PUPPImet;
-   Double_t         PUPPImetphi;
+   Double_t        met;
+   Double_t        metphi;
+   Double_t        PUPPImet;
+   Double_t        PUPPImetphi;
+   Double_t        PFMETCov00;
+   Double_t        PFMETCov01;
+   Double_t        PFMETCov10;
+   Double_t        PFMETCov11;
+   Double_t        PFMETsignif;
    Int_t           npv;
-   Double_t         npu;
-   Double_t         PUReweight;
-   Double_t         rho;
-   vector<double>   *mothers_px;
-   vector<double>   *mothers_py;
-   vector<double>   *mothers_pz;
-   vector<double>   *mothers_e;
-   vector<double>   *daughters_px;
-   vector<double>   *daughters_py;
-   vector<double>   *daughters_pz;
-   vector<double>   *daughters_e;
+   Double_t        npu;
+   Double_t        PUReweight;
+   Double_t        rho;
+   vector<double>  *mothers_px;
+   vector<double>  *mothers_py;
+   vector<double>  *mothers_pz;
+   vector<double>  *mothers_e;
+   vector<double>  *daughters_px;
+   vector<double>  *daughters_py;
+   vector<double>  *daughters_pz;
+   vector<double>  *daughters_e;
    vector<int>     *daughters_charge;
-   vector<double>   *daughters_charged_px;
-   vector<double>   *daughters_charged_py;
-   vector<double>   *daughters_charged_pz;
-   vector<double>   *daughters_charged_e;
-   vector<double>   *daughters_neutral_px;
-   vector<double>   *daughters_neutral_py;
-   vector<double>   *daughters_neutral_pz;
-   vector<double>   *daughters_neutral_e;
+   vector<double>  *daughters_charged_px;
+   vector<double>  *daughters_charged_py;
+   vector<double>  *daughters_charged_pz;
+   vector<double>  *daughters_charged_e;
+   vector<double>  *daughters_neutral_px;
+   vector<double>  *daughters_neutral_py;
+   vector<double>  *daughters_neutral_pz;
+   vector<double>  *daughters_neutral_e;
    vector<int>     *daughters_TauUpExists;
-   vector<double>   *daughters_px_TauUp;
-   vector<double>   *daughters_py_TauUp;
-   vector<double>   *daughters_pz_TauUp;
-   vector<double>   *daughters_e_TauUp;
+   vector<double>  *daughters_px_TauUp;
+   vector<double>  *daughters_py_TauUp;
+   vector<double>  *daughters_pz_TauUp;
+   vector<double>  *daughters_e_TauUp;
    vector<int>     *daughters_TauDownExists;
-   vector<double>   *daughters_px_TauDown;
-   vector<double>   *daughters_py_TauDown;
-   vector<double>   *daughters_pz_TauDown;
-   vector<double>   *daughters_e_TauDown;
+   vector<double>  *daughters_px_TauDown;
+   vector<double>  *daughters_py_TauDown;
+   vector<double>  *daughters_pz_TauDown;
+   vector<double>  *daughters_e_TauDown;
    Int_t           PUNumInteractions;
    vector<int>     *daughters_genindex;
-   Double_t         MC_weight;
-   Double_t         lheHt;
+   Double_t        MC_weight;
+   Double_t        MC_weight_scale_muF0p5;
+   Double_t        MC_weight_scale_muF2;
+   Double_t        MC_weight_scale_muR0p5;
+   Double_t        MC_weight_scale_muR2;
+   Double_t        lheHt;
    Int_t           lheNOutPartons;
-   Double_t         aMCatNLOweight;
-   vector<double>   *genpart_px;
-   vector<double>   *genpart_py;
-   vector<double>   *genpart_pz;
-   vector<double>   *genpart_e;
-   vector<double>   *genpart_pca_x;
-   vector<double>   *genpart_pca_y;
-   vector<double>   *genpart_pca_z;
+   Int_t           lheNOutB;
+   Double_t        aMCatNLOweight;
+   vector<double>  *genpart_px;
+   vector<double>  *genpart_py;
+   vector<double>  *genpart_pz;
+   vector<double>  *genpart_e;
+   vector<double>  *genpart_pca_x;
+   vector<double>  *genpart_pca_y;
+   vector<double>  *genpart_pca_z;
+   vector<double>  *genpart_sv_x;
+   vector<double>  *genpart_sv_y;
+   vector<double>  *genpart_sv_z;
    vector<int>     *genpart_pdg;
    vector<int>     *genpart_status;
    vector<int>     *genpart_HMothInd;
@@ -186,105 +206,77 @@ public :
    vector<int>     *genpart_TauGenDecayMode;
    vector<int>     *genpart_TauGenDetailedDecayMode;
    vector<int>     *genpart_flags;
-   vector<double>   *genjet_px;
-   vector<double>   *genjet_py;
-   vector<double>   *genjet_pz;
-   vector<double>   *genjet_e;
+   vector<double>  *genjet_px;
+   vector<double>  *genjet_py;
+   vector<double>  *genjet_pz;
+   vector<double>  *genjet_e;
    vector<int>     *genjet_partonFlavour;
    vector<int>     *genjet_hadronFlavour;
-   Int_t           NUP;
-   vector<double>   *SVfitMass;
-   vector<double>   *SVfitMassTauUp;
-   vector<double>   *SVfitMassTauDown;
-   vector<double>   *SVfitTransverseMass;
-   vector<double>   *SVfitTransverseMassTauUp;
-   vector<double>   *SVfitTransverseMassTauDown;
-   vector<double>   *SVfit_pt;
-   vector<double>   *SVfit_ptTauUp;
-   vector<double>   *SVfit_ptTauDown;
-   vector<double>   *SVfit_ptUnc;
-   vector<double>   *SVfit_ptUncTauUp;
-   vector<double>   *SVfit_ptUncTauDown;
-   vector<double>   *SVfit_eta;
-   vector<double>   *SVfit_etaTauUp;
-   vector<double>   *SVfit_etaTauDown;
-   vector<double>   *SVfit_etaUnc;
-   vector<double>   *SVfit_etaUncTauUp;
-   vector<double>   *SVfit_etaUncTauDown;
-   vector<double>   *SVfit_phi;
-   vector<double>   *SVfit_phiTauUp;
-   vector<double>   *SVfit_phiTauDown;
-   vector<double>   *SVfit_phiUnc;
-   vector<double>   *SVfit_phiUncTauUp;
-   vector<double>   *SVfit_phiUncTauDown;
-   vector<double>   *SVfit_fitMETRho;
-   vector<double>   *SVfit_fitMETRhoTauUp;
-   vector<double>   *SVfit_fitMETRhoTauDown;
-   vector<double>   *SVfit_fitMETPhi;
-   vector<double>   *SVfit_fitMETPhiTauUp;
-   vector<double>   *SVfit_fitMETPhiTauDown;
+   Int_t           NUP;  
    vector<bool>    *isOSCand;
-   vector<double>   *METx;
-   vector<double>   *METy;
-   vector<double>   *uncorrMETx;
-   vector<double>   *uncorrMETy;
-   vector<double>   *MET_cov00;
-   vector<double>   *MET_cov01;
-   vector<double>   *MET_cov10;
-   vector<double>   *MET_cov11;
-   vector<double>   *MET_significance;
-   vector<double>   *mT_Dau1;
-   vector<double>   *mT_Dau2;
+   vector<double>  *METx;
+   vector<double>  *METy;
+   vector<double>  *uncorrMETx;
+   vector<double>  *uncorrMETy;
+   vector<double>  *MET_cov00;
+   vector<double>  *MET_cov01;
+   vector<double>  *MET_cov10;
+   vector<double>  *MET_cov11;
+   vector<double>  *MET_significance;
+   vector<double>  *mT_Dau1;
+   vector<double>  *mT_Dau2;
    vector<int>     *PDGIdDaughters;
    vector<int>     *indexDau1;
    vector<int>     *indexDau2;
    vector<int>     *particleType;
-   vector<double>   *discriminator;
+   vector<double>  *discriminator;
    vector<int>     *daughters_muonID;
    vector<int>     *daughters_typeOfMuon;
-   vector<double>   *dxy;
-   vector<double>   *dz;
-   vector<double>   *dxy_innerTrack;
-   vector<double>   *dz_innerTrack;
-   vector<double>   *daughters_rel_error_trackpt;
-   vector<double>   *SIP;
+   vector<double>  *dxy;
+   vector<double>  *dz;
+   vector<double>  *dxy_innerTrack;
+   vector<double>  *dz_innerTrack;
+   vector<double>  *daughters_rel_error_trackpt;
+   vector<double>  *SIP;
    vector<bool>    *daughters_iseleBDT;
    vector<bool>    *daughters_iseleWP80;
    vector<bool>    *daughters_iseleWP90;
-   vector<double>   *daughters_eleMVAnt;
+   vector<double>  *daughters_eleMVAnt;
    vector<bool>    *daughters_passConversionVeto;
    vector<int>     *daughters_eleMissingHits;
    vector<bool>    *daughters_iseleChargeConsistent;
    vector<int>     *daughters_eleCUTID;
    vector<int>     *decayMode;
    vector<Long64_t> *tauID;
-   vector<double>   *combreliso;
-   vector<double>   *daughters_IetaIeta;
-   vector<double>   *daughters_hOverE;
-   vector<double>   *daughters_deltaEtaSuperClusterTrackAtVtx;
-   vector<double>   *daughters_deltaPhiSuperClusterTrackAtVtx;
-   vector<double>   *daughters_IoEmIoP;
-   vector<double>   *daughters_SCeta;
-   vector<double>   *daughters_depositR03_tracker;
-   vector<double>   *daughters_depositR03_ecal;
-   vector<double>   *daughters_depositR03_hcal;
+   vector<double>  *combreliso;
+   vector<double>  *combreliso03;
+   vector<double>  *daughters_IetaIeta;
+   vector<double>  *daughters_hOverE;
+   vector<double>  *daughters_deltaEtaSuperClusterTrackAtVtx;
+   vector<double>  *daughters_deltaPhiSuperClusterTrackAtVtx;
+   vector<double>  *daughters_IoEmIoP;
+   vector<double>  *daughters_IoEmIoP_ttH;
+   vector<double>  *daughters_SCeta;
+   vector<double>  *daughters_depositR03_tracker;
+   vector<double>  *daughters_depositR03_ecal;
+   vector<double>  *daughters_depositR03_hcal;
    vector<int>     *daughters_decayModeFindingOldDMs;
-   vector<double>   *againstElectronMVA5category;
-   vector<double>   *againstElectronMVA5raw;
-   vector<double>   *byPileupWeightedIsolationRaw3Hits;
-   vector<double>   *footprintCorrection;
-   vector<double>   *neutralIsoPtSumWeight;
-   vector<double>   *photonPtSumOutsideSignalCone;
+   vector<double>  *againstElectronMVA5category;
+   vector<double>  *againstElectronMVA5raw;
+   vector<double>  *byPileupWeightedIsolationRaw3Hits;
+   vector<double>  *footprintCorrection;
+   vector<double>  *neutralIsoPtSumWeight;
+   vector<double>  *photonPtSumOutsideSignalCone;
    vector<int>     *daughters_decayModeFindingNewDMs;
-   vector<double>   *daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits;
-   vector<double>   *daughters_byIsolationMVA3oldDMwoLTraw;
-   vector<double>   *daughters_byIsolationMVA3oldDMwLTraw;
-   vector<double>   *daughters_byIsolationMVA3newDMwoLTraw;
-   vector<double>   *daughters_byIsolationMVA3newDMwLTraw;
-   vector<double>   *daughters_byIsolationMVArun2v1DBoldDMwLTraw;   
-   vector<double>   *daughters_chargedIsoPtSum;
-   vector<double>   *daughters_neutralIsoPtSum;
-   vector<double>   *daughters_puCorrPtSum;
+   vector<double>  *daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits;
+   vector<double>  *daughters_byIsolationMVA3oldDMwoLTraw;
+   vector<double>  *daughters_byIsolationMVA3oldDMwLTraw;
+   vector<double>  *daughters_byIsolationMVA3newDMwoLTraw;
+   vector<double>  *daughters_byIsolationMVA3newDMwLTraw;
+   vector<double>  *daughters_byIsolationMVArun2v1DBoldDMwLTraw;
+   vector<double>  *daughters_chargedIsoPtSum;
+   vector<double>  *daughters_neutralIsoPtSum;
+   vector<double>  *daughters_puCorrPtSum;
    vector<int>     *daughters_numChargedParticlesSignalCone;
    vector<int>     *daughters_numNeutralHadronsSignalCone;
    vector<int>     *daughters_numPhotonsSignalCone;
@@ -293,92 +285,97 @@ public :
    vector<int>     *daughters_numNeutralHadronsIsoCone;
    vector<int>     *daughters_numPhotonsIsoCone;
    vector<int>     *daughters_numParticlesIsoCone;
-   vector<double>   *daughters_leadChargedParticlePt;
-   vector<double>   *daughters_trackRefPt;
+   vector<double>  *daughters_leadChargedParticlePt;
+   vector<double>  *daughters_trackRefPt;
    vector<int>     *daughters_isLastTriggerObjectforPath;
+   vector<Long64_t> *daughters_trgMatched;
    vector<int>     *daughters_isTriggerObjectforPath;
-   vector<int>     *daughters_FilterFired;
-   vector<int>     *daughters_isGoodTriggerType;
-   vector<int>     *daughters_L3FilterFired;
-   vector<int>     *daughters_L3FilterFiredLast;
-   vector<double>   *daughters_HLTpt;
+   vector<Long64_t> *daughters_FilterFired;
+   vector<Long64_t> *daughters_isGoodTriggerType;
+   vector<Long64_t> *daughters_L3FilterFired;
+   vector<Long64_t> *daughters_L3FilterFiredLast;
+   vector<double>  *daughters_HLTpt;
    vector<bool>    *daughters_isL1IsoTau28Matched;
    vector<int>     *daughters_jetNDauChargedMVASel;
-   vector<double>   *daughters_miniRelIsoCharged;
-   vector<double>   *daughters_miniRelIsoNeutral;
-   vector<double>   *daughters_jetPtRel;
-   vector<double>   *daughters_jetPtRatio;
-   vector<double>   *daughters_jetBTagCSV;
-   vector<double>   *daughters_lepMVA_mvaId;
-   vector<double>   *daughters_pca_x;
-   vector<double>   *daughters_pca_y;
-   vector<double>   *daughters_pca_z;
-   vector<double>   *daughters_pcaRefitPV_x;
-   vector<double>   *daughters_pcaRefitPV_y;
-   vector<double>   *daughters_pcaRefitPV_z;
-   vector<double>   *daughters_pcaGenPV_x;
-   vector<double>   *daughters_pcaGenPV_y;
-   vector<double>   *daughters_pcaGenPV_z;   
+   vector<double>  *daughters_miniRelIsoCharged;
+   vector<double>  *daughters_miniRelIsoNeutral;
+   vector<double>  *daughters_jetPtRel;
+   vector<double>  *daughters_jetPtRatio;
+   vector<double>  *daughters_jetBTagCSV;
+   vector<double>  *daughters_lepMVA_mvaId;
+   vector<double>  *daughters_pca_x;
+   vector<double>  *daughters_pca_y;
+   vector<double>  *daughters_pca_z;
+   vector<double>  *daughters_pcaRefitPV_x;
+   vector<double>  *daughters_pcaRefitPV_y;
+   vector<double>  *daughters_pcaRefitPV_z;
+   vector<double>  *daughters_pcaGenPV_x;
+   vector<double>  *daughters_pcaGenPV_y;
+   vector<double>  *daughters_pcaGenPV_z;
+   vector<double>  *daughters_sv_x;
+   vector<double>  *daughters_sv_y;
+   vector<double>  *daughters_sv_z;
    Int_t           JetsNumber;
-   vector<double>   *jets_px;
-   vector<double>   *jets_py;
-   vector<double>   *jets_pz;
-   vector<double>   *jets_e;
-   vector<double>   *jets_rawPt;
-   vector<double>   *jets_area;
-   vector<double>   *jets_mT;
+   vector<double>  *jets_px;
+   vector<double>  *jets_py;
+   vector<double>  *jets_pz;
+   vector<double>  *jets_e;
+   vector<double>  *jets_rawPt;
+   vector<double>  *jets_area;
+   vector<double>  *jets_mT;
    vector<int>     *jets_Flavour;
    vector<int>     *jets_HadronFlavour;
    vector<int>     *jets_genjetIndex;
-   vector<double>   *jets_PUJetID;
-   vector<double>   *jets_PUJetIDupdated;
-   vector<double>   *jets_vtxPt;
-   vector<double>   *jets_vtxMass;
-   vector<double>   *jets_vtx3dL;
-   vector<double>   *jets_vtxNtrk;
-   vector<double>   *jets_vtx3deL;
-   vector<double>   *jets_leadTrackPt;
-   vector<double>   *jets_leptonPtRel;
-   vector<double>   *jets_leptonPt;
-   vector<double>   *jets_leptonDeltaR;
-   vector<double>   *jets_chEmEF;
-   vector<double>   *jets_chHEF;
-   vector<double>   *jets_nEmEF;
-   vector<double>   *jets_nHEF;
+   vector<double>  *jets_PUJetID;
+   vector<double>  *jets_PUJetIDupdated;
+   vector<double>  *jets_vtxPt;
+   vector<double>  *jets_vtxMass;
+   vector<double>  *jets_vtx3dL;
+   vector<double>  *jets_vtxNtrk;
+   vector<double>  *jets_vtx3deL;
+   vector<double>  *jets_leadTrackPt;
+   vector<double>  *jets_leptonPtRel;
+   vector<double>  *jets_leptonPt;
+   vector<double>  *jets_leptonDeltaR;
+   vector<double>  *jets_chEmEF;
+   vector<double>  *jets_chHEF;
+   vector<double>  *jets_nEmEF;
+   vector<double>  *jets_nHEF;
    vector<int>     *jets_chMult;
-   vector<double>   *jets_jecUnc;
-   vector<double>   *bDiscriminator;
-   vector<double>   *bCSVscore;
+   vector<double>  *jets_jecUnc;
+   vector<double>  *bDiscriminator;
+   vector<double>  *bCSVscore;
+   vector<double>  *pfCombinedMVAV2BJetTags;
    vector<int>     *PFjetID;
-   vector<double>   *jetRawf;
-   vector<double>   *ak8jets_px;
-   vector<double>   *ak8jets_py;
-   vector<double>   *ak8jets_pz;
-   vector<double>   *ak8jets_e;
-   vector<double>   *ak8jets_SoftDropMass;
-   vector<double>   *ak8jets_PrunedMass;
-   vector<double>   *ak8jets_TrimmedMass;
-   vector<double>   *ak8jets_FilteredMass;
-   vector<double>   *ak8jets_tau1;
-   vector<double>   *ak8jets_tau2;
-   vector<double>   *ak8jets_tau3;
-   vector<double>   *ak8jets_CSV;
+   vector<double>  *jetRawf;
+   vector<double>  *ak8jets_px;
+   vector<double>  *ak8jets_py;
+   vector<double>  *ak8jets_pz;
+   vector<double>  *ak8jets_e;
+   vector<double>  *ak8jets_SoftDropMass;
+   vector<double>  *ak8jets_PrunedMass;
+   vector<double>  *ak8jets_TrimmedMass;
+   vector<double>  *ak8jets_FilteredMass;
+   vector<double>  *ak8jets_tau1;
+   vector<double>  *ak8jets_tau2;
+   vector<double>  *ak8jets_tau3;
+   vector<double>  *ak8jets_CSV;
    vector<int>     *ak8jets_nsubjets;
-   vector<double>   *subjets_px;
-   vector<double>   *subjets_py;
-   vector<double>   *subjets_pz;
-   vector<double>   *subjets_e;
-   vector<double>   *subjets_CSV;
+   vector<double>  *subjets_px;
+   vector<double>  *subjets_py;
+   vector<double>  *subjets_pz;
+   vector<double>  *subjets_e;
+   vector<double>  *subjets_CSV;
    vector<int>     *subjets_ak8MotherIdx;
-   Double_t         pv_x;
-   Double_t         pv_y;
-   Double_t         pv_z;
-   Double_t         pvRefit_x;
-   Double_t         pvRefit_y;
-   Double_t         pvRefit_z;
-   Double_t         pvGen_x;
-   Double_t         pvGen_y;
-   Double_t         pvGen_z;
+   Double_t        pv_x;
+   Double_t        pv_y;
+   Double_t        pv_z;
+   Double_t        pvRefit_x;
+   Double_t        pvRefit_y;
+   Double_t        pvRefit_z;
+   Double_t        pvGen_x;
+   Double_t        pvGen_y;
+   Double_t        pvGen_z;
    Bool_t          isRefitPV;
 
    // List of branches
@@ -435,6 +432,9 @@ public :
    TBranch        *b_genpart_pca_x;   //!
    TBranch        *b_genpart_pca_y;   //!
    TBranch        *b_genpart_pca_z;   //!
+   TBranch        *b_genpart_sv_x;   //!
+   TBranch        *b_genpart_sv_y;   //!
+   TBranch        *b_genpart_sv_z;   //!
    TBranch        *b_genpart_pdg;   //!
    TBranch        *b_genpart_status;   //!
    TBranch        *b_genpart_HMothInd;   //!
@@ -456,37 +456,7 @@ public :
    TBranch        *b_genjet_e;   //!
    TBranch        *b_genjet_partonFlavour;   //!
    TBranch        *b_genjet_hadronFlavour;   //!
-   TBranch        *b_NUP;   //!
-   TBranch        *b_SVfitMass;   //!
-   TBranch        *b_SVfitMassTauUp;   //!
-   TBranch        *b_SVfitMassTauDown;   //!
-   TBranch        *b_SVfitTransverseMass;   //!
-   TBranch        *b_SVfitTransverseMassTauUp;   //!
-   TBranch        *b_SVfitTransverseMassTauDown;   //!
-   TBranch        *b_SVfit_pt;   //!
-   TBranch        *b_SVfit_ptTauUp;   //!
-   TBranch        *b_SVfit_ptTauDown;   //!
-   TBranch        *b_SVfit_ptUnc;   //!
-   TBranch        *b_SVfit_ptUncTauUp;   //!
-   TBranch        *b_SVfit_ptUncTauDown;   //!
-   TBranch        *b_SVfit_eta;   //!
-   TBranch        *b_SVfit_etaTauUp;   //!
-   TBranch        *b_SVfit_etaTauDown;   //!
-   TBranch        *b_SVfit_etaUnc;   //!
-   TBranch        *b_SVfit_etaUncTauUp;   //!
-   TBranch        *b_SVfit_etaUncTauDown;   //!
-   TBranch        *b_SVfit_phi;   //!
-   TBranch        *b_SVfit_phiTauUp;   //!
-   TBranch        *b_SVfit_phiTauDown;   //!
-   TBranch        *b_SVfit_phiUnc;   //!
-   TBranch        *b_SVfit_phiUncTauUp;   //!
-   TBranch        *b_SVfit_phiUncTauDown;   //!
-   TBranch        *b_SVfit_fitMETRho;   //!
-   TBranch        *b_SVfit_fitMETRhoTauUp;   //!
-   TBranch        *b_SVfit_fitMETRhoTauDown;   //!
-   TBranch        *b_SVfit_fitMETPhi;   //!
-   TBranch        *b_SVfit_fitMETPhiTauUp;   //!
-   TBranch        *b_SVfit_fitMETPhiTauDown;   //!
+   TBranch        *b_NUP;   //! 
    TBranch        *b_isOSCand;   //!
    TBranch        *b_METx;   //!
    TBranch        *b_METy;   //!
@@ -583,6 +553,9 @@ public :
    TBranch        *b_daughters_pcaGenPV_x;   //!
    TBranch        *b_daughters_pcaGenPV_y;   //!
    TBranch        *b_daughters_pcaGenPV_z;   //!
+   TBranch        *b_daughters_sv_x;   //!
+   TBranch        *b_daughters_sv_y;   //!
+   TBranch        *b_daughters_sv_z;   //!
    TBranch        *b_JetsNumber;   //!
    TBranch        *b_jets_px;   //!
    TBranch        *b_jets_py;   //!

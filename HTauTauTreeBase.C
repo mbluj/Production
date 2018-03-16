@@ -131,6 +131,9 @@ void HTauTauTreeBase::Init(TTree *tree)
    genpart_pca_x = 0;
    genpart_pca_y = 0;
    genpart_pca_z = 0;
+   genpart_sv_x = 0;
+   genpart_sv_y = 0;
+   genpart_sv_z = 0;
    genpart_pdg = 0;
    genpart_status = 0;
    genpart_HMothInd = 0;
@@ -151,37 +154,7 @@ void HTauTauTreeBase::Init(TTree *tree)
    genjet_pz = 0;
    genjet_e = 0;
    genjet_partonFlavour = 0;
-   genjet_hadronFlavour = 0;
-   SVfitMass = 0;
-   SVfitMassTauUp = 0;
-   SVfitMassTauDown = 0;
-   SVfitTransverseMass = 0;
-   SVfitTransverseMassTauUp = 0;
-   SVfitTransverseMassTauDown = 0;
-   SVfit_pt = 0;
-   SVfit_ptTauUp = 0;
-   SVfit_ptTauDown = 0;
-   SVfit_ptUnc = 0;
-   SVfit_ptUncTauUp = 0;
-   SVfit_ptUncTauDown = 0;
-   SVfit_eta = 0;
-   SVfit_etaTauUp = 0;
-   SVfit_etaTauDown = 0;
-   SVfit_etaUnc = 0;
-   SVfit_etaUncTauUp = 0;
-   SVfit_etaUncTauDown = 0;
-   SVfit_phi = 0;
-   SVfit_phiTauUp = 0;
-   SVfit_phiTauDown = 0;
-   SVfit_phiUnc = 0;
-   SVfit_phiUncTauUp = 0;
-   SVfit_phiUncTauDown = 0;
-   SVfit_fitMETRho = 0;
-   SVfit_fitMETRhoTauUp = 0;
-   SVfit_fitMETRhoTauDown = 0;
-   SVfit_fitMETPhi = 0;
-   SVfit_fitMETPhiTauUp = 0;
-   SVfit_fitMETPhiTauDown = 0;
+   genjet_hadronFlavour = 0;  
    isOSCand = 0;
    METx = 0;
    METy = 0;
@@ -278,6 +251,9 @@ void HTauTauTreeBase::Init(TTree *tree)
    daughters_pcaGenPV_x = 0;
    daughters_pcaGenPV_y = 0;
    daughters_pcaGenPV_z = 0;
+   daughters_sv_x = 0;
+   daughters_sv_y = 0;
+   daughters_sv_z = 0;
    jets_px = 0;
    jets_py = 0;
    jets_pz = 0;
@@ -387,6 +363,9 @@ void HTauTauTreeBase::Init(TTree *tree)
    fChain->SetBranchAddress("genpart_pca_x", &genpart_pca_x, &b_genpart_pca_x);
    fChain->SetBranchAddress("genpart_pca_y", &genpart_pca_y, &b_genpart_pca_y);
    fChain->SetBranchAddress("genpart_pca_z", &genpart_pca_z, &b_genpart_pca_z);
+   fChain->SetBranchAddress("genpart_sv_x", &genpart_sv_x, &b_genpart_sv_x);
+   fChain->SetBranchAddress("genpart_sv_y", &genpart_sv_y, &b_genpart_sv_y);
+   fChain->SetBranchAddress("genpart_sv_z", &genpart_sv_z, &b_genpart_sv_z);
    fChain->SetBranchAddress("genpart_pdg", &genpart_pdg, &b_genpart_pdg);
    fChain->SetBranchAddress("genpart_status", &genpart_status, &b_genpart_status);
    fChain->SetBranchAddress("genpart_HMothInd", &genpart_HMothInd, &b_genpart_HMothInd);
@@ -408,37 +387,7 @@ void HTauTauTreeBase::Init(TTree *tree)
    fChain->SetBranchAddress("genjet_e", &genjet_e, &b_genjet_e);
    fChain->SetBranchAddress("genjet_partonFlavour", &genjet_partonFlavour, &b_genjet_partonFlavour);
    fChain->SetBranchAddress("genjet_hadronFlavour", &genjet_hadronFlavour, &b_genjet_hadronFlavour);
-   fChain->SetBranchAddress("NUP", &NUP, &b_NUP);
-   fChain->SetBranchAddress("SVfitMass", &SVfitMass, &b_SVfitMass);
-   fChain->SetBranchAddress("SVfitMassTauUp", &SVfitMassTauUp, &b_SVfitMassTauUp);
-   fChain->SetBranchAddress("SVfitMassTauDown", &SVfitMassTauDown, &b_SVfitMassTauDown);
-   fChain->SetBranchAddress("SVfitTransverseMass", &SVfitTransverseMass, &b_SVfitTransverseMass);
-   fChain->SetBranchAddress("SVfitTransverseMassTauUp", &SVfitTransverseMassTauUp, &b_SVfitTransverseMassTauUp);
-   fChain->SetBranchAddress("SVfitTransverseMassTauDown", &SVfitTransverseMassTauDown, &b_SVfitTransverseMassTauDown);
-   fChain->SetBranchAddress("SVfit_pt", &SVfit_pt, &b_SVfit_pt);
-   fChain->SetBranchAddress("SVfit_ptTauUp", &SVfit_ptTauUp, &b_SVfit_ptTauUp);
-   fChain->SetBranchAddress("SVfit_ptTauDown", &SVfit_ptTauDown, &b_SVfit_ptTauDown);
-   fChain->SetBranchAddress("SVfit_ptUnc", &SVfit_ptUnc, &b_SVfit_ptUnc);
-   fChain->SetBranchAddress("SVfit_ptUncTauUp", &SVfit_ptUncTauUp, &b_SVfit_ptUncTauUp);
-   fChain->SetBranchAddress("SVfit_ptUncTauDown", &SVfit_ptUncTauDown, &b_SVfit_ptUncTauDown);
-   fChain->SetBranchAddress("SVfit_eta", &SVfit_eta, &b_SVfit_eta);
-   fChain->SetBranchAddress("SVfit_etaTauUp", &SVfit_etaTauUp, &b_SVfit_etaTauUp);
-   fChain->SetBranchAddress("SVfit_etaTauDown", &SVfit_etaTauDown, &b_SVfit_etaTauDown);
-   fChain->SetBranchAddress("SVfit_etaUnc", &SVfit_etaUnc, &b_SVfit_etaUnc);
-   fChain->SetBranchAddress("SVfit_etaUncTauUp", &SVfit_etaUncTauUp, &b_SVfit_etaUncTauUp);
-   fChain->SetBranchAddress("SVfit_etaUncTauDown", &SVfit_etaUncTauDown, &b_SVfit_etaUncTauDown);
-   fChain->SetBranchAddress("SVfit_phi", &SVfit_phi, &b_SVfit_phi);
-   fChain->SetBranchAddress("SVfit_phiTauUp", &SVfit_phiTauUp, &b_SVfit_phiTauUp);
-   fChain->SetBranchAddress("SVfit_phiTauDown", &SVfit_phiTauDown, &b_SVfit_phiTauDown);
-   fChain->SetBranchAddress("SVfit_phiUnc", &SVfit_phiUnc, &b_SVfit_phiUnc);
-   fChain->SetBranchAddress("SVfit_phiUncTauUp", &SVfit_phiUncTauUp, &b_SVfit_phiUncTauUp);
-   fChain->SetBranchAddress("SVfit_phiUncTauDown", &SVfit_phiUncTauDown, &b_SVfit_phiUncTauDown);
-   fChain->SetBranchAddress("SVfit_fitMETRho", &SVfit_fitMETRho, &b_SVfit_fitMETRho);
-   fChain->SetBranchAddress("SVfit_fitMETRhoTauUp", &SVfit_fitMETRhoTauUp, &b_SVfit_fitMETRhoTauUp);
-   fChain->SetBranchAddress("SVfit_fitMETRhoTauDown", &SVfit_fitMETRhoTauDown, &b_SVfit_fitMETRhoTauDown);
-   fChain->SetBranchAddress("SVfit_fitMETPhi", &SVfit_fitMETPhi, &b_SVfit_fitMETPhi);
-   fChain->SetBranchAddress("SVfit_fitMETPhiTauUp", &SVfit_fitMETPhiTauUp, &b_SVfit_fitMETPhiTauUp);
-   fChain->SetBranchAddress("SVfit_fitMETPhiTauDown", &SVfit_fitMETPhiTauDown, &b_SVfit_fitMETPhiTauDown);
+   fChain->SetBranchAddress("NUP", &NUP, &b_NUP);  
    fChain->SetBranchAddress("isOSCand", &isOSCand, &b_isOSCand);
    fChain->SetBranchAddress("METx", &METx, &b_METx);
    fChain->SetBranchAddress("METy", &METy, &b_METy);
@@ -535,6 +484,9 @@ void HTauTauTreeBase::Init(TTree *tree)
    fChain->SetBranchAddress("daughters_pcaGenPV_x", &daughters_pcaGenPV_x, &b_daughters_pcaGenPV_x);
    fChain->SetBranchAddress("daughters_pcaGenPV_y", &daughters_pcaGenPV_y, &b_daughters_pcaGenPV_y);
    fChain->SetBranchAddress("daughters_pcaGenPV_z", &daughters_pcaGenPV_z, &b_daughters_pcaGenPV_z);
+   fChain->SetBranchAddress("daughters_sv_x", &daughters_sv_x, &b_daughters_sv_x);
+   fChain->SetBranchAddress("daughters_sv_y", &daughters_sv_y, &b_daughters_sv_y);
+   fChain->SetBranchAddress("daughters_sv_z", &daughters_sv_z, &b_daughters_sv_z);
    fChain->SetBranchAddress("JetsNumber", &JetsNumber, &b_JetsNumber);
    fChain->SetBranchAddress("jets_px", &jets_px, &b_jets_px);
    fChain->SetBranchAddress("jets_py", &jets_py, &b_jets_py);
@@ -676,6 +628,11 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   genLeptonPropertiesList.push_back("genpart_pdg");
   genLeptonPropertiesList.push_back("genpart_TauGenDetailedDecayMode");
 
+  aSVFitEvent = new SVFitEvent();
+  svFitTree = new TTree("SVFitTree","");
+  svFitTree->SetDirectory(warsawFile);
+  svFitTree->Branch("SVFitEvent",&aSVFitEvent);
+
   return;
 }
 /////////////////////////////////////////////////
@@ -712,7 +669,7 @@ void HTauTauTreeBase::Loop(){
 
 	fillJets(bestPairIndex);
 	fillLeptons();
-	fillGenLeptons();
+	fillGenLeptons();		
 	fillPairs(bestPairIndex);
 
 	HTTPair & bestPair = httPairCollection[0];
@@ -959,7 +916,7 @@ void HTauTauTreeBase::fillLeptons(){
   httLeptonCollection.clear();
 
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){
-
+     
     HTTParticle aLepton;
 
     TLorentzVector p4(daughters_px->at(iLepton), daughters_py->at(iLepton),
@@ -974,6 +931,7 @@ void HTauTauTreeBase::fillLeptons(){
     TVector3 pca(daughters_pca_x->at(iLepton), daughters_pca_y->at(iLepton), daughters_pca_z->at(iLepton));
     TVector3 pcaRefitPV(daughters_pcaRefitPV_x->at(iLepton), daughters_pcaRefitPV_y->at(iLepton), daughters_pcaRefitPV_z->at(iLepton));
     TVector3 pcaGenPV(daughters_pcaGenPV_x->at(iLepton), daughters_pcaGenPV_y->at(iLepton), daughters_pcaGenPV_z->at(iLepton));
+    TVector3 aSV(daughters_sv_x->at(iLepton), daughters_sv_y->at(iLepton), daughters_sv_z->at(iLepton));
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(p4Charged);
@@ -982,6 +940,7 @@ void HTauTauTreeBase::fillLeptons(){
     aLepton.setPCA(pca);
     aLepton.setPCARefitPV(pcaRefitPV);
     aLepton.setPCAGenPV(pcaGenPV);
+    aLepton.setSV(aSV);
 
     std::vector<Double_t> aProperties = getProperties(leptonPropertiesList, iLepton);
     aLepton.setProperties(aProperties);
@@ -1015,13 +974,14 @@ void HTauTauTreeBase::fillGenLeptons(){
 
     HTTParticle aLepton;
 
-
-    TVector3 pca(genpart_pca_x->at(iGenPart), genpart_pca_y->at(iGenPart), genpart_pca_z->at(iGenPart));
+    TVector3 pca(genpart_pca_x->at(iGenPart), genpart_pca_y->at(iGenPart), genpart_pca_z->at(iGenPart));    
+    TVector3 sv(genpart_sv_x->at(iGenPart), genpart_sv_y->at(iGenPart), genpart_sv_z->at(iGenPart));
 
     aLepton.setP4(p4);
     aLepton.setChargedP4(getGenComponentP4(iGenPart,1));
     aLepton.setNeutralP4(getGenComponentP4(iGenPart,0));
     aLepton.setPCA(pca);
+    aLepton.setSV(sv);
 
     std::vector<Double_t> aProperties = getProperties(genLeptonPropertiesList, iGenPart);
     aLepton.setProperties(aProperties);
@@ -1392,10 +1352,14 @@ TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::
   double tauMass = 1.77686; //GeV, PDG value
 
   algo.addLogM(false); //In general, keep it false when using VEGAS integration
-  algo.shiftVisPt(true, inputFile_visPtResolution_);
+  algo.shiftVisPt(true, inputFile_visPtResolution_);  
   algo.integrateMarkovChain();
   if(algo.isValidSolution() ){//Get solution
-
+    /*
+    fillSVFitTree(measuredTauLeptons, aMET, covMET,
+		  aQuantitiesAdapter->getMass(), 0.0,
+		  0.0, 0.0);
+    */
     p4SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getPt(),
 			 aQuantitiesAdapter->getEta(),
 			 aQuantitiesAdapter->getPhi(),
@@ -1419,6 +1383,46 @@ TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::
   }
 
   return p4SVFit;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+void HTauTauTreeBase::fillSVFitTree(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+				    const TVector2 &aMET, const TMatrixD &covMET, float mcMass, float cubaMass,
+            float cpuTime_MC, float cpuTime_Cuba){
+
+  aSVFitEvent->tree_l1_type = measuredTauLeptons[0].type();
+  aSVFitEvent->tree_l1_decayMode = measuredTauLeptons[0].decayMode();
+  aSVFitEvent->tree_l1_px = measuredTauLeptons[0].p4().Px();
+  aSVFitEvent->tree_l1_py = measuredTauLeptons[0].p4().Py();
+  aSVFitEvent->tree_l1_pz = measuredTauLeptons[0].p4().Pz();
+  aSVFitEvent->tree_l1_pe = measuredTauLeptons[0].p4().E();
+  aSVFitEvent->tree_l1_mass = measuredTauLeptons[0].p4().mass();
+
+  aSVFitEvent->tree_l2_type = measuredTauLeptons[1].type();
+  aSVFitEvent->tree_l2_decayMode = measuredTauLeptons[1].decayMode();
+  aSVFitEvent->tree_l2_px = measuredTauLeptons[1].p4().Px();
+  aSVFitEvent->tree_l2_py = measuredTauLeptons[1].p4().Py();
+  aSVFitEvent->tree_l2_pz = measuredTauLeptons[1].p4().Pz();
+  aSVFitEvent->tree_l2_pe = measuredTauLeptons[1].p4().E();
+  aSVFitEvent->tree_l2_mass = measuredTauLeptons[1].p4().mass();
+
+  aSVFitEvent->tree_metX = aMET.X();
+  aSVFitEvent->tree_metY = aMET.Y();
+
+  aSVFitEvent->tree_metCov00 = covMET(0,0);
+  aSVFitEvent->tree_metCov11 = covMET(1,1);
+  aSVFitEvent->tree_metCov10 = covMET(1,0);
+  aSVFitEvent->tree_metCov01 = covMET(0,1);
+
+  aSVFitEvent->tree_mcMass = mcMass;
+  aSVFitEvent->tree_cubaMass = cubaMass;
+
+  aSVFitEvent->tree_cpuTime_MC = cpuTime_MC;
+  aSVFitEvent->tree_cpuTime_Cuba = cpuTime_Cuba;
+
+  svFitTree->Fill();
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

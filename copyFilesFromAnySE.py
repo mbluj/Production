@@ -18,6 +18,9 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
     endpoint = sourcePath.split("SFN")[0]+"SFN="
     command = "lcg-ls -l "+sourcePath
     output = commands.getoutput(command)
+
+    print output
+    
     lines = output.split('\n')
     for line in lines:
         if line.count("/"+user+"/"):
@@ -78,7 +81,8 @@ directories = [
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v5/",
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_MSSM/",
     #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v7_SM/",
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/1Mu_v2/",
+    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/1Mu_v2/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/Summer17_SVFit_v1/"
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

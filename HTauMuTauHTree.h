@@ -1,5 +1,5 @@
-#ifndef HTauTauTree_h
-#define HTauTauTree_h
+#ifndef HTauMuTauHTree_h
+#define HTauMuTauHTree_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -15,7 +15,7 @@
 // Header of the base class
 #include "HTauTauTreeBase.h"
 
-class HTauTauTree : public HTauTauTreeBase {
+class HTauMuTauHTree : public HTauTauTreeBase {
  public :
 
   /////////////////////////////////////////////////
@@ -24,18 +24,18 @@ class HTauTauTree : public HTauTauTreeBase {
   bool pairSelection(unsigned int index);
   /////////////////////////////////////////////////
   
-  HTauTauTree(TTree *tree=0, bool doSvFit=false, std::string prefix="WAWMT");
-  virtual ~HTauTauTree();
+  HTauMuTauHTree(TTree *tree=0, bool doSvFit=false, std::string prefix="WAWMT");
+  virtual ~HTauMuTauHTree();
   
 };
 
 #endif
 
-#ifdef HTauTauTree_cxx
-HTauTauTree::HTauTauTree(TTree *tree, bool doSvFit, std::string prefix) : HTauTauTreeBase(tree, doSvFit, prefix) 
+#ifdef HTauMuTauHTree_cxx
+HTauMuTauHTree::HTauMuTauHTree(TTree *tree, bool doSvFit, std::string prefix) : HTauTauTreeBase(tree, doSvFit, prefix) 
 {}
 
-HTauTauTree::~HTauTauTree()
+HTauMuTauHTree::~HTauMuTauHTree()
 {}
 
-#endif // #ifdef HTauTauTree_cxx
+#endif // #ifdef HTauMuTauHTree_cxx

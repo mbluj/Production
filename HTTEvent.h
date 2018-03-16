@@ -13,6 +13,18 @@
 #include "TriggerEnum.h"
 #include "SelectionBitsEnum.h"
 #include "AnalysisEnums.h"
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+struct SVFitEvent{
+
+  double tree_l1_type, tree_l1_decayMode, tree_l1_px, tree_l1_py, tree_l1_pz, tree_l1_pe, tree_l1_mass;
+  double tree_l2_type, tree_l2_decayMode, tree_l2_px, tree_l2_py, tree_l2_pz, tree_l2_pe, tree_l2_mass;
+  double tree_metX, tree_metY, tree_metCov00, tree_metCov11, tree_metCov10, tree_metCov01;
+  double tree_mcMass, tree_cubaMass;
+  double tree_cpuTime_MC, tree_cpuTime_Cuba;
+
+};
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 class HTTEvent{
@@ -242,6 +254,8 @@ class HTTParticle{
 
   void setPCAGenPV(const TVector3 &aV3) {pcaGenPV = aV3;}
 
+  void setSV(const TVector3 &aSV) {sv = aSV;}
+
   void setProperties(const std::vector<Double_t> & aProperties) { properties = aProperties;}
 
   ///Data member getters.
@@ -256,6 +270,8 @@ class HTTParticle{
   const TVector3 & getPCARefitPV() const {return pcaRefitPV;}
 
   const TVector3 & getPCAGenPV() const {return pcaGenPV;}
+
+  const TVector3 & getSV() const {return sv;}
 
   int getPDGid() const {return getProperty(PropertyEnum::PDGId);}
 
@@ -292,6 +308,9 @@ class HTTParticle{
   ///Vectors from primary vertex to point of closest approach (PCA)
   ///calculated with respect to AOD vertex, refitted and generated vertex.
   TVector3 pca, pcaRefitPV, pcaGenPV;
+
+  ///Decay vertex
+  TVector3 sv;
 
   ///Vector of vaious particle properties.
   ///Index generated automatically during conversion from

@@ -6,11 +6,10 @@ from ROOT import gSystem, TChain, TSystem, TFile
 from PSet import process
 
 gSystem.CompileMacro('HTTEvent.cxx')
-gSystem.CompileMacro('ScaleFactor.cc')
 gSystem.CompileMacro('HTauTauTreeBase.C')
-gSystem.CompileMacro('HTauTauTree.C')
+gSystem.CompileMacro('HTauMuTauHTree.C')
 
-from ROOT import HTauTauTree
+from ROOT import HTauMuTauHTree
 
 fileNames = []
 for aFile in process.source.fileNames:
@@ -21,7 +20,7 @@ for aFile in process.source.fileNames:
     aROOTFile = TFile.Open(aFile)
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
-    HTauTauTree(aTree).Loop()
+    HTauMuTauHTree(aTree).Loop()
 
 #Merge files.
 command = "hadd -f WAW_HTauTauAnalysis.root WAW_HTauTauAnalysis_*.root"

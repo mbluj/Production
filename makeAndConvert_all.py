@@ -18,10 +18,10 @@ gSystem.CompileMacro('ScaleFactor.cc')
 gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
 gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
-gSystem.CompileMacro('HTauTauTree.C')
+gSystem.CompileMacro('HTauMuTauHTree.C')
 gSystem.CompileMacro('HMuMuTree.C')
 from ROOT import HTauhTauhTree
-from ROOT import HTauTauTree
+from ROOT import HTauMuTauHTree
 from ROOT import HMuMuTree
 
 fileNames = [
@@ -40,7 +40,7 @@ for aFile in fileNames:
     aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
     print "TTree entries: ",aTree.GetEntries()
     print "Process MT..."
-    HTauTauTree(aTree,doSvFit).Loop()
+    HTauMuTauHTree(aTree,doSvFit).Loop()
     print "done"
     # file and tree have to be opened again as they are closed by Dtor of analyzer
     aROOTFile = TFile.Open(aFile)

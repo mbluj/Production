@@ -1,5 +1,5 @@
-#define HTauTauTree_cxx
-#include "HTauTauTree.h"
+#define HTauMuTauHTree_cxx
+#include "HTauMuTauHTree.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -10,7 +10,7 @@
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-bool HTauTauTree::pairSelection(unsigned int iPair){
+bool HTauMuTauHTree::pairSelection(unsigned int iPair){
 
   ///Baseline+post sync selection as on
   ///https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2015#Baseline_mu_tau_h_AN1
@@ -87,7 +87,7 @@ bool HTauTauTree::pairSelection(unsigned int iPair){
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-bool HTauTauTree::diMuonVeto(){
+bool HTauMuTauHTree::diMuonVeto(){
 
   std::vector<int> muonIndexes;
   for(unsigned int iLepton=0;iLepton<daughters_px->size();++iLepton){

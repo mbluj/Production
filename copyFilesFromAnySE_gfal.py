@@ -4,9 +4,9 @@ import sys, re, os, commands, time
 
 ##################
 def fileCopied(fileName):
-    command = "ls "+fileName#.strip("file:")
+    command = "ls "+fileName.strip("file:")
     result = commands.getoutput(command)
-
+    print result
     if(str(result).find("No such file or directory")!=-1 or
        str(result).find("Nie ma takiego pliku ani katalogu")!=-1):
            return False
@@ -19,9 +19,13 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
     endpoint = sourcePath
     command = "gfal-ls -l "+sourcePath
     output = commands.getoutput(command)
+
+    print output
+    
     lines = output.split('\n')
     for line in lines:
         if True or line.count("/"+user+"/"):
+            print "line: ",line
             localPath = line.split()[8]
             if line.split()[0]=='drwxrwxr-x' and (endpoint+localPath)!=sourcePath:
                 print "directory local path: ",localPath
@@ -29,8 +33,11 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
             else:
                 destination = destinationPath+"/"+destDirectory+"/"+localPath.split("/")[len(localPath.split("/"))-1]
                 destination = destinationPath+endpoint.split(user)[1]+"/"+localPath
+                #destination = destination.strip("file:")
                 path = (destinationPath+localPath)
                 path = destination[:destination.rfind("/")]
+                path = path.strip("file:")
+                
                 command = "mkdir -p "+path
                 os.system(command)
 
@@ -45,9 +52,8 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
 
                 if(fileCopied(destination)):
                     continue
-
-                #command = "gfal-cp -v  --vo cms -b -T srmv2 -U srmv2 "+endpoint+localPath+" "+destination + " &"
-                command = "gfal-copy --force "+endpoint+"/"+localPath+" "+destination
+                
+                command = "gfal-copy --force "+endpoint+"/"+localPath+" "+destination + " &"
                 print "Executing command: ",command
                 os.system(command)
                 command = "ps aux | grep gfal-copy"
@@ -65,22 +71,17 @@ grid-proxy-init
 ./copyFilesFromSE.py
 '''
 ##
-#user = "akalinow"
-user = "apyskir"
+user = "akalinow"
+#user = "apyskir"
 #user = "konec"
 
 #sourceEndpoint = "srm://se.grid.icm.edu.pl:8446/srm/managerv2?SFN=//"
 sourceEndpoint = "srm://se.cis.gov.pl:8446/srm/managerv2?SFN=//"
-destEndpoint = "./Data/NTUPLES_2017_06_01/"
-
+destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/4Mu_v5/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v4_MSSM/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/akalinow/v7_SM/",
-    #"/dpm/cis.gov.pl/home/cms/store/user/apyskir/v2/",
-    "/dpm/cis.gov.pl/home/cms/store/user/apyskir/v2/",
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/WAWNTuple/Summer17_SVFit_v2/"
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

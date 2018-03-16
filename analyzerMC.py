@@ -53,8 +53,10 @@ STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection add
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
 print "is80X: " , is80X
-is92X = True if 'CMSSW_9' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+is92X = True if 'CMSSW_9_2' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
 print "is92X: " , is92X
+is94X = True if 'CMSSW_9_4' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+print "is94X: " , is94X
 ##
 ## Standard sequence
 ##
@@ -63,6 +65,8 @@ if is80X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_80X.py")
 elif is92X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_92X.py")
+elif is94X:
+    execfile(PyFilePath+"python/HiggsTauTauProducer_94X.py")    
 else :
     execfile(PyFilePath+"python/HiggsTauTauProducer.py")
 
@@ -71,13 +75,13 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/14CD7198-67BF-E611-95F9-002590D9D8B8.root'
-        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM/1C6F3F7F-96C8-E611-A0D7-0025905A4964.root'
+        'file:/home/akalinow/scratch/CMS/TauID/Data/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10_ext1-v1/02350E8C-32F4-E711-89CB-02163E0145CA.root'
+	#'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM/0A93781C-E904-E811-958B-782BCB53A3A4.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = 1000
+process.maxEvents.input = 100
 #process.source.eventsToProcess = cms.untracked.VEventRange('1:743343') #MET test
 
 # JSON mask for data --> defined in the lumiMask file
