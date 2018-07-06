@@ -97,7 +97,7 @@ def prepareCrabCfg(dataset,
     os.system("rm -f "+jsonFile.split("/")[-1])
 #########################################
 #########################################
-eventsPerJob = 100000 #Wjets and DYJets hardoced in code above
+eventsPerJob = 10000 #Wjets and DYJets hardoced in code above
 #eventsPerJob = 200000#4Mu analysis
 
 from datasetsMoriond17 import datasets

@@ -41,11 +41,11 @@ def copyFilesFromSE(sourcePath,destinationPath, user):
                 command = "mkdir -p "+path
                 os.system(command)
 
-                #if localPath.find(".root")==-1:
-                #    continue
-
-                if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
+                if localPath.find(".root")==-1:
                     continue
+
+                #if localPath.find("WAWMT_")==-1 and localPath.find("WAWTT_")==-1:
+                #    continue
 
                 #if localPath.find("WAWMM_")==-1:
                 #    continue
@@ -74,6 +74,7 @@ grid-proxy-init
 user = "akalinow"
 #user = "apyskir"
 #user = "konec"
+#user = "trudnick"
 
 #sourceEndpoint = "srm://se.grid.icm.edu.pl:8446/srm/managerv2?SFN=//"
 sourceEndpoint = "srm://se.cis.gov.pl:8446/srm/managerv2?SFN=//"
@@ -81,7 +82,7 @@ destEndpoint = "file:./Data/"
 
 ##katalogi ktore checmy skopiowac
 directories = [
-    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/WAWNTuple/Summer17_SVFit_v2/"
+    "/dpm/cis.gov.pl/home/cms/store/user/akalinow/WAWNTuple/Summer17_SVFit_v11/",
 ]
 
 ## Mozemy kopiowac zawartosc wielu katalogow. Pliki sa kopiowane do katalogow

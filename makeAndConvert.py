@@ -47,5 +47,4 @@ HTauhTauhTree(aTree,doSvFit).Loop()
 print "Making the mu*mu tree with"
 aROOTFile = TFile.Open(aFile)
 aTree = aROOTFile.Get("HTauTauTree/HTauTauTree")
-HMuMuTree(aTree).Loop()
-
+HMuMuTree(aTree, doSvFit).Loop()

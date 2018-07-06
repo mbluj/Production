@@ -24,7 +24,7 @@ class HMuMuTree : public HTauTauTreeBase {
   unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   /////////////////////////////////////////////////
   
-  HMuMuTree(TTree *tree=0, std::string prefix="WAWMM");
+  HMuMuTree(TTree *tree=0, bool doSvFit=false, std::string prefix="WAWMM");
   virtual ~HMuMuTree();
   
 };
@@ -32,7 +32,7 @@ class HMuMuTree : public HTauTauTreeBase {
 #endif
 
 #ifdef HMuMuTree_cxx
-HMuMuTree::HMuMuTree(TTree *tree, std::string prefix) : HTauTauTreeBase(tree, false, prefix) 
+HMuMuTree::HMuMuTree(TTree *tree, bool doSvFit, std::string prefix) : HTauTauTreeBase(tree, doSvFit, prefix) 
 {}
 
 HMuMuTree::~HMuMuTree()

@@ -75,14 +75,14 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/home/akalinow/scratch/CMS/TauID/Data/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10_ext1-v1/02350E8C-32F4-E711-89CB-02163E0145CA.root'
-	#'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM/0A93781C-E904-E811-958B-782BCB53A3A4.root'
+        #'file:/home/akalinow/scratch/CMS/TauID/Data/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10_ext1-v1/02350E8C-32F4-E711-89CB-02163E0145CA.root'
+	'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM/0A93781C-E904-E811-958B-782BCB53A3A4.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = 100
-#process.source.eventsToProcess = cms.untracked.VEventRange('1:743343') #MET test
+process.maxEvents.input = -1
+process.source.eventsToProcess = cms.untracked.VEventRange('1:2795204') #MET test
 
 # JSON mask for data --> defined in the lumiMask file
 # from JSON file
