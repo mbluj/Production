@@ -7,8 +7,6 @@ import urllib
 
 from crab3 import *
 from mergeROOTFiles import *
-from analyzerMC import *
-
 
 submitJobs = False
 mergeJobs = not submitJobs
@@ -134,15 +132,15 @@ if submitJobs:
                        eventsPerJob=eventsPerJob,
                        jsonFile=jsonFile2017,
                        storage_element="T2_PL_Swierk",
-                       publish_data_suffix = "Summer17_HTT_v1")                  
+                       publish_data_suffix = "fullRun2017_v2")                  
 ########################################################
 ########################################################
 ## Merge output ROOT files.
 ########################################################
 if mergeJobs:
     for dataset in datasets:
-        mergeDataset(dataset=dataset, publish_data_suffix = "Summer17_HTT_v1",
-                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/WAWNTuples/Summer17_HTT_v1/")
+        mergeDataset(dataset=dataset, publish_data_suffix = "Run2017_HTT_v2",
+                                      outputDir="/home/akalinow/scratch/CMS/HiggsCP/Data/WAWNTuples/fullRun2017_v2/")
 
 #for a in v1/*v7_SM*; do crab resubmit -d $a; done
 #for a in v1/*Run2016*v7_SM*; do crab report -d $a; done

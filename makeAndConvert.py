@@ -11,7 +11,7 @@ if doSvFit :
 #Some system have problem runnig compilation (missing glibc-static library?).
 #First we try to compile, and only then we start time consuming cmssw
 status = gSystem.CompileMacro('HTTEvent.cxx')
-gSystem.Load('$CMSSW_BASE/lib/$SCRAM_ARCH/libTauAnalysisSVfitStandalone.so')
+gSystem.Load('$CMSSW_BASE/lib/$SCRAM_ARCH/libTauAnalysisClassicSVfit.so')
 status *= gSystem.CompileMacro('HTauTauTreeBase.C')
 status *= gSystem.CompileMacro('HTauMuTauHTree.C')
 status *= gSystem.CompileMacro('HTauhTauhTree.C')

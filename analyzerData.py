@@ -12,7 +12,6 @@ PyFilePath = os.environ['CMSSW_BASE']+"/src/LLRHiggsTauTau/NtupleProducer/"
 #apply corrections?
 APPLYMUCORR=False
 APPLYELECORR=True
-APPLYFSR=False #this is by far the slowest module (not counting SVFit so far)
 #Cuts on the Objects (add more cuts with &&)
 #MUCUT="(isGlobalMuon || (isTrackerMuon && numberOfMatches>0)) && abs(eta)<2.4 && pt>8"
 #ELECUT="abs(eta)<2.5 && gsfTrack.trackerExpectedHitsInner.numberOfHits<=1 && pt>10"
@@ -23,10 +22,8 @@ USEMVAMET=False
 APPLYMETCORR=False # flag to enable (True) and disable (False) Z-recoil corrections
 USE_NOHFMET = False # True to exclude HF and run on silver json
 
-SVFITBYPASS=True # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
 BUILDONLYOS=False #If true don't create the collection of SS candidates (and thus don't run SV fit on them)
 APPLYTESCORRECTION=False # shift the central value of the tau energy scale before computing up/down variations
-COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=False
 Is25ns=True
@@ -53,8 +50,10 @@ STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection add
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
 print "is80X: " , is80X
-is92X = True if 'CMSSW_9' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+is92X = True if 'CMSSW_9_2' in os.environ['CMSSW_VERSION'] else False# True to run in 92Y (2017), False to run in 76X (2015) or 80X (2016)
 print "is92X: " , is92X
+is94X = True if 'CMSSW_9_4' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+print "is94X: " , is94X
 ##
 ## Standard sequence
 ##
@@ -63,6 +62,8 @@ if is80X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_80X.py")
 elif is92X:
     execfile(PyFilePath+"python/HiggsTauTauProducer_92X.py")
+elif is94X:
+    execfile(PyFilePath+"python/HiggsTauTauProducer_94X.py")    
 else :
     execfile(PyFilePath+"python/HiggsTauTauProducer.py")
 
@@ -71,11 +72,8 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-PromptReco-v1/MINIAOD/0667AC34-2464-E611-84CE-02163E011979.root'
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016G-23Sep2016-v1/MINIAOD/72446D9C-D89C-E611-9060-002590A3C984.root'
-        #'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2016E-23Sep2016-v1/MINIAOD/00CFC689-8D8D-E611-9F90-0CC47A13D16E.root'
-        'file:/mnt/home/mbluj/work/data/92X/MINIAOD/Run2017C_SingleMuon_PromptReco-v1/000_299_368_00000_5E4BC918-8C6D-E711-9C2F-02163E012A9F.root',
-        #'file:/mnt/home/mbluj/work/data/92X/MINIAOD/Run2017B_Tau_PromptReco-v2/000_298_996_00000_3E5B73F4-146A-E711-97AD-02163E0144FB.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD/00245C8B-8C37-E811-B942-002590E2F9D4.root'
+        #'file:/mnt/home/mbluj/work/data/92X/MINIAOD/Run2017C_SingleMuon_PromptReco-v1/000_299_368_00000_5E4BC918-8C6D-E711-9C2F-02163E012A9F.root',
     )
 )
 

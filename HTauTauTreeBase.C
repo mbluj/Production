@@ -31,15 +31,9 @@ HTauTauTreeBase::HTauTauTreeBase(TTree *tree, bool doSvFit, std::string prefix) 
 
    ////////////////////////////////////////////////////////////
    ///Initialization for SvFit
-   inputFile_visPtResolution_ = 0;
    doSvFit_ = doSvFit;
-   if(doSvFit_){
-     std::cout<<"[HTauTauTreeBase::HTauTauTreeBase] Run with SvFit"<<std::endl;
-     TString cmsswBase = getenv("CMSSW_BASE");
-     TString svInputFileName = cmsswBase+"/src/TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root";
-     std::cout<<"\t svFitInputResolutions: "<<svInputFileName<<std::endl;
-     inputFile_visPtResolution_ = new TFile(svInputFileName);
-   }
+
+   svFitAlgo.setHistogramAdapter(new classic_svFit::TauTauHistogramAdapter());
    ////////////////////////////////////////////////////////////
    zPtReweightFile = new TFile("zpt_weights_2016_BtoH.root");  
    if(!zPtReweightFile) std::cout<<"Z pt reweight file zpt_weights.root is missing."<<std::endl;
@@ -56,12 +50,10 @@ HTauTauTreeBase::~HTauTauTreeBase()
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 
-   ////Added by AK
    if(warsawFile){
      warsawFile->Write();
      delete warsawFile;
    }
-   if(inputFile_visPtResolution_) delete inputFile_visPtResolution_;
    if(zPtReweightFile) delete zPtReweightFile;
    if(zPtReweightSUSYFile) delete zPtReweightSUSYFile;
 }
@@ -1267,52 +1259,54 @@ double HTauTauTreeBase::getPtReweight(bool doSUSY){
 void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 				   HTTAnalysis::sysEffects type){
 
-  if(!doSvFit_ || inputFile_visPtResolution_->IsZombie() ) return;
+  using namespace classic_svFit;
+
+  if(!doSvFit_) return;
 
   //Legs
   HTTParticle leg1 = aPair.getLeg1();
   double mass1;
   int decay1 = -1;
-  svFitStandalone::kDecayType type1;
+  MeasuredTauLepton::kDecayType type1;
   if(std::abs(leg1.getPDGid())==11){
     mass1 = 0.51100e-3; //electron mass
-    type1 = svFitStandalone::kTauToElecDecay;
+    type1 = MeasuredTauLepton::kTauToElecDecay;
   }
   else if(std::abs(leg1.getPDGid())==13){
     mass1 = 0.10566; //muon mass
-    type1 = svFitStandalone::kTauToMuDecay;
+    type1 = MeasuredTauLepton::kTauToMuDecay;
   }
   else{//tau->hadrs.
     decay1 = leg1.getProperty(PropertyEnum::decayMode);
     mass1 = leg1.getP4().M();
     if(decay1==0)
       mass1 = 0.13957; //pi+/- mass
-    type1 = svFitStandalone::kTauToHadDecay;
+    type1 = MeasuredTauLepton::kTauToHadDecay;
   }
   HTTParticle leg2 = aPair.getLeg2();
   double mass2;
   int decay2 = -1;
-  svFitStandalone::kDecayType type2;
+  MeasuredTauLepton::kDecayType type2;
   if(std::abs(leg2.getPDGid())==11){
     mass2 = 0.51100e-3; //electron mass
-    type2 = svFitStandalone::kTauToElecDecay;
+    type2 = MeasuredTauLepton::kTauToElecDecay;
   }
   else if(std::abs(leg2.getPDGid())==13){
     mass2 = 0.10566; //muon mass
-    type2 = svFitStandalone::kTauToMuDecay;
+    type2 = MeasuredTauLepton::kTauToMuDecay;
   }
   else{//tau->hadrs.
     decay2 = leg2.getProperty(PropertyEnum::decayMode);
     mass2 = leg2.getP4().M();
     if(decay2==0)
       mass2 = 0.13957; //pi+/- mass
-    type2 = svFitStandalone::kTauToHadDecay;
+    type2 = MeasuredTauLepton::kTauToHadDecay;
   }
   //Leptons for SvFit
-  std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
-  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type1, leg1.getP4(type).Pt(), leg1.getP4(type).Eta(),
+  std::vector<MeasuredTauLepton> measuredTauLeptons;
+  measuredTauLeptons.push_back(MeasuredTauLepton(type1, leg1.getP4(type).Pt(), leg1.getP4(type).Eta(),
 								  leg1.getP4(type).Phi(), mass1, decay1) );
-  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(type2, leg2.getP4(type).Pt(), leg2.getP4(type).Eta(),
+  measuredTauLeptons.push_back(MeasuredTauLepton(type2, leg2.getP4(type).Pt(), leg2.getP4(type).Eta(),
 								  leg2.getP4(type).Phi(), mass2, decay2) );
   //MET
   TVector2 aMET = aPair.getMET(type);
@@ -1340,41 +1334,58 @@ void HTauTauTreeBase::computeSvFit(HTTPair &aPair,
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
 					     const TVector2 &aMET, const TMatrixD &covMET){
 
+  using namespace classic_svFit;
 
   unsigned int verbosity = 0;//Set the debug level to 3 for testing
-  SVfitStandaloneAlgorithm algo(measuredTauLeptons, aMET.X(), aMET.Y(), covMET, verbosity);
-  svFitStandalone::MCPtEtaPhiMassAdapter *aQuantitiesAdapter = new svFitStandalone::MCPtEtaPhiMassAdapter();
-  algo.setMCQuantitiesAdapter(aQuantitiesAdapter);
+  svFitAlgo.setVerbosity(verbosity);
+
+  int kappa = 4;
+  if(measuredTauLeptons[0].type() != MeasuredTauLepton::kTauToHadDecay &&
+     measuredTauLeptons[1].type() != MeasuredTauLepton::kTauToHadDecay){
+    kappa = 3;
+  }
+  else if(measuredTauLeptons[0].type() != MeasuredTauLepton::kTauToHadDecay ||
+	  measuredTauLeptons[1].type() != MeasuredTauLepton::kTauToHadDecay){
+    kappa = 4;
+  }    
+  else if(measuredTauLeptons[0].type() == MeasuredTauLepton::kTauToHadDecay &&
+	  measuredTauLeptons[1].type() == MeasuredTauLepton::kTauToHadDecay){
+    kappa = 5;
+  }
+  
+  svFitAlgo.addLogM_fixed(true, kappa);
+  svFitAlgo.integrate(measuredTauLeptons, aMET.X(), aMET.Y(), covMET);
+  TauTauHistogramAdapter *aHistoAdapter = static_cast<classic_svFit::TauTauHistogramAdapter*>(svFitAlgo.getHistogramAdapter());
 
   double tauMass = 1.77686; //GeV, PDG value
 
-  algo.addLogM(false); //In general, keep it false when using VEGAS integration
-  algo.shiftVisPt(true, inputFile_visPtResolution_);  
-  algo.integrateMarkovChain();
-  if(algo.isValidSolution() ){//Get solution
+  if(svFitAlgo.isValidSolution() ){//Get solution
     /*
     fillSVFitTree(measuredTauLeptons, aMET, covMET,
 		  aQuantitiesAdapter->getMass(), 0.0,
 		  0.0, 0.0);
     */
-    p4SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getPt(),
-			 aQuantitiesAdapter->getEta(),
-			 aQuantitiesAdapter->getPhi(),
-			 aQuantitiesAdapter->getMass());
+    classic_svFit::LorentzVector tautauP4 = aHistoAdapter->GetFittedHiggsLV();
+    classic_svFit::LorentzVector tau1P4 = aHistoAdapter->GetFittedTau1LV();
+    classic_svFit::LorentzVector tau2P4 = aHistoAdapter->GetFittedTau2LV();
+    
+    p4SVFit.SetPtEtaPhiM(tautauP4.Pt(),
+			 tautauP4.Eta(),
+			 tautauP4.Phi(),
+			 tautauP4.M());
 
-    p4Leg1SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg1Pt(),
-			     aQuantitiesAdapter->getLeg1Eta(),
-			     aQuantitiesAdapter->getLeg1Phi(),
-			     tauMass);
-
-    p4Leg2SVFit.SetPtEtaPhiM(aQuantitiesAdapter->getLeg2Pt(),
-			     aQuantitiesAdapter->getLeg2Eta(),
-			     aQuantitiesAdapter->getLeg2Phi(),
-			     tauMass);
-
+    p4Leg1SVFit.SetPtEtaPhiM(tau1P4.Pt(),
+			     tau1P4.Eta(),
+			     tau1P4.Phi(),
+			     tau1P4.M());
+			     			  			    
+    p4Leg2SVFit.SetPtEtaPhiM(tau2P4.Pt(),
+			     tau2P4.Eta(),
+			     tau2P4.Phi(),
+			     tau2P4.M());
   }
   else{
     p4SVFit.SetPtEtaPhiM(0,0,0,0);
@@ -1388,7 +1399,7 @@ TLorentzVector HTauTauTreeBase::runSVFitAlgo(const std::vector<svFitStandalone::
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-void HTauTauTreeBase::fillSVFitTree(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+void HTauTauTreeBase::fillSVFitTree(const std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
 				    const TVector2 &aMET, const TMatrixD &covMET, float mcMass, float cubaMass,
             float cpuTime_MC, float cpuTime_Cuba){
 

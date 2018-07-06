@@ -15,7 +15,7 @@ os.system(command)
 
 gSystem.CompileMacro('HTTEvent.cxx')
 gSystem.CompileMacro('ScaleFactor.cc')
-gSystem.Load('$CMSSW_BASE/lib/slc6_amd64_gcc530/libTauAnalysisSVfitStandalone.so')
+gSystem.Load('$CMSSW_BASE/lib/$SCRAM_ARCH/libTauAnalysisClassicSVfit.so')
 gSystem.CompileMacro('HTauTauTreeBase.C')
 gSystem.CompileMacro('HTauhTauhTree.C')
 from ROOT import HTauhTauhTree

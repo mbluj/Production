@@ -22,7 +22,8 @@
 #include "HTTEvent.h"
 #include <iostream>
 
-#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
+#include "TauAnalysis/ClassicSVfit/interface/ClassicSVfit.h"
+#include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 
 class HTauTauTreeBase {
 public :
@@ -43,7 +44,7 @@ public :
   virtual bool pairSelection(unsigned int index);
   virtual unsigned int bestPair(std::vector<unsigned int> &pairIndexes);
   void computeSvFit(HTTPair &aPair, HTTAnalysis::sysEffects type=HTTAnalysis::NOMINAL);
-  TLorentzVector runSVFitAlgo(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+  TLorentzVector runSVFitAlgo(const std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
 			      const TVector2 &aMET, const TMatrixD &covMET);
   bool jetSelection(unsigned int index, unsigned int bestPairIndex);
   int getMCMatching(unsigned int index);
@@ -57,7 +58,7 @@ public :
   void writePropertiesHeader(const std::vector<std::string> & propertiesList);
   void writeTriggersHeader(const TH1F*);
 
-  void fillSVFitTree(const std::vector<svFitStandalone::MeasuredTauLepton> & measuredTauLeptons,
+  void fillSVFitTree(const std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
 		     const TVector2 &aMET, const TMatrixD &covMET, float mcMass, float cubaMass,
 		     float cpuTimeMC, float cpuTimeCuba);
 
@@ -77,7 +78,8 @@ public :
   unsigned int bestPairIndex_;
 
   bool doSvFit_;
-  TFile* inputFile_visPtResolution_;
+  ClassicSVfit svFitAlgo;
+  
   TFile* zPtReweightFile, *zPtReweightSUSYFile;
   TLorentzVector p4SVFit, p4Leg1SVFit, p4Leg2SVFit;   
 

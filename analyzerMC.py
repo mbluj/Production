@@ -12,21 +12,13 @@ PyFilePath = os.environ['CMSSW_BASE']+"/src/LLRHiggsTauTau/NtupleProducer/"
 #apply corrections?
 APPLYMUCORR=False
 APPLYELECORR=True
-APPLYFSR=False #this is by far the slowest module (not counting SVFit so far)
-#Cuts on the Objects (add more cuts with &&)
-#MUCUT="(isGlobalMuon || (isTrackerMuon && numberOfMatches>0)) && abs(eta)<2.4 && pt>8"
-#ELECUT="abs(eta)<2.5 && gsfTrack.trackerExpectedHitsInner.numberOfHits<=1 && pt>10"
-#TAUCUT="pt>15"
-#JETCUT="pt>15"
 
 USEMVAMET=False
 APPLYMETCORR=True # flag to enable (True) and disable (False) Z-recoil corrections
 USE_NOHFMET = False # True to exclude HF and run on silver json
 
-SVFITBYPASS=True # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
 BUILDONLYOS=False #If true don't create the collection of SS candidates (and thus don't run SV fit on them)
 APPLYTESCORRECTION=False # shift the central value of the tau energy scale before computing up/down variations
-COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 
 IsMC=True
 Is25ns=True
@@ -53,7 +45,7 @@ STORE_ENRICHEMENT_ONLY=True # When True and DO_ENRICHED=True only collection add
 
 is80X = True if 'CMSSW_8' in os.environ['CMSSW_VERSION'] else False# True to run in 80X (2016), False to run in 76X (2015)
 print "is80X: " , is80X
-is92X = True if 'CMSSW_9_2' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
+is92X = True if 'CMSSW_9_2' in os.environ['CMSSW_VERSION'] else False# True to run in 92Y (2017), False to run in 76X (2015) or 80X (2016)
 print "is92X: " , is92X
 is94X = True if 'CMSSW_9_4' in os.environ['CMSSW_VERSION'] else False# True to run in 9XY (2017), False to run in 76X (2015) or 80X (2016)
 print "is94X: " , is94X
@@ -75,14 +67,13 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:/home/akalinow/scratch/CMS/TauID/Data/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10_ext1-v1/02350E8C-32F4-E711-89CB-02163E0145CA.root'
-	'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM/0A93781C-E904-E811-958B-782BCB53A3A4.root'
+        'file:/home/akalinow/scratch/CMS/HiggsCP/Data/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM/0498CD6A-CC42-E811-95D3-008CFA1CB8A8.root'
     )
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = -1
-process.source.eventsToProcess = cms.untracked.VEventRange('1:2795204') #MET test
+process.maxEvents.input = 1000
+#process.source.eventsToProcess = cms.untracked.VEventRange('1:2795204') #MET test
 
 # JSON mask for data --> defined in the lumiMask file
 # from JSON file
