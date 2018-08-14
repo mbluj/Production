@@ -34,38 +34,36 @@ class HTTEvent{
   enum sampleTypeEnum {DUMMY = -1, DATA = 0, DY = 1, DYLowM = 2, WJets=3, TTbar=4, h=5, H=6, A=7};
 
   ///Copy from LLRHiggsTauTau/NtupleProducer/plugins/HTauTauNtuplizer.cc
-  static const int ntauIds = 30;
+  static const int ntauIds = 24;
   TString tauIDStrings[ntauIds] = {
-    "byLoosePileupWeightedIsolation3Hits",
-    "byMediumPileupWeightedIsolation3Hits",
-    "byTightPileupWeightedIsolation3Hits",
-    "byLooseCombinedIsolationDeltaBetaCorr3Hits",
-    "byMediumCombinedIsolationDeltaBetaCorr3Hits",
-    "byTightCombinedIsolationDeltaBetaCorr3Hits",
-    "againstMuonLoose3",
-    "againstMuonTight3",
-    "againstElectronVLooseMVA6",
-    "againstElectronLooseMVA6",
-    "againstElectronMediumMVA6",
-    "againstElectronTightMVA6",
-    "againstElectronVTightMVA6",
-    "byVLooseIsolationMVArun2v1DBoldDMwLT",
-    "byLooseIsolationMVArun2v1DBoldDMwLT",
-    "byMediumIsolationMVArun2v1DBoldDMwLT",
-    "byTightIsolationMVArun2v1DBoldDMwLT",
-    "byVTightIsolationMVArun2v1DBoldDMwLT",
-    "byVLooseIsolationMVArun2v1DBnewDMwLT",
-    "byLooseIsolationMVArun2v1DBnewDMwLT",
-    "byMediumIsolationMVArun2v1DBnewDMwLT",
-    "byTightIsolationMVArun2v1DBnewDMwLT",
-    "byVTightIsolationMVArun2v1DBnewDMwLT",
-    "byLooseCombinedIsolationDeltaBetaCorr3HitsdR03",
-    "byMediumCombinedIsolationDeltaBetaCorr3HitsdR03",
-    "byTightCombinedIsolationDeltaBetaCorr3HitsdR03",
-    "byLooseIsolationMVArun2v1DBdR03oldDMwLT",
-    "byMediumIsolationMVArun2v1DBdR03oldDMwLT",
-    "byTightIsolationMVArun2v1DBdR03oldDMwLT",
-    "byVTightIsolationMVArun2v1DBdR03oldDMwLT"
+   "byLooseCombinedIsolationDeltaBetaCorr3Hits",
+   "byMediumCombinedIsolationDeltaBetaCorr3Hits",
+   "byTightCombinedIsolationDeltaBetaCorr3Hits",
+
+   "againstMuonLoose3",
+   "againstMuonTight3",
+
+   "againstElectronVLooseMVA6",
+   "againstElectronLooseMVA6",
+   "againstElectronMediumMVA6",
+   "againstElectronTightMVA6",
+   "againstElectronVTightMVA6",
+
+   "byVVLooseIsolationMVArun2v1DBoldDMwLT",
+   "byVLooseIsolationMVArun2v1DBoldDMwLT",
+   "byLooseIsolationMVArun2v1DBoldDMwLT",
+   "byMediumIsolationMVArun2v1DBoldDMwLT",
+   "byTightIsolationMVArun2v1DBoldDMwLT",
+   "byVTightIsolationMVArun2v1DBoldDMwLT",
+   "byVVTightIsolationMVArun2v1DBoldDMwLT",
+
+   "byVVLooseIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byVLooseIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byLooseIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byMediumIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byTightIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byVTightIsolationMVArun2v1DBoldDMwLT2017v2",
+   "byVVTightIsolationMVArun2v1DBoldDMwLT2017v2",
   };
 
   HTTEvent(){clear();}
