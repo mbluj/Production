@@ -32,10 +32,10 @@ bool HTauMuTauHTree::pairSelection(unsigned int iPair){
   else return 0;
 
   int tauIDmask = 0;
-  for(unsigned int iBit=0;iBit<ntauIds;iBit++){
-    if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT") tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="againstMuonTight3") tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="againstElectronVLooseMVA6") tauIDmask |= (1<<iBit);
+  for(unsigned int iBit=0;iBit<HTTEvent::ntauIds;iBit++){
+    if(HTTEvent::tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT2017v2") tauIDmask |= (1<<iBit);
+    if(HTTEvent::tauIDStrings[iBit]=="againstMuonTight3") tauIDmask |= (1<<iBit);
+    if(HTTEvent::tauIDStrings[iBit]=="againstElectronVLooseMVA6") tauIDmask |= (1<<iBit);
   }
   TLorentzVector muonP4(daughters_px->at(indexMuonLeg),
 			daughters_py->at(indexMuonLeg),
@@ -48,7 +48,7 @@ bool HTauMuTauHTree::pairSelection(unsigned int iPair){
 		       daughters_e->at(indexTauLeg));
 
   int muonIdBit = 7;//Standard Medium ID
-  if(RunNumber<278808 && RunNumber>100000) muonIdBit = 6;//ICHEP Medium MuonID
+  //if(RunNumber<278808 && RunNumber>100000) muonIdBit = 6;//ICHEP Medium MuonID//MB: not needed for 2017
 
   bool muonBaselineSelection =  muonP4.Pt()>19 && std::abs(muonP4.Eta())<2.4 &&
 				std::abs(dz->at(indexMuonLeg))<0.2 &&

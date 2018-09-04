@@ -85,40 +85,6 @@ public :
 
   std::vector<std::string> leptonPropertiesList, genLeptonPropertiesList;
 
-  ///Copy from LLRHiggsTauTau/NtupleProducer/plugins/HTauTauNtuplizer.cc
-   static const int ntauIds = 30;
-   TString tauIDStrings[ntauIds] = {
-     "byLoosePileupWeightedIsolation3Hits",
-     "byMediumPileupWeightedIsolation3Hits",
-     "byTightPileupWeightedIsolation3Hits",
-     "byLooseCombinedIsolationDeltaBetaCorr3Hits",
-     "byMediumCombinedIsolationDeltaBetaCorr3Hits",
-     "byTightCombinedIsolationDeltaBetaCorr3Hits",
-     "againstMuonLoose3",
-     "againstMuonTight3",
-     "againstElectronVLooseMVA6",
-     "againstElectronLooseMVA6",
-     "againstElectronMediumMVA6",
-     "againstElectronTightMVA6",
-     "againstElectronVTightMVA6",
-     "byVLooseIsolationMVArun2v1DBoldDMwLT",
-     "byLooseIsolationMVArun2v1DBoldDMwLT",
-     "byMediumIsolationMVArun2v1DBoldDMwLT",
-     "byTightIsolationMVArun2v1DBoldDMwLT",
-     "byVTightIsolationMVArun2v1DBoldDMwLT",
-     "byVLooseIsolationMVArun2v1DBnewDMwLT",
-     "byLooseIsolationMVArun2v1DBnewDMwLT",
-     "byMediumIsolationMVArun2v1DBnewDMwLT",
-     "byTightIsolationMVArun2v1DBnewDMwLT",
-     "byVTightIsolationMVArun2v1DBnewDMwLT",
-     "byLooseCombinedIsolationDeltaBetaCorr3HitsdR03",
-     "byMediumCombinedIsolationDeltaBetaCorr3HitsdR03",
-     "byTightCombinedIsolationDeltaBetaCorr3HitsdR03",
-     "byLooseIsolationMVArun2v1DBdR03oldDMwLT",
-     "byMediumIsolationMVArun2v1DBdR03oldDMwLT",
-     "byTightIsolationMVArun2v1DBdR03oldDMwLT",
-     "byVTightIsolationMVArun2v1DBdR03oldDMwLT"
-   };
    /////////////////////////////////////////////////
   
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -265,19 +231,22 @@ public :
    vector<int>     *daughters_decayModeFindingOldDMs;
    vector<double>  *againstElectronMVA5category;
    vector<double>  *againstElectronMVA5raw;
-   vector<double>  *byPileupWeightedIsolationRaw3Hits;
-   vector<double>  *footprintCorrection;
-   vector<double>  *neutralIsoPtSumWeight;
+   //vector<double>  *byPileupWeightedIsolationRaw3Hits;
+   //vector<double>  *footprintCorrection;
+   //vector<double>  *neutralIsoPtSumWeight;
    vector<double>  *photonPtSumOutsideSignalCone;
    vector<int>     *daughters_decayModeFindingNewDMs;
    vector<double>  *daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits;
-   vector<double>  *daughters_byIsolationMVA3oldDMwoLTraw;
-   vector<double>  *daughters_byIsolationMVA3oldDMwLTraw;
-   vector<double>  *daughters_byIsolationMVA3newDMwoLTraw;
-   vector<double>  *daughters_byIsolationMVA3newDMwLTraw;
+   //vector<double>  *daughters_byIsolationMVA3oldDMwoLTraw;
+   //vector<double>  *daughters_byIsolationMVA3oldDMwLTraw;
+   //vector<double>  *daughters_byIsolationMVA3newDMwoLTraw;
+   //vector<double>  *daughters_byIsolationMVA3newDMwLTraw;
    vector<double>  *daughters_byIsolationMVArun2v1DBoldDMwLTraw;
+   vector<double>  *daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2;
    vector<double>  *daughters_chargedIsoPtSum;
    vector<double>  *daughters_neutralIsoPtSum;
+   vector<double>  *daughters_chargedIsoPtSumdR03;
+   vector<double>  *daughters_neutralIsoPtSumdR03;
    vector<double>  *daughters_puCorrPtSum;
    vector<int>     *daughters_numChargedParticlesSignalCone;
    vector<int>     *daughters_numNeutralHadronsSignalCone;
@@ -507,19 +476,22 @@ public :
    TBranch        *b_daughters_decayModeFindingOldDMs;   //!
    TBranch        *b_againstElectronMVA5category;   //!
    TBranch        *b_againstElectronMVA5raw;   //!
-   TBranch        *b_byPileupWeightedIsolationRaw3Hits;   //!
-   TBranch        *b_footprintCorrection;   //!
-   TBranch        *b_neutralIsoPtSumWeight;   //!
+   //TBranch        *b_byPileupWeightedIsolationRaw3Hits;   //!
+   //TBranch        *b_footprintCorrection;   //!
+   //TBranch        *b_neutralIsoPtSumWeight;   //!
    TBranch        *b_photonPtSumOutsideSignalCone;   //!
    TBranch        *b_daughters_decayModeFindingNewDMs;   //!
    TBranch        *b_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits;   //!
-   TBranch        *b_daughters_byIsolationMVA3oldDMwoLTraw;   //!
-   TBranch        *b_daughters_byIsolationMVA3oldDMwLTraw;   //!
-   TBranch        *b_daughters_byIsolationMVA3newDMwoLTraw;   //!
-   TBranch        *b_daughters_byIsolationMVA3newDMwLTraw;   //!
+   //TBranch        *b_daughters_byIsolationMVA3oldDMwoLTraw;   //!
+   //TBranch        *b_daughters_byIsolationMVA3oldDMwLTraw;   //!
+   //TBranch        *b_daughters_byIsolationMVA3newDMwoLTraw;   //!
+   //TBranch        *b_daughters_byIsolationMVA3newDMwLTraw;   //!
    TBranch        *b_daughters_byIsolationMVArun2v1DBoldDMwLTraw;   //!
+   TBranch        *b_daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2;   //!
    TBranch        *b_daughters_chargedIsoPtSum;   //!
    TBranch        *b_daughters_neutralIsoPtSum;   //!
+   TBranch        *b_daughters_chargedIsoPtSumdR03;   //!
+   TBranch        *b_daughters_neutralIsoPtSumdR03;   //!
    TBranch        *b_daughters_puCorrPtSum;   //!
    TBranch        *b_daughters_numChargedParticlesSignalCone;   //!
    TBranch        *b_daughters_numNeutralHadronsSignalCone;   //!

@@ -26,19 +26,19 @@ bool HTauhTauhTree::pairSelection(unsigned int iPair){
   unsigned int indexLeg2 = indexDau2->at(iPair);
 
   int tauIDmask = 0, tauIDmaskMedium = 0 , tauIDmaskLoose = 0;
-  for(unsigned int iBit=0;iBit<ntauIds;iBit++){
-    if(tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT")
+  for(unsigned int iBit=0;iBit<HTTEvent::ntauIds;iBit++){
+    if(HTTEvent::tauIDStrings[iBit]=="byTightIsolationMVArun2v1DBoldDMwLT2017v2")
       tauIDmask |= (1<<iBit);
-    if(tauIDStrings[iBit]=="byMediumIsolationMVArun2v1DBoldDMwLT")
+    if(HTTEvent::tauIDStrings[iBit]=="byMediumIsolationMVArun2v1DBoldDMwLT2017v2")
       tauIDmaskMedium |= (1<<iBit);
-    if(tauIDStrings[iBit]=="byLooseIsolationMVArun2v1DBoldDMwLT")
+    if(HTTEvent::tauIDStrings[iBit]=="byLooseIsolationMVArun2v1DBoldDMwLT2017v2")
       tauIDmaskLoose |= (1<<iBit);
-    if(tauIDStrings[iBit]=="againstMuonLoose3") {
+    if(HTTEvent::tauIDStrings[iBit]=="againstMuonLoose3") {
       tauIDmask |= (1<<iBit);
       tauIDmaskMedium |= (1<<iBit);
       tauIDmaskLoose |= (1<<iBit);
     }
-    if(tauIDStrings[iBit]=="againstElectronVLooseMVA6") {
+    if(HTTEvent::tauIDStrings[iBit]=="againstElectronVLooseMVA6") {
       tauIDmask |= (1<<iBit);
       tauIDmaskMedium |= (1<<iBit);
       tauIDmaskLoose |= (1<<iBit);
@@ -121,8 +121,8 @@ unsigned int HTauhTauhTree::bestPair(std::vector<unsigned int> &pairIndexes){
       double pt2_2_i = (daughters_px->at(leg2Index)*daughters_px->at(leg2Index)+
 			daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
       //MB: More isolated for MVAIso means higher value so inverted here to keep standard convention in comparison
-      double iso_1_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index);
-      double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index);
+      double iso_1_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2",leg1Index);
+      double iso_2_i = -getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2",leg2Index);
 
       if(iso_1_i>iso_1) continue;
       if(iso_1_i==iso_1 && pt2_1_i<pt2_1) continue;
@@ -146,9 +146,9 @@ unsigned int HTauhTauhTree::bestPair(std::vector<unsigned int> &pairIndexes){
 		      daughters_py->at(leg2Index)*daughters_py->at(leg2Index));
     std::cout<<"Pair sorting: "<<std::endl
 	     <<"best index = "<<bestIndex<<", index[0] = "<<pairIndexes[0]<<std::endl
-	     <<"\tiso1[best]="<<-iso_1<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg1Index)<<std::endl
+	     <<"\tiso1[best]="<<-iso_1<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2",leg1Index)<<std::endl
 	     <<"\tpt1[best]="<<sqrt(pt2_1)<<", pt1[0]="<<sqrt(pt2_1_i)<<std::endl
-	     <<"\tiso2[best]="<<-iso_2<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw",leg2Index)<<std::endl
+	     <<"\tiso2[best]="<<-iso_2<<", iso1[0]="<<getProperty("daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2",leg2Index)<<std::endl
 	     <<"\tpt2[best]="<<sqrt(pt2_2)<<", pt1[0]="<<sqrt(pt2_2_i)<<std::endl;
   }
   */
