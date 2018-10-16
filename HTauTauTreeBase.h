@@ -243,6 +243,13 @@ public :
    //vector<double>  *daughters_byIsolationMVA3newDMwLTraw;
    vector<double>  *daughters_byIsolationMVArun2v1DBoldDMwLTraw;
    vector<double>  *daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2;
+   vector<double>  *daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2;
+   vector<double>  *daughters_deepTau2017v1tauVSe;
+   vector<double>  *daughters_deepTau2017v1tauVSmu;
+   vector<double>  *daughters_deepTau2017v1tauVSjet;
+   vector<double>  *daughters_deepTau2017v1tauVSall;
+   vector<double>  *daughters_DPFTau_2016_v0tauVSall;
+   vector<double>  *daughters_DPFTau_2016_v1tauVSall;
    vector<double>  *daughters_chargedIsoPtSum;
    vector<double>  *daughters_neutralIsoPtSum;
    vector<double>  *daughters_chargedIsoPtSumdR03;
@@ -488,6 +495,13 @@ public :
    //TBranch        *b_daughters_byIsolationMVA3newDMwLTraw;   //!
    TBranch        *b_daughters_byIsolationMVArun2v1DBoldDMwLTraw;   //!
    TBranch        *b_daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2;   //!
+   TBranch        *b_daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2;   //!
+   TBranch        *b_daughters_deepTau2017v1tauVSe;   //!
+   TBranch        *b_daughters_deepTau2017v1tauVSmu;   //!
+   TBranch        *b_daughters_deepTau2017v1tauVSjet;   //!
+   TBranch        *b_daughters_deepTau2017v1tauVSall;   //!
+   TBranch        *b_daughters_DPFTau_2016_v0tauVSall;   //!
+   TBranch        *b_daughters_DPFTau_2016_v1tauVSall;   //!
    TBranch        *b_daughters_chargedIsoPtSum;   //!
    TBranch        *b_daughters_neutralIsoPtSum;   //!
    TBranch        *b_daughters_chargedIsoPtSumdR03;   //!

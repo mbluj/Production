@@ -26,5 +26,12 @@ Flavour = 24,
 bDiscriminator = 25, 
 bCSVscore = 26, 
 PFjetID = 27, 
-NONE = 28
+byIsolationMVArun2v1DBnewDMwLTraw2017v2 = 28, 
+deepTau2017v1tauVSe = 29, 
+deepTau2017v1tauVSmu = 30, 
+deepTau2017v1tauVSjet = 31, 
+deepTau2017v1tauVSall = 32, 
+DPFTau_2016_v0tauVSall = 33, 
+DPFTau_2016_v1tauVSall = 34, 
+NONE = 35
 };

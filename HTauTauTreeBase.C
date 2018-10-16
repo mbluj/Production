@@ -207,6 +207,13 @@ void HTauTauTreeBase::Init(TTree *tree)
    //daughters_byIsolationMVA3newDMwLTraw = 0;
    daughters_byIsolationMVArun2v1DBoldDMwLTraw = 0;
    daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2 = 0;
+   daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2 = 0;
+   daughters_deepTau2017v1tauVSe = 0;
+   daughters_deepTau2017v1tauVSmu = 0;
+   daughters_deepTau2017v1tauVSjet = 0;
+   daughters_deepTau2017v1tauVSall = 0;
+   daughters_DPFTau_2016_v0tauVSall = 0;
+   daughters_DPFTau_2016_v1tauVSall = 0;
    daughters_chargedIsoPtSum = 0;
    daughters_neutralIsoPtSum = 0;
    daughters_chargedIsoPtSumdR03 = 0;
@@ -443,6 +450,13 @@ void HTauTauTreeBase::Init(TTree *tree)
    //fChain->SetBranchAddress("daughters_byIsolationMVA3newDMwLTraw", &daughters_byIsolationMVA3newDMwLTraw, &b_daughters_byIsolationMVA3newDMwLTraw);
    fChain->SetBranchAddress("daughters_byIsolationMVArun2v1DBoldDMwLTraw", &daughters_byIsolationMVArun2v1DBoldDMwLTraw, &b_daughters_byIsolationMVArun2v1DBoldDMwLTraw);
    fChain->SetBranchAddress("daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2", &daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2, &b_daughters_byIsolationMVArun2v1DBoldDMwLTraw2017v2);
+   fChain->SetBranchAddress("daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2", &daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2, &b_daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2);
+   fChain->SetBranchAddress("daughters_deepTau2017v1tauVSe", &daughters_deepTau2017v1tauVSe, &b_daughters_deepTau2017v1tauVSe);
+   fChain->SetBranchAddress("daughters_deepTau2017v1tauVSmu", &daughters_deepTau2017v1tauVSmu, &b_daughters_deepTau2017v1tauVSmu);
+   fChain->SetBranchAddress("daughters_deepTau2017v1tauVSjet", &daughters_deepTau2017v1tauVSjet, &b_daughters_deepTau2017v1tauVSjet);
+   fChain->SetBranchAddress("daughters_deepTau2017v1tauVSall", &daughters_deepTau2017v1tauVSall, &b_daughters_deepTau2017v1tauVSall);
+   fChain->SetBranchAddress("daughters_DPFTau_2016_v0tauVSall", &daughters_DPFTau_2016_v0tauVSall, &b_daughters_DPFTau_2016_v0tauVSall);
+   fChain->SetBranchAddress("daughters_DPFTau_2016_v1tauVSall", &daughters_DPFTau_2016_v1tauVSall, &b_daughters_DPFTau_2016_v1tauVSall);
    fChain->SetBranchAddress("daughters_chargedIsoPtSum", &daughters_chargedIsoPtSum, &b_daughters_chargedIsoPtSum);
    fChain->SetBranchAddress("daughters_neutralIsoPtSum", &daughters_neutralIsoPtSum, &b_daughters_neutralIsoPtSum);
    fChain->SetBranchAddress("daughters_chargedIsoPtSumdR03", &daughters_chargedIsoPtSumdR03, &b_daughters_chargedIsoPtSumdR03);
@@ -620,6 +634,15 @@ void HTauTauTreeBase::initWawTree(TTree *tree, std::string prefix){
   leptonPropertiesList.push_back("bDiscriminator");
   leptonPropertiesList.push_back("bCSVscore");
   leptonPropertiesList.push_back("PFjetID");
+
+  leptonPropertiesList.push_back("daughters_byIsolationMVArun2v1DBnewDMwLTraw2017v2");
+  leptonPropertiesList.push_back("daughters_deepTau2017v1tauVSe");
+  leptonPropertiesList.push_back("daughters_deepTau2017v1tauVSmu");
+  leptonPropertiesList.push_back("daughters_deepTau2017v1tauVSjet");
+  leptonPropertiesList.push_back("daughters_deepTau2017v1tauVSall");
+  leptonPropertiesList.push_back("daughters_DPFTau_2016_v0tauVSall");
+  leptonPropertiesList.push_back("daughters_DPFTau_2016_v1tauVSall");
+
   ////////////////////////////////////////////////////////////
   ///Gen Lepton properties MUST be synchronized with lepton properties
   ///since the branches name are not uniform, we need a second names vector.
