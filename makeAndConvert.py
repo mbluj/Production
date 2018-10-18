@@ -8,6 +8,12 @@ doSvFit = True
 if doSvFit :
     print "Run with SVFit computation"
 
+#Checkout DNN training files
+command = "cd $CMSSW_BASE/src; "
+command += "git clone https://github.com/cms-tau-pog/RecoTauTag-TrainingFiles -b master RecoTauTag/TrainingFiles/data; "
+command += "cd -;"
+os.system(command)
+
 #Some system have problem runnig compilation (missing glibc-static library?).
 #First we try to compile, and only then we start time consuming cmssw
 status = gSystem.CompileMacro('HTTEvent.cxx')
