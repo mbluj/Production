@@ -20,7 +20,7 @@ config.Data.totalUnits =  -1 #number of event
 config.Data.outLFNDirBase = '/store/user/akalinow/EnrichedMiniAOD/WplusHToTauTau_M120_v1/'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'WplusHToTauTau_M120_v1'
-
+config.JobType.maxMemoryMB = 3500 # default is 2000, 2500 is granted at T2s (but it is usually less than available, DNNs require more)
 
 
 config.section_("Site")
